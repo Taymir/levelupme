@@ -1,4 +1,4 @@
-<script type="text/javascript" src="/scripts/mootools.js"></script> 
+<script type="text/javascript" src="/scripts/mootools-core.js"></script> 
 
 <script type="text/javascript" src="/scripts/MUX.Dialog.js"></script>
 <link rel="stylesheet" href="/styles/MUX.Dialog.css"> 

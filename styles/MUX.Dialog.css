@@ -120,7 +120,7 @@ authors: Max Lavrov (lavmax)
 }
 
 .mux-dialog-header-close {
-	background-image: url(/images/MUX.Dialog.png);
+	background-image: url(MUX.Dialog.png);
 	background-position: 0px 0px;
 }
 
@@ -192,7 +192,7 @@ authors: Max Lavrov (lavmax)
 	bottom: 0px;
 	width: 12px;
 	height: 12px;
-	background-image: url(/images/MUX.Dialog.png);
+	background-image: url(MUX.Dialog.png);
 	background-position: -48px 0px;
 	border-bottom-right-radius: inherit; -moz-border-radius-bottomright: inherit; -webkit-border-bottom-right-radius: inherit;
 }
