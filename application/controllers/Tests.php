@@ -20,17 +20,17 @@ class Tests extends MY_Controller {
     
     public function jsdialogs()
     {
-        
+        return $this->load_view('Tests/jsdialogs_view', 'Диалоги');
     }
     
     public function jsautocomplete()
     {
-        
+        return $this->load_view('Tests/jsautocomplete_view', 'Автоподстановка');
     }
     
     public function jsdatepicker()
     {
-        
+        return $this->load_view('Tests/jsdatepicker_view', 'Выбор даты');
     }
     
     /*
