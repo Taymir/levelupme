@@ -16,15 +16,15 @@ window.addEvent('domready', function()
         timePicker: false,
         positionOffset: {x: 0, y: 0},
         pickerClass: 'datepicker_vista',
-        useFadeInOut: !Browser.ie,
+        useFadeInOut: false,//!Browser.ie,
         toggle: $('datepicklink')
     });
 })
 </script>
 <style type="text/css">
     .datepickerlink {
-        background: url(/images/calendar.png) no-repeat right top;
-        padding: 0px 8px;
+        background: url(/images/calendar.png) no-repeat right center;
+        padding: 0px 6px;
         text-decoration: none;
     }
 </style>

@@ -1,6 +1,6 @@
 // MooTools: the javascript framework.
-// Load this file's selection again by visiting: http://mootools.net/more/4c8cf0bf19972aad10fb3ae689bde828 
-// Or build this file again with packager using: packager build More/Date More/Date.Extras More/Locale More/Locale.ru-RU-unicode.Date
+// Load this file's selection again by visiting: http://mootools.net/more/6a2f7cd0e0f3db902d7cd982d92af541 
+// Or build this file again with packager using: packager build More/Date More/Element.Forms More/Locale More/Locale.en-US.Date More/Locale.ru-RU-unicode.Date
 /*
 ---
 
@@ -914,120 +914,293 @@ Locale.addEvent('change', function(language){
 /*
 ---
 
-script: Date.Extras.js
+script: String.Extras.js
 
-name: Date.Extras
+name: String.Extras
 
-description: Extends the Date native object to include extra methods (on top of those in Date.js).
+description: Extends the String native object to include methods useful in managing various kinds of strings (query strings, urls, html, etc).
 
 license: MIT-style license
 
 authors:
   - Aaron Newton
-  - Scott Kyle
+  - Guillermo Rauch
+  - Christopher Pitt
 
 requires:
-  - /Date
+  - Core/String
+  - Core/Array
+  - MooTools.More
 
-provides: [Date.Extras]
+provides: [String.Extras]
 
 ...
 */
 
-Date.implement({
+(function(){
 
-	timeDiffInWords: function(to){
-		return Date.distanceOfTimeInWords(this, to || new Date);
+var special = {
+	'a': /[àáâãäåăą]/g,
+	'A': /[ÀÁÂÃÄÅĂĄ]/g,
+	'c': /[ćčç]/g,
+	'C': /[ĆČÇ]/g,
+	'd': /[ďđ]/g,
+	'D': /[ĎÐ]/g,
+	'e': /[èéêëěę]/g,
+	'E': /[ÈÉÊËĚĘ]/g,
+	'g': /[ğ]/g,
+	'G': /[Ğ]/g,
+	'i': /[ìíîï]/g,
+	'I': /[ÌÍÎÏ]/g,
+	'l': /[ĺľł]/g,
+	'L': /[ĹĽŁ]/g,
+	'n': /[ñňń]/g,
+	'N': /[ÑŇŃ]/g,
+	'o': /[òóôõöøő]/g,
+	'O': /[ÒÓÔÕÖØ]/g,
+	'r': /[řŕ]/g,
+	'R': /[ŘŔ]/g,
+	's': /[ššş]/g,
+	'S': /[ŠŞŚ]/g,
+	't': /[ťţ]/g,
+	'T': /[ŤŢ]/g,
+	'ue': /[ü]/g,
+	'UE': /[Ü]/g,
+	'u': /[ùúûůµ]/g,
+	'U': /[ÙÚÛŮ]/g,
+	'y': /[ÿý]/g,
+	'Y': /[ŸÝ]/g,
+	'z': /[žźż]/g,
+	'Z': /[ŽŹŻ]/g,
+	'th': /[þ]/g,
+	'TH': /[Þ]/g,
+	'dh': /[ð]/g,
+	'DH': /[Ð]/g,
+	'ss': /[ß]/g,
+	'oe': /[œ]/g,
+	'OE': /[Œ]/g,
+	'ae': /[æ]/g,
+	'AE': /[Æ]/g
+},
+
+tidy = {
+	' ': /[\xa0\u2002\u2003\u2009]/g,
+	'*': /[\xb7]/g,
+	'\'': /[\u2018\u2019]/g,
+	'"': /[\u201c\u201d]/g,
+	'...': /[\u2026]/g,
+	'-': /[\u2013]/g,
+//	'--': /[\u2014]/g,
+	'&raquo;': /[\uFFFD]/g
+};
+
+var walk = function(string, replacements){
+	var result = string, key;
+	for (key in replacements) result = result.replace(replacements[key], key);
+	return result;
+};
+
+var getRegexForTag = function(tag, contents){
+	tag = tag || '';
+	var regstr = contents ? "<" + tag + "(?!\\w)[^>]*>([\\s\\S]*?)<\/" + tag + "(?!\\w)>" : "<\/?" + tag + "([^>]+)?>",
+		reg = new RegExp(regstr, "gi");
+	return reg;
+};
+
+String.implement({
+
+	standardize: function(){
+		return walk(this, special);
 	},
 
-	timeDiff: function(to, separator){
-		if (to == null) to = new Date;
-		var delta = ((to - this) / 1000).floor().abs();
+	repeat: function(times){
+		return new Array(times + 1).join(this);
+	},
 
-		var vals = [],
-			durations = [60, 60, 24, 365, 0],
-			names = ['s', 'm', 'h', 'd', 'y'],
-			value, duration;
+	pad: function(length, str, direction){
+		if (this.length >= length) return this;
 
-		for (var item = 0; item < durations.length; item++){
-			if (item && !delta) break;
-			value = delta;
-			if ((duration = durations[item])){
-				value = (delta % duration);
-				delta = (delta / duration).floor();
+		var pad = (str == null ? ' ' : '' + str)
+			.repeat(length - this.length)
+			.substr(0, length - this.length);
+
+		if (!direction || direction == 'right') return this + pad;
+		if (direction == 'left') return pad + this;
+
+		return pad.substr(0, (pad.length / 2).floor()) + this + pad.substr(0, (pad.length / 2).ceil());
+	},
+
+	getTags: function(tag, contents){
+		return this.match(getRegexForTag(tag, contents)) || [];
+	},
+
+	stripTags: function(tag, contents){
+		return this.replace(getRegexForTag(tag, contents), '');
+	},
+
+	tidy: function(){
+		return walk(this, tidy);
+	},
+
+	truncate: function(max, trail, atChar){
+		var string = this;
+		if (trail == null && arguments.length == 1) trail = '…';
+		if (string.length > max){
+			string = string.substring(0, max);
+			if (atChar){
+				var index = string.lastIndexOf(atChar);
+				if (index != -1) string = string.substr(0, index);
 			}
-			vals.unshift(value + (names[item] || ''));
+			if (trail) string += trail;
 		}
-
-		return vals.join(separator || ':');
+		return string;
 	}
 
-}).extend({
+});
 
-	distanceOfTimeInWords: function(from, to){
-		return Date.getTimePhrase(((to - from) / 1000).toInt());
+})();
+
+
+/*
+---
+
+script: Element.Forms.js
+
+name: Element.Forms
+
+description: Extends the Element native object to include methods useful in managing inputs.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - Core/Element
+  - /String.Extras
+  - /MooTools.More
+
+provides: [Element.Forms]
+
+...
+*/
+
+Element.implement({
+
+	tidy: function(){
+		this.set('value', this.get('value').tidy());
 	},
 
-	getTimePhrase: function(delta){
-		var suffix = (delta < 0) ? 'Until' : 'Ago';
-		if (delta < 0) delta *= -1;
+	getTextInRange: function(start, end){
+		return this.get('value').substring(start, end);
+	},
 
-		var units = {
-			minute: 60,
-			hour: 60,
-			day: 24,
-			week: 7,
-			month: 52 / 12,
-			year: 12,
-			eon: Infinity
+	getSelectedText: function(){
+		if (this.setSelectionRange) return this.getTextInRange(this.getSelectionStart(), this.getSelectionEnd());
+		return document.selection.createRange().text;
+	},
+
+	getSelectedRange: function(){
+		if (this.selectionStart != null){
+			return {
+				start: this.selectionStart,
+				end: this.selectionEnd
+			};
+		}
+
+		var pos = {
+			start: 0,
+			end: 0
 		};
+		var range = this.getDocument().selection.createRange();
+		if (!range || range.parentElement() != this) return pos;
+		var duplicate = range.duplicate();
 
-		var msg = 'lessThanMinute';
-
-		for (var unit in units){
-			var interval = units[unit];
-			if (delta < 1.5 * interval){
-				if (delta > 0.75 * interval) msg = unit;
-				break;
-			}
-			delta /= interval;
-			msg = unit + 's';
+		if (this.type == 'text'){
+			pos.start = 0 - duplicate.moveStart('character', -100000);
+			pos.end = pos.start + range.text.length;
+		} else {
+			var value = this.get('value');
+			var offset = value.length;
+			duplicate.moveToElementText(this);
+			duplicate.setEndPoint('StartToEnd', range);
+			if (duplicate.text.length) offset -= value.match(/[\n\r]*$/)[0].length;
+			pos.end = offset - duplicate.text.length;
+			duplicate.setEndPoint('StartToStart', range);
+			pos.start = offset - duplicate.text.length;
 		}
-
-		delta = delta.round();
-		return Date.getMsg(msg + suffix, delta).substitute({delta: delta});
-	}
-
-}).defineParsers(
-
-	{
-		// "today", "tomorrow", "yesterday"
-		re: /^(?:tod|tom|yes)/i,
-		handler: function(bits){
-			var d = new Date().clearTime();
-			switch (bits[0]){
-				case 'tom': return d.increment();
-				case 'yes': return d.decrement();
-				default: return d;
-			}
-		}
+		return pos;
 	},
 
-	{
-		// "next Wednesday", "last Thursday"
-		re: /^(next|last) ([a-z]+)$/i,
-		handler: function(bits){
-			var d = new Date().clearTime();
-			var day = d.getDay();
-			var newDay = Date.parseDay(bits[2], true);
-			var addDays = newDay - day;
-			if (newDay <= day) addDays += 7;
-			if (bits[1] == 'last') addDays -= 7;
-			return d.set('date', d.getDate() + addDays);
+	getSelectionStart: function(){
+		return this.getSelectedRange().start;
+	},
+
+	getSelectionEnd: function(){
+		return this.getSelectedRange().end;
+	},
+
+	setCaretPosition: function(pos){
+		if (pos == 'end') pos = this.get('value').length;
+		this.selectRange(pos, pos);
+		return this;
+	},
+
+	getCaretPosition: function(){
+		return this.getSelectedRange().start;
+	},
+
+	selectRange: function(start, end){
+		if (this.setSelectionRange){
+			this.focus();
+			this.setSelectionRange(start, end);
+		} else {
+			var value = this.get('value');
+			var diff = value.substr(start, end - start).replace(/\r/g, '').length;
+			start = value.substr(0, start).replace(/\r/g, '').length;
+			var range = this.createTextRange();
+			range.collapse(true);
+			range.moveEnd('character', start + diff);
+			range.moveStart('character', start);
+			range.select();
 		}
+		return this;
+	},
+
+	insertAtCursor: function(value, select){
+		var pos = this.getSelectedRange();
+		var text = this.get('value');
+		this.set('value', text.substring(0, pos.start) + value + text.substring(pos.end, text.length));
+		if (select !== false) this.selectRange(pos.start, pos.start + value.length);
+		else this.setCaretPosition(pos.start + value.length);
+		return this;
+	},
+
+	insertAroundCursor: function(options, select){
+		options = Object.append({
+			before: '',
+			defaultMiddle: '',
+			after: ''
+		}, options);
+
+		var value = this.getSelectedText() || options.defaultMiddle;
+		var pos = this.getSelectedRange();
+		var text = this.get('value');
+
+		if (pos.start == pos.end){
+			this.set('value', text.substring(0, pos.start) + options.before + value + options.after + text.substring(pos.end, text.length));
+			this.selectRange(pos.start + options.before.length, pos.end + options.before.length + value.length);
+		} else {
+			var current = text.substring(pos.start, pos.end);
+			this.set('value', text.substring(0, pos.start) + options.before + current + options.after + text.substring(pos.end, text.length));
+			var selStart = pos.start + options.before.length;
+			if (select !== false) this.selectRange(selStart, selStart + current.length);
+			else this.setCaretPosition(selStart + text.length);
+		}
+		return this;
 	}
 
-).alias('timeAgoInWords', 'timeDiffInWords');
+});
 
 
 /*
