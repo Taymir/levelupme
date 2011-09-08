@@ -33,6 +33,11 @@ class Tests extends MY_Controller {
         return $this->load_view('Tests/jsdatepicker_view', 'Выбор даты');
     }
     
+    public function jswysiwyg()
+    {
+        return $this->load_view('Tests/jswysiwyg_view', 'Текстовый редактор');
+    }
+    
     /*
      * public function action()
      * {

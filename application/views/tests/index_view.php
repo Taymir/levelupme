@@ -3,4 +3,5 @@
     <li><?=anchor('tests/jsdialogs', "Всплывающие окна (диалоги)") ?></li>
     <li><?=anchor('tests/jsautocomplete', "Автодополнение текста") ?></li>
     <li><?=anchor('tests/jsdatepicker', "Выбор даты") ?></li>
+    <li><?=anchor('tests/jswysiwyg', "Текстовый редактор") ?></li>
 </ul>
