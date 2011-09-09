@@ -17,4 +17,6 @@ $lang['profiler_no_get'] = 'Отсутствуют данные, передан�
 $lang['profiler_no_uri'] = 'Отсутствуют данные, переданные в URI';
 $lang['profiler_no_memory'] = 'Использование памяти невозможно';
 $lang['profiler_no_profiles'] = '';
+$lang['profiler_section_hide'] = 'Спрятать';
+$lang['profiler_section_show'] = 'Показать';
 ?>

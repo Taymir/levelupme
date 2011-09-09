@@ -38,6 +38,18 @@ class Tests extends MY_Controller {
         return $this->load_view('Tests/jswysiwyg_view', 'Текстовый редактор');
     }
     
+    public function smsmockup()
+    {
+        if($this->input->post('text'))
+        {
+            $this->load->library('sms');
+            $this->sms->sendSms($this->input->post('to'), $this->input->post('text'));
+            
+            return $this->redirect_message('/Tests/smsmockup', "Сообщение отправлено");
+        }
+        return $this->load_view('Tests/smsmockup_view', 'Заглушка отправки СМС');
+    }
+    
     /*
      * public function action()
      * {
