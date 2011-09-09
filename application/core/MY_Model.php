@@ -27,8 +27,15 @@ class MY_Model extends CI_Model {
 
         return $this->db->get();
     }
+    protected function typical_find_obj($table_name, $id)
+    {
+        $query = $this->find($table_name, $id);
 
-    protected function typical_find_row($table_name, $id)
+        if ($query->num_rows() == 1) return $query->row();
+            return NULL;
+    }
+    
+    protected function typical_find_arr($table_name, $id)
     {
         $query = $this->find($table_name, $id);
 

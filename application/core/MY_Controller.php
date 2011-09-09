@@ -85,6 +85,37 @@ class MY_Controller extends CI_Controller {
             'content_template' => 'message'
         ));
     }
+    
+    protected function get_empty_arr()
+    {
+        $arr = array();
+        $arguments = func_get_args();
+        
+        foreach($arguments as $argument)
+        {
+            $arr[$argument] = '';
+        }
+        
+        return $arr;
+    }
+    
+    protected function get_post_params()
+    {
+        $arr = array();
+        $arguments = func_get_args();
+        
+        foreach($arguments as $argument)
+        {
+            $arr[$argument] = $this->input->post($argument);
+        }
+        
+        return $arr;
+    }
+    
+    protected function load_var($var_name, $var_value)
+    {
+        $this->load->vars(array($var_name => $var_value));
+    }
 
     protected function load_view($content_template, $page_title = '', $data = null)
     {

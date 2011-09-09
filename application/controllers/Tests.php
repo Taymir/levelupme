@@ -14,8 +14,8 @@ class Tests extends MY_Controller {
     }
     
     public function index()
-    {
-        return $this->load_view('Tests/index_view', "Tests");
+    {        
+       return $this->load_view('Tests/index_view', "Tests");
     }
     
     public function jsdialogs()
