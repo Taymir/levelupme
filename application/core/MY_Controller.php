@@ -6,21 +6,99 @@
  * @author u7
  */
 class MY_Controller extends CI_Controller {
-    public function __construct($logged_in_only = false) {
+    public function __construct($roles_allowed = null) {
         parent::__construct();
 
-        /*$this->load->model('users_model');
-        $this->users_model->loadUserData();
-
-        if($logged_in_only && !$this->isLoggedIn())
-                $this->redirectToLogin();
-
-        $this->load->vars(array(
-            'username' => $this->users_model->getUsername(),
-        ));*/
-
         if(ENVIRONMENT == 'development')
-        $this->output->enable_profiler(TRUE);
+            $this->output->enable_profiler(TRUE);
+        
+        $this->authenticate();
+        $this->allowAccessFor($roles_allowed);
+    }
+    
+    private function authenticate()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->library('security');
+        $this->load->library('tank_auth');
+        $this->lang->load('tank_auth');
+        $this->load->model('user_profile_model');
+        
+        $data['AUTH_FORM'] = true;
+        
+        if ($this->tank_auth->is_logged_in()) {									// logged in
+                $data['user_id']	= $this->tank_auth->get_user_id();
+                $data['username']	= $this->tank_auth->get_username();
+                $data['name']               = $this->user_profile_model->getName();
+                $data['role']               = $this->user_profile_model->getRole();
+                $this->load->vars($data);
+        }  else {
+                $data['login_by_username'] = ($this->config->item('login_by_username', 'tank_auth') AND
+                                $this->config->item('use_username', 'tank_auth'));
+                $data['login_by_email'] = $this->config->item('login_by_email', 'tank_auth');
+                $data['use_recaptcha'] = $this->config->item('use_recaptcha', 'tank_auth');
+                $data['show_captcha'] = FALSE;
+                if ($this->tank_auth->is_max_login_attempts_exceeded('')) {//@BUGFIX: Выводим капчу не по логину, а по айпи
+                        $data['show_captcha'] = TRUE;
+                        if ($data['use_recaptcha']) {
+                                $data['recaptcha_html'] = $this->_create_recaptcha();
+                        } else {
+                                $data['captcha_html'] = $this->_create_captcha();
+                        }
+                }
+                        
+                $this->load->vars($data);
+        }
+        
+        
+        
+    }
+    
+    /**
+     * Create CAPTCHA image to verify user as a human
+     *
+     * @return	string
+     */
+    function _create_captcha()
+    {
+            $this->load->helper('captcha');
+
+            $cap = create_captcha(array(
+                    'img_path'		=> './'.$this->config->item('captcha_path', 'tank_auth'),
+                    'img_url'		=> base_url().$this->config->item('captcha_path', 'tank_auth'),
+                    'font_path'		=> './'.$this->config->item('captcha_fonts_path', 'tank_auth'),
+                    'font_size'		=> $this->config->item('captcha_font_size', 'tank_auth'),
+                    'img_width'		=> $this->config->item('captcha_width', 'tank_auth'),
+                    'img_height'	=> $this->config->item('captcha_height', 'tank_auth'),
+                    'show_grid'		=> $this->config->item('captcha_grid', 'tank_auth'),
+                    'expiration'	=> $this->config->item('captcha_expire', 'tank_auth'),
+            ));
+
+            // Save captcha params in session
+            $this->session->set_flashdata(array(
+                            'captcha_word' => $cap['word'],
+                            'captcha_time' => $cap['time'],
+            ));
+
+            return $cap['image'];
+    }
+    
+    protected function allowAccessFor($roles = null)
+    {
+        if(is_null($roles)) {
+            return true;
+        } elseif(is_array($roles) && !in_array ($this->user_profile_model->getRole(), $roles) ) {
+             $this->denyAccess();
+             return false;
+        } elseif ($this->user_profile_model->getRole() != $roles)
+        {
+            $this->denyAccess();
+            return false;
+        }
+        
+        return true;
+                    
     }
 
     protected function denyAccess()
@@ -44,11 +122,11 @@ class MY_Controller extends CI_Controller {
         exit();
     }
 
-    /*protected function isLoggedIn()
+    protected function isLoggedIn()
     {
         // Проверка на то, залогинен ли пользователь (имеет id?)
-        return ($this->users_model->getId() !== null);//@BUGFIX: если false происходит бесконечная переадресация
-    }*/
+        return ($this->user_profile_model->getId() !== null);//@BUGFIX: если false происходит бесконечная переадресация
+    }
 
     protected function show_message($message, $message_extra = '')
     {

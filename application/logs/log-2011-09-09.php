@@ -35,3 +35,7 @@ ERROR - 2011-09-09 18:59:59 --> 404 Page Not Found --> users
 ERROR - 2011-09-09 18:59:59 --> 404 Page Not Found --> favicon.ico
 ERROR - 2011-09-09 19:00:00 --> 404 Page Not Found --> users
 ERROR - 2011-09-09 19:00:00 --> 404 Page Not Found --> favicon.ico
+ERROR - 2011-09-09 19:35:11 --> 404 Page Not Found --> parents
+ERROR - 2011-09-09 19:35:12 --> 404 Page Not Found --> favicon.ico
+ERROR - 2011-09-09 19:40:06 --> 404 Page Not Found --> userhelp
+ERROR - 2011-09-09 19:40:06 --> 404 Page Not Found --> favicon.ico

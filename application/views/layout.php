@@ -9,5 +9,7 @@
 <?php $this->load->view('menu.php'); ?>
 
 <?php $this->load->view($page_template); ?>
+    
+<?php if($AUTH_FORM) $this->load->view('auth_form.php'); ?>
 </body>
 </html>

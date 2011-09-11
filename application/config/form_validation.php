@@ -17,7 +17,7 @@ $config = array(
         array(
             'field' => 'link',
             'label' => 'Ссылка',
-            'rules' => 'trim|required|xss_clean|alpha_dash|callback_link_check'
+            'rules' => 'trim|xss_clean|alpha_dash|callback_link_check'
         ),
     ),
 
