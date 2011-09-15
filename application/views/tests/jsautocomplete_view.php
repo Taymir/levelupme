@@ -79,7 +79,8 @@ license: MIT-style license
 }
 </style>
 
-
+<h1>Проверка скрипта автодополнения</h1>
+<em>Начните вводить название школьных предметов в поля ниже, чтобы появилась подсказка-автодополнение:</em>
 <form id="scheduleForm">
     <input type="text" class="subjectField"  /><br/>
     <input type="text" class="subjectField"  /><br/>

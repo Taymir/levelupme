@@ -40,12 +40,10 @@
         });
 </script> 
 
-<h1>MooEditable example with extra toolbar items</h1> 
-
+<h1>Текстовый редактор</h1> 
+<em>Пример редактора для статических страниц</em>
 <form id="theForm" method="post" action="http://form-data.appspot.com/"> 
-
-        <label for="textarea-1">Textarea 1</label> 
-        <textarea id="textarea-1" name="editable1"> 
+        <textarea id="textarea-1" name="editable1" style="background-color:white"> 
         &lt;p&gt;&lt;strong&gt;This&lt;/strong&gt; is cool!&lt;/p&gt;
         </textarea> 
 

@@ -26,7 +26,11 @@ class MY_Controller extends CI_Controller {
         $this->load->model('user_profile_model');
         
         $data['AUTH_FORM'] = true;
-        
+        $data['user_id']	= null;
+        $data['username'] = null;
+        $data['name'] = null;
+        $data['role'] = null;
+
         if ($this->tank_auth->is_logged_in()) {									// logged in
                 $data['user_id']	= $this->tank_auth->get_user_id();
                 $data['username']	= $this->tank_auth->get_username();

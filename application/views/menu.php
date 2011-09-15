@@ -4,7 +4,7 @@
     <li><a href="/admin/schools">Школы и классы</a></li>
     <li><a href="/admin/operators">Операторы</a></li>
     <li><a href="/admin/users">Пользователи</a></li>
-    <li><a href="/admin/pages">Страницы</a></li>
+    <li><a href="/admin_pages">Страницы</a></li>
 </ul>
 <?php endif; ?>
 <?php if($role == 'admin' || $role == 'operator'): ?>
@@ -27,8 +27,9 @@
 <?php endif; ?>
 <strong>Меню:</strong>
 <ul>
-    <li><a href="/">Об электронном дневнике</a></li>
+    <li><a href="/home">Об электронном дневнике</a></li>
     <li><a href="/parents">Родителям</a></li>
     <li><a href="/schools">Школам</a></li>
     <li><a href="/userhelp">Пользователям</a></li>
+    <li><a href="/tests"><em>Тестирование</em></a></li>
 </ul>

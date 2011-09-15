@@ -108,17 +108,4 @@ class MY_Model extends CI_Model {
 
         return $res;
     }
-
-    /*
-     * Склеивает массив для использования с SQL-оператором IN (...,...)
-     */
-    protected function glue_in_list($vars)
-    {
-        if(is_null($vars))
-            return '';
-        elseif(is_array($vars))
-            return implode(', ',  array_map(array($this->db, 'escape'), $vars) );
-        else
-            return $this->db->escape($vars);
-    }
 }

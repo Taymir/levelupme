@@ -23,12 +23,14 @@ window.addEvent('domready', function()
 </script>
 <style type="text/css">
     .datepickerlink {
-        background: url(/images/calendar.png) no-repeat right center;
+        background: url(/styles/calendar.png) no-repeat right center;
         padding: 0px 6px;
         text-decoration: none;
     }
 </style>
 
+<h1>Выбор даты</h1>
+<em>Этот виджет будет использоваться для выбора даты при заполнении школьного журнала</em>
 <form>
     <input type="text" id="datepicker" value="01.04.2001" size="10" />
     <a id="datepicklink" class="datepickerlink" onclick="return false;" href="#">&nbsp;</a>

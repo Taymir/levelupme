@@ -38,11 +38,13 @@ class pages_model extends MY_Model {
         return $this->typical_delete($this->table_name, $id);
     }
     
-    public function link_exists($link)
+    public function link_exists($link, $except_id = null)
     {
         $this->db->select('*');
         $this->db->from($this->table_name);
         $this->db->where('link', $link);
+        if($except_id !== null)
+            $this->db->where('id <>', $except_id);
         $query = $this->db->get();
         
         if($query->num_rows() > 0) return true;

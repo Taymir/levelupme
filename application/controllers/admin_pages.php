@@ -94,11 +94,12 @@ class Admin_pages extends MY_Controller {
     
     public function link_check($link)
     {
+        $id = $this->input->post('id');
         $reserved_names = array('admin', 'pages'); //@TODO: дополнить
         if (in_array($link, $reserved_names)) {
             $this->form_validation->set_message('link_check', 'Поле %s не может содержать зарезервированные ссылки: ' . implode(", ", $reserved_names));
             return false;
-        } else if($this->pages_model->link_exists($link)){
+        } else if($this->pages_model->link_exists($link, $id)){
             $this->form_validation->set_message('link_check', '%s уже используется');
             return false;
         } else {

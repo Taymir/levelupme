@@ -19,7 +19,27 @@ class ajax extends MY_Controller {
             //$this->load->model('profiles_model');
             // LOAD DATA
             //$data = array_values($this->profiles_model->list_friendnames_of($this->user_model->getId(), $this->user_model->getLevel(), $query));
-            $data = array('Some1', 'Some2', 'Some3', 'some' . $query);
+            $data = array(
+                    'Русский язык',
+                    'Литература',
+                    'Иностранный язык (английский, немецкий, французский)',
+                    'Математика',
+                    'Информатика и ИКТ',
+                    'История',
+                    'Обществознание',
+                    'География',
+                    'Биология',
+                    'Физика',
+                    'Химия',
+                    'Экономика',
+                    'Право',
+                    'Основы безопасности жизнедеятельности',
+                    'Технология',
+                    'Искусство (мировая художественная культура)',
+                    'Физическая культура',
+                    'Астрономия',
+                    'Экология'
+                );
             
             // OUTPUT
             header('Content-type: application/json');

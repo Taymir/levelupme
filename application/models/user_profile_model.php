@@ -13,6 +13,7 @@
 class user_profile_model extends MY_Model {
     private $table_name	= 'user_profiles';	// user profiles
     private $users_table_name = 'users';                     // users
+    private $operators_table_name = 'operators_schools'; //Таблица разрешений для операторов
     
     const unloaded = -1;
     
@@ -110,6 +111,27 @@ class user_profile_model extends MY_Model {
     public function get_user($id)
     {
         return $this->typical_find_obj($this->users_table_name, $id);
+    }
+    
+    public function get_operators_school_list()
+    {
+        if($this->getRole() == 'operator')
+        {
+            $this->db->select('class_id');
+            $this->db->from($this->operators_table_name);
+            $this->db->where('user_id', $this->getId());
+            $this->db->group_by('class_id');
+            $query = $this->db->get();
+            
+            return $this->Arr2List($query->result_array(), 'class_id');
+        }
+        elseif ($this->getRole() == 'admin')
+        {
+            return '*';
+        }
+        else
+            return null;
+            
     }
 }
 
