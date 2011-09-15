@@ -11,8 +11,8 @@
 <tbody>
 <?php foreach($pages  as $page): ?>
 <tr>
-    <td>/<?php echo $page->link; ?></td>
-    <td><?php echo anchor(array('pages', 'display', $page->id), $page->title); ?></td>
+    <td>/<?= html_escape($page->link); ?></td>
+    <td><?php echo anchor(array('pages', 'display', $page->id), html_escape($page->title)); ?></td>
     <td>
     <nobr>
     <?php echo anchor(array('admin_pages', 'edit', $page->id), "РЕД", array('class' => "editbutton")); ?>&nbsp;

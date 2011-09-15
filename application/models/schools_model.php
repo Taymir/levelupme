@@ -32,6 +32,7 @@ class schools_model extends MY_Model {
         $this->db->select('*');
 
         $this->db->from($this->table_name);
+        $this->db->order_by('LENGTH(' . $this->table_name . '.school)');
         $this->db->order_by($this->table_name . '.school');
         
          if($schools_list != '*')

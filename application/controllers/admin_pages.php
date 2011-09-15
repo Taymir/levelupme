@@ -13,10 +13,8 @@
 class Admin_pages extends MY_Controller {
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct('admin');
         
-        //@TODO: вынести в отдельный MY_Admin_controller ?
-        //Доступ только администраторам!!!!!!!!!!!!
         $this->load->model('pages_model');
     }
     
@@ -51,7 +49,7 @@ class Admin_pages extends MY_Controller {
             
             $this->save_routes();
             
-            return $this->redirect_message('/admin_pages', "Страница сохранена");
+            return $this->redirect_message('admin_pages', "Страница сохранена");
         } else {
             // Если форма ещё не засабмичена
             if($id)

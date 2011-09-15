@@ -47,6 +47,7 @@ class classes_model extends MY_Model {
         $this->db->select('*');
 
         $this->db->from($this->table_name);
+        $this->db->order_by('LENGTH(' . $this->table_name . '.class)');
         $this->db->order_by($this->table_name . '.class');
         
          $this->db->where_in('school_id', $school_id);
