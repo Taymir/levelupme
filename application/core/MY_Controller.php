@@ -92,16 +92,15 @@ class MY_Controller extends CI_Controller {
     {
         if(is_null($roles)) {
             return true;
-        } elseif(is_array($roles) && !in_array ($this->user_profile_model->getRole(), $roles) ) {
-             $this->denyAccess();
-             return false;
-        } elseif ($this->user_profile_model->getRole() != $roles)
+        } elseif(is_array($roles) && in_array ($this->user_profile_model->getRole(), $roles) ) {
+             return true;
+        } elseif ($this->user_profile_model->getRole() == $roles)
         {
-            $this->denyAccess();
-            return false;
+            return true;
         }
         
-        return true;
+        $this->denyAccess();
+        return false;
                     
     }
 

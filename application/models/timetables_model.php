@@ -12,7 +12,7 @@
  */
 class timetables_model extends MY_Model {
     private $table_name = 'timetables';
-    private $subjects_table_name = 'subjects';
+    private $subjects_table_name = 'timetable_subjects';
     
     public function add_timetable($data)
     {
@@ -28,7 +28,11 @@ class timetables_model extends MY_Model {
     public function get_timetable_by_class($class_id)
     {
         // запрос на описание расписания
-        $data = $this->typical_find_obj($this->table_name, $id);
+        $this->db->select('*');
+        $this->db->from($this->table_name);
+        $this->db->where('class_id', $class_id);
+        $query = $this->db->get();
+        $data = $query->row();
          
         // Запрос на список предметов
         $this->db->select('num, day, subject');
@@ -70,12 +74,15 @@ class timetables_model extends MY_Model {
         {
             for($day = 1; ($day-1) < sizeof($data[$num]); ++$day)
             {
-                $batch_data[] = array(
-                    'num' => $num,
-                    'day' => $day,
-                    'subject' => $data[$num][$day],
-                    'timetable_id' => $id
-                );
+                if($data[$num][$day] != '')
+                {
+                    $batch_data[] = array(
+                        'num' => $num,
+                        'day' => $day,
+                        'subject' => $data[$num][$day],
+                        'timetable_id' => $id
+                    );
+                }
             }
         }
         
@@ -85,7 +92,7 @@ class timetables_model extends MY_Model {
         //  очистить расписание
         $this->clear_timetable($id);
         //  сохранить все ячейки нового расписания
-        $this->insert_batch($this->subjects_table_name, $batch_data);
+        $this->db->insert_batch($this->subjects_table_name, $batch_data);
         $this->db->trans_complete();
         
         return TRUE;
