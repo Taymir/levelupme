@@ -130,9 +130,72 @@ class user_profile_model extends MY_Model {
             return '*';
         }
         else
-            return null;
-            
+            return null;      
     }
-}
+    
+    public function get_users_by_class($class_id)
+    {
+        $this->db->select(
+                $this->users_table_name . '.id,'.
+                $this->users_table_name . '.username,'.
+                $this->users_table_name . '.email,'.
+                $this->users_table_name . '.banned,'.
+                
+                $this->table_name . '.name,'.
+                $this->table_name . '.phone,'.
+                $this->table_name . '.acc_type'
+                );
+        
+        $this->db->from($this->table_name);
+        $this->db->join($this->users_table_name, $this->table_name  . '.user_id = ' . $this->users_table_name . '.id');
+        
+        $this->db->where($this->table_name . '.class_id', $class_id);
+        $this->db->order_by($this->table_name . '.name');
+        
+        $query = $this->db->get();
+        return $query->result();
+    }
+    
+    public function get_userlist_by_class($class_id)
+    {
+        $this->db->select('user_id, name' );
+        $this->db->from($this->table_name);
+        $this->db->where('class_id', $class_id);
+        $this->db->order_by('name');
+        
+        $query = $this->db->get();
+        return $this->Arr2List($query->result, 'user_id', 'name');
+    }
+    
+    public function add_user_profile($data)
+    {
+        $profile_data = array(
+            'name' => $data['name'],
+            'acc_type' => $data['acc_type'],
+            'phone' => $data['phone'],
+            'class_id' => $data['class_id']
+        );
+        $username = $data['username'];
+        $email = $data['email'];
+        $password = $data['password'];
+        
+        
+        $ci = & get_instance();
+        $ci->load->library('tank_auth');
+        
+        $result = $ci->tank_auth->create_user($username, $email, $password, false);
+        if($result)
+        {
+            $this->typical_update($this->table_name, $profile_data, $result['user_id']);
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+    
+    // Позже сюда надо добавить методы add_operator_profile
 
-?>
+
+}

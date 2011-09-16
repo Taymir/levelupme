@@ -36,26 +36,26 @@
 <?php $this->load->helper('form'); ?>
 <?= form_open('admin_pages/edit', 'class="niceform"', isset($id) ? array('id' => $id) : null); ?>
 <p>
-<?php echo form_label('Название:', 'title'); ?>
-<?php echo form_input('title', set_value('title', $title)); ?>
-<?php echo form_error('title'); ?>
+<?= form_label('Название:', 'title'); ?>
+<?= form_input('title', set_value('title', $title)); ?>
+<?= form_error('title'); ?>
 </p>
 
 <p>
-<?php echo form_textarea('text', set_value('text', $text), 'id="wysiwyg"'); ?>
+<?= form_textarea('text', set_value('text', $text), 'id="wysiwyg"'); ?>
 </p>
 <p>
-<?php echo form_error('text'); ?>
+<?= form_error('text'); ?>
 </p>
 
 <p>
-<?php echo form_label('Ссылка:', 'link'); ?>
-<?php echo form_input('link', set_value('link', $link)); ?>
-<?php echo form_error('link'); ?>
+<?= form_label('Ссылка:', 'link'); ?>
+<?= form_input('link', set_value('link', $link)); ?>
+<?= form_error('link'); ?>
 </p>
 
 <p>
-<?php echo form_submit('submit', "Отправить", 'class="submit"'); ?>
+<?= form_submit('submit', "Отправить", 'class="submit"'); ?>
 </p>
 
-<?php echo form_close(); ?>
+<?= form_close(); ?>
