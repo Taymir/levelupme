@@ -84,6 +84,35 @@ $config = array(
             'label' => 'email',
             'rules' => 'trim|valid_email'
         )
+    ),
+    
+    /* ADMIN_OPERATORS */
+    'admin_operators/add_operator' => array(
+        array(
+            'field' => 'username',
+            'label' => 'логин',
+            'rules' => 'required|alpha_numeric'
+        ),
+        array(
+            'field' => 'password',
+            'label' => 'пароль',
+            'rules' => 'required|alpha_numeric'
+        ),
+        array(
+            'field' => 'confirm',
+            'label' => 'подтверждение пароля',
+            'rules' => 'required|matches[password]'
+        ),
+        array(
+            'field' => 'name',
+            'label' => 'имя',
+            'rules' => 'trim'
+        ),
+        array(
+            'field' => 'email',
+            'label' => 'email',
+            'rules' => 'trim|valid_email'
+        )
     )
 
     

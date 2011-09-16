@@ -173,6 +173,7 @@ class user_profile_model extends MY_Model {
             'name' => $data['name'],
             'acc_type' => $data['acc_type'],
             'phone' => $data['phone'],
+            'role' => 'parent',
             'class_id' => $data['class_id']
         );
         $username = $data['username'];
@@ -196,6 +197,54 @@ class user_profile_model extends MY_Model {
     }
     
     // Позже сюда надо добавить методы add_operator_profile
-
+    public function add_operator_profile($data)
+    {
+        //@TODO: добавить настройки школ
+        $profile_data = array(
+            'name' => $data['name'],
+            'role' => $data['role'],
+            'class_id' => -1
+        );
+        $username = $data['username'];
+        $email = $data['email'];
+        $password = $data['password'];
+        
+        $ci = & get_instance();
+        $ci->load->library('tank_auth');
+        
+        $result = $ci->tank_auth->create_user($username, $email, $password, false);
+        if($result)
+        {
+            $this->typical_update($this->table_name, $profile_data, $result['user_id']);
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+    
+    public function get_operators()
+    {
+        //@TODO: добавить настройки школ
+        $this->db->select(
+                $this->users_table_name . '.id,'.
+                $this->users_table_name . '.username,'.
+                $this->users_table_name . '.email,'.
+                $this->users_table_name . '.banned,'.
+                
+                $this->table_name . '.name,' .
+                $this->table_name . '.role'
+                );
+        
+        $this->db->from($this->table_name);
+        $this->db->join($this->users_table_name, $this->table_name  . '.user_id = ' . $this->users_table_name . '.id');
+        
+        $this->db->where_in('role', array('operator', 'admin'));
+        $this->db->order_by($this->table_name . '.name');
+        
+        $query = $this->db->get();
+        return $query->result();
+    }
 
 }
