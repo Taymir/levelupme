@@ -95,3 +95,5 @@ license: MIT-style license
     <input type="text" class="subjectField"  /><br/>
     <input type="text" class="subjectField"  /><br/>    
 </form>
+
+<?php $this->load->view('school_class_widget'); ?>

@@ -10,16 +10,16 @@
  * @author u7
  */
 class ajax extends MY_Controller {
-    public function livesearch()
+    public function autocomplete()
     {
 
         $query = $this->input->get('q');
         if($query)
         {
-            //$this->load->model('profiles_model');
+           $this->load->model('timetables_model');
             // LOAD DATA
-            //$data = array_values($this->profiles_model->list_friendnames_of($this->user_model->getId(), $this->user_model->getLevel(), $query));
-            $data = array(
+            $data = $this->timetables_model->get_subjects($query);
+            /*$data = array( //@DEBUG
                     'Русский язык',
                     'Литература',
                     'Иностранный язык (английский, немецкий, французский)',
@@ -39,10 +39,10 @@ class ajax extends MY_Controller {
                     'Физическая культура',
                     'Астрономия',
                     'Экология'
-                );
+                );*/
             
             // OUTPUT
-            header('Content-type: application/json');
+            header('Content-type: application/json; charset=utf-8');
 
             echo json_encode($data);
         } else { // NO QUERY
@@ -50,5 +50,17 @@ class ajax extends MY_Controller {
        }
         
         exit();//no profiling in JSON-answer
+    }
+    
+    public function saveOpClasses()
+    {
+        header('Content-type: application/json; charset=utf-8');
+
+        $data[] = $this->input->post('operator');
+        $data[] = $this->input->post('classes');
+        echo json_encode($data);
+        
+        exit();//no profiling in JSON-answer
+        //@TODO 
     }
 }

@@ -106,6 +106,22 @@ class timetables_model extends MY_Model {
         return TRUE;
     }
     
+    public function get_subjects($like = null)
+    {
+        $this->db->select('subject');
+
+        $this->db->from($this->subjects_table_name);
+        $this->db->order_by('subject');
+        $this->db->group_by('subject');
+        
+         if($like != NULL)
+             $this->db->like('subject', $like);
+
+        $query = $this->db->get();
+
+        return $this->Arr2List($query->result_array(), 'subject');
+    }
+    
     
 }
 
