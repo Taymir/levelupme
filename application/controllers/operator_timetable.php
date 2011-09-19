@@ -23,6 +23,8 @@ class operator_timetable extends MY_Controller {
         $class_data = $this->classes_model->get_class(1); //@TMP
         $data = $this->timetables_model->get_timetable_by_class(1); //@TMP
         
+        $this->load_scripts('mootools-core', 'mootools-more', 'Meio.Autocomplete');
+        $this->load_style('autocomplete');
         $this->load_var('timetable', $data);
         $this->load_var('class', $class_data);
         return $this->load_view('operator_timetable/index_view', "Расписание");

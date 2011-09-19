@@ -5,6 +5,8 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon" />
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>styles/style.css" />
+<?= isset($styles) ? $styles : '' ?>
+<?= isset($scripts) ? $scripts : '' ?>
 </head>
 <body>
 <div id="main">

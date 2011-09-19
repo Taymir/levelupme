@@ -213,4 +213,56 @@ class MY_Controller extends CI_Controller {
             'page_template' => $content_template
         ));
     }
+    
+    protected function load_scripts($arr)
+    {
+        if(!is_array($arr))
+            $arr = func_get_args();
+        
+        foreach($arr as $el)
+            $this->load_script($el);
+    }
+    
+    protected function load_script($scriptname)
+    {
+        $scriptname = base_url() . "scripts/$scriptname.js";
+        $scripts = $this->load->get_var('scripts');
+        $scripts .= "<script type=\"text/javascript\" src=\"$scriptname\"></script>\n";
+        $this->load_var('scripts', $scripts);
+    }
+    
+    protected function load_script_inline($scriptname)
+    {
+        $this->load->helper('file');
+        $script = read_file("./scripts/$scriptname.js");
+        $scripts = $this->load->get_var('scripts');
+        $scripts .= "<script type=\"text/javascript\">\n$script\n</script>\n";
+        $this->load_var('scripts', $scripts);
+    }
+    
+    protected function load_styles($arr)
+    {
+        if(!is_array($arr))
+            $arr = func_get_args();
+        
+        foreach($arr as $el)
+            $this->load_style($el);
+    }
+    
+    protected function load_style($stylename)
+    {
+        $stylename = base_url() . "styles/$stylename.css";
+        $styles = $this->load->get_var('styles');
+        $styles .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"$stylename\" />\n";
+        $this->load_var('styles', $styles);
+    }
+    
+    protected function load_style_inline($stylename)
+    {
+        $this->load->helper('file');
+        $style = read_file("./styles/$stylename.css");
+        $styles = $this->load->get_var('styles');
+        $styles .= "<style type=\"text/css\">\n$style\n</style>\n";
+        $this->load_var('styles', $styles);
+    }
 }

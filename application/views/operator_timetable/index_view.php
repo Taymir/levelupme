@@ -1,7 +1,3 @@
-<script type="text/javascript" src="<?php echo base_url(); ?>scripts/mootools-core.js"></script> 
-<script type="text/javascript" src="<?php echo base_url(); ?>scripts/mootools-more.js"></script> 
-
-<script type="text/javascript" src="<?php echo base_url(); ?>scripts/Meio.Autocomplete.js"></script> 
 <script type="text/javascript">
 window.addEvent('domready', function()
 {
@@ -43,53 +39,6 @@ window.addEvent('domready', function()
     });
 })
 </script>
-<style type="text/css">
-/*
----
-
-description: A plugin for enabling autocomplete of a text input or textarea.
-
-authors:
- - Fábio Miranda Costa
-
-license: MIT-style license
-
-...
-*/
-.ma-container{
-    color: #000;
-    border: 1px solid #333;
-    background-color: #fff;
-    position: absolute;
-    visibility: hidden;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-.ma-container ul{
-    list-style: none;
-    overflow: hidden;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-.ma-container li{
-    padding: 2px 5px;
-    line-height: 16px;
-    cursor: pointer;
-    float: left;
-    width: 100%;
-    overflow: hidden;
-}
-.ma-container .ma-hover{
-    color: #fff;
-    background-color: #3366cc !important; /*#921506*/
-}
-.ma-container .ma-odd{
-}
-.ma-container .ma-even{
-    background-color: #efefef;
-}
-</style>
 
 <h1>Расписание</h1>
 

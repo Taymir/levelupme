@@ -1,9 +1,9 @@
 <?php if($role == 'admin'): ?>
 <strong>Раздел администратора:</strong>
 <ul>
-    <li><a href="/admin/schools">Школы и классы</a></li>
-    <li><a href="/admin/operators">Операторы</a></li>
-    <li><a href="/admin/users">Пользователи</a></li>
+    <li><a href="/admin_schools">Школы и классы</a></li>
+    <li><a href="/admin_operators">Операторы</a></li>
+    <li><a href="/admin_users">Пользователи</a></li>
     <li><a href="/admin_pages">Страницы</a></li>
 </ul>
 <?php endif; ?>
@@ -11,7 +11,7 @@
 <strong>Раздел оператора:</strong>
 <ul>
     <li><a href="/op/journal">Журнал</a></li>
-    <li><a href="/op/schedule">Расписание</a></li>
+    <li><a href="/operator_timetable">Расписание</a></li>
     <li><a href="/op/mailing">Рассылки</a></li>
     <li><a href="/op/settings">Настройки</a></li>
 </ul>
