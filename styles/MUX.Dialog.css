@@ -265,6 +265,13 @@ authors: Max Lavrov (lavmax)
 	color: #959595;
 }
 
+ .link {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    font-size: inherit;
+ }
+
 /* Button additional style RED */
 /*
 .mux-button.mux-button-ellipse.mux-button-red,
