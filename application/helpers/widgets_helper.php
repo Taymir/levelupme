@@ -39,8 +39,8 @@ function schools_selector_widget($schoolsData, $target, $caller)
               html: schoolEl
            }).grab(new Element('input', {
               type: 'checkbox',
-              name: 'class',
-              value: schoolKey
+              name: 'school',
+              value: schoolIDs{$dialog_id}[schoolKey]
            }), 'top').grab(new Element('br'))
            );
        });
@@ -158,7 +158,7 @@ function class_selector_widget($schoolClassData, $target, $caller)
         $$('#dialogForm$dialog_id input').each(function(el)
         {
             if(el.checked)
-                selected += el.value + ',';
+                selected = el.value;
         });
         $('$target').value = selected;
 

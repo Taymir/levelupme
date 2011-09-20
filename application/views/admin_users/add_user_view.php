@@ -28,9 +28,29 @@
 </p>
 
 <p>
-<?= form_label('Класс', 'class_id') /*@TMP*/ ?>
-<?= form_input('class_id', set_value('class_id')) ?>
-<?= form_error('class_id') ?>
+<script type="text/javascript" src="/scripts/mootools-core.js"></script> 
+<script type="text/javascript" src="/scripts/mootools-more.js"></script> 
+<script type="text/javascript" src="/scripts/MUX.Dialog.js"></script>
+<script type="text/javascript" src="/scripts/showDialog.js"></script>
+<link rel="stylesheet" href="/styles/MUX.Dialog.css"> 
+
+<style type="text/css">
+     .link {
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	font-size: inherit;
+     }
+ </style>
+<?php $this->load->helper('widgets');
+$ci = & get_instance();
+$ci->load->model('classes_model');
+$classes = $ci->classes_model->get_schools_and_classes();
+echo class_selector_widget($classes, 'class_id', 'opendialog');
+echo '<input type="hidden" id="class_id" name="class_id" />';
+echo "<a href=\"#\" id=\"opendialog\">Выбрать класс</a>\n";
+echo form_error('class_id');
+?>
 </p>
 
 <p>

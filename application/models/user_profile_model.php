@@ -133,6 +133,28 @@ class user_profile_model extends MY_Model {
             return null;      
     }
     
+    public function save_operators_school_list($operator, $schools)
+    {
+        if(!is_array($schools))
+            $schools = $this->school_list_2_array($schools);
+        
+        $batch_data = array();
+        
+        foreach($schools as $school)
+        {
+            $batch_data[] = array('user_id' => (int)$operator,  'school_id' => (int)$school);
+        }
+        return $this->db->insert_batch($this->operators_table_name, $batch_data);
+    }
+    
+    private function school_list_2_array($strList)
+    {
+        if(substr($strList, -1) == ',')
+            $strList = substr_replace($strList, '', -1, 1);
+        
+        return explode(',', $strList);
+    }
+    
     public function get_users_by_class($class_id)
     {
         $this->db->select(
@@ -180,7 +202,6 @@ class user_profile_model extends MY_Model {
         $email = $data['email'];
         $password = $data['password'];
         
-        
         $ci = & get_instance();
         $ci->load->library('tank_auth');
         
@@ -196,10 +217,8 @@ class user_profile_model extends MY_Model {
         }
     }
     
-    // Позже сюда надо добавить методы add_operator_profile
     public function add_operator_profile($data)
     {
-        //@TODO: добавить настройки школ
         $profile_data = array(
             'name' => $data['name'],
             'role' => $data['role'],
@@ -216,6 +235,7 @@ class user_profile_model extends MY_Model {
         if($result)
         {
             $this->typical_update($this->table_name, $profile_data, $result['user_id']);
+            $this->save_operators_school_list($result['user_id'], $data['schools']);
             return TRUE;
         }
         else

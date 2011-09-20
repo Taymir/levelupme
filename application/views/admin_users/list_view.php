@@ -1,3 +1,14 @@
+<p>
+<script type="text/javascript" src="/scripts/mootools-core.js"></script> 
+
+<?php $this->load->helper('widgets');
+$ci = & get_instance();
+$ci->load->model('classes_model');
+$classes = $ci->classes_model->get_schools_and_classes();
+echo school_class_widget($classes, '');
+?>
+</p>
+
 <h1>Пользователи</h1>
 
 <em>Здесь перечислены счет родителей и имена детей, подключенных к системе в выбранном классе выбранной школы</em>

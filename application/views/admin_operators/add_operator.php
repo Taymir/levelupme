@@ -35,13 +35,35 @@
 
 <p>
 <label>
-<?= form_checkbox('admin', set_value('admin')) ?>
+<?= form_checkbox('admin', 'admin', set_radio('admin')) ?>
 Администратор</label>
 <?= form_error('admin') ?>
 </p>
 
 <p>
-<?php echo anchor('admin_operators/select_schools', "Выбрать школы") ?>
+<script type="text/javascript" src="/scripts/mootools-core.js"></script> 
+<script type="text/javascript" src="/scripts/mootools-more.js"></script> 
+<script type="text/javascript" src="/scripts/MUX.Dialog.js"></script>
+<script type="text/javascript" src="/scripts/showDialog.js"></script>
+<link rel="stylesheet" href="/styles/MUX.Dialog.css"> 
+
+<style type="text/css">
+     .link {
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	font-size: inherit;
+     }
+ </style>
+<?php $this->load->helper('widgets');
+$ci = & get_instance();
+$ci->load->model('schools_model');
+$schools = $ci->schools_model->get_schools();
+echo schools_selector_widget($schools, 'schools', 'opendialog');
+echo '<input type="hidden" id="schools" name="schools" />';
+echo "<a href=\"#\" id=\"opendialog\">Выбрать школы</a>\n";
+echo form_error('schools');
+?>
 </p>
 
 <p>

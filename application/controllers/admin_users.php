@@ -34,6 +34,7 @@ class admin_users extends MY_Controller {
         {
             $data = $this->get_post_params('username', 'password', 'name', 'class_id', 'acc_type', 'phone', 'email');
             $data['phone'] = $this->clean_phone_number($data['phone']);
+            $data['class_id'] = (int)$data['class_id'];
             
             $this->user_profile_model->add_user_profile($data);
             return $this->redirect_message('admin_users', "Пользователь добавлен");
@@ -82,13 +83,13 @@ class admin_users extends MY_Controller {
             $phone = '7' . $phone;
         } elseif(substr($phone, 0, 1) != '7')
         {
-            return FALSE;
+            return NULL;
         }
         
         if(strlen($phone) == 11 && ctype_digit($phone))
             return $phone;
         else
-            return FALSE;
+            return NULL;
     }
     
     public function valid_phone($phone)

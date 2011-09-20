@@ -32,8 +32,8 @@ class admin_operators extends MY_Controller {
         
         if($this->form_validation->run())
         {
-            $data = $this->get_post_params('username', 'password', 'name', 'email', 'admin'); //@TODO: SCHOOLS
-            if(isset($data['admin']))
+            $data = $this->get_post_params('username', 'password', 'name', 'email', 'admin', 'schools');
+            if($data['admin'] == 'admin')
             {
                 $data['role'] = 'admin';
                 unset($data['admin']);
@@ -41,7 +41,7 @@ class admin_operators extends MY_Controller {
             {
                 $data['role'] = 'operator';
             }
-                
+            
             $this->user_profile_model->add_operator_profile($data);
             return $this->redirect_message('admin_operators', "Оператор добавлен");
         }

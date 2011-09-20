@@ -67,7 +67,7 @@ $config = array(
         array(
             'field' => 'class_id',
             'label' => 'класс',
-            'rules' => 'required|integer'
+            'rules' => 'trim|required'
         ),
         array(
             'field' => 'acc_type',
@@ -112,6 +112,11 @@ $config = array(
             'field' => 'email',
             'label' => 'email',
             'rules' => 'trim|valid_email'
+        ),
+        array(
+            'field' => 'schools',
+            'label' => 'Школы',
+            'rules' => 'trim|required'
         )
     )
 

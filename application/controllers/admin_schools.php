@@ -57,6 +57,20 @@ class admin_schools extends MY_Controller {
         $this->load_var('school_id', $school_id);
         return $this->load_view('admin_schools/add_class_view', "Добавление класса");
     }
+    
+    public function remove_class($class_id)
+    {
+        $this->classes_model->remove_class($class_id);
+        
+        return $this->redirect_message('admin_schools', "Класс удален");
+    }
+    
+    public function remove_school($school_id)
+    {
+        $this->schools_model->remove_school($school_id);
+        
+        return $this->redirect_message('admin_schools', "Школа удалена");
+    }
 }
 
 ?>
