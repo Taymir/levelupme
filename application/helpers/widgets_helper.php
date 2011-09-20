@@ -207,7 +207,8 @@ function comment_widget($caller)
 
 function school_class_widget($schoolClassData, $target)
 {
-    $this->load->helper('form');
+    $ci = & get_instance();
+    $ci->load->helper('form');
     
     $out = form_open($target);
     
@@ -219,22 +220,24 @@ function school_class_widget($schoolClassData, $target)
         var classIDs = new Array();\n";
     
     $schools = array();
+    $schoolIDs = array();
     foreach($schoolClassData as $key => $school)
     {
-        $schools[$key] = $school->school;
+        $schools[$key] = htmlspecialchars($school->school);
+        $schoolIDs[$key] = (int)$school->id;
         
         $classes[$key] = array();
         $classIDs[$key] = array();
         foreach($school->classes as $class)
         {
-            $classes[$key][] = htmlspecialchars($class->class);
+            $classes[$key][] = $class->class;
             $classIDs[$key][] = (int)$class->id;
         }
-        $classes[$key] = implode(', ', $classes[$key]);
-        $classIDs[$key] = implode(', ', $classIDs[$key]);
+        $classesStr = implode(', ', array_map(create_function('$class', 'return \'"\' . addslashes($class) . \'"\';'), $classes[$key]));
+        $classIDsStr = implode(', ', $classIDs[$key]);
         
-        $out .= "classes[{$school->id}] = [$classes[$key]]\n";
-        $out .= "classIDs[{$school->id}] = [$classIDs[$key]]\n";
+        $out .= "classes[{$school->id}] = [$classesStr]\n";
+        $out .= "classIDs[{$school->id}] = [$classIDsStr]\n";
     }
         
     $out .= "$('schoolselector').addEvent('change', function(){
@@ -253,8 +256,8 @@ function school_class_widget($schoolClassData, $target)
 </script>
         ";
     //@TODO: cookies!
-    $out .= form_dropdown('school', $schools, NULL, 'id="schoolselector"');
-    $out .= form_dropdown('class', array_combine($classes[0], $classIDs[0]), NULL, 'id="classselector"');//@TODO
+    $out .= form_dropdown('school', array_combine($schoolIDs, $schools), NULL, 'id="schoolselector"');
+    $out .= form_dropdown('class', array_combine($classIDs[0], $classes[0]), NULL, 'id="classselector"');//@TODO cookies
     $out .= form_submit('submit', "OK", 'id="submit"');
     $out .= form_close();
     

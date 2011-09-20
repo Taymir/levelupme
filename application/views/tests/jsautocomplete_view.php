@@ -96,4 +96,10 @@ license: MIT-style license
     <input type="text" class="subjectField"  /><br/>    
 </form>
 
-<?php $this->load->view('school_class_widget'); ?>
+<?php 
+$this->load->helper('widgets');
+$ci = & get_instance();
+$ci->load->model('classes_model');
+$schoolClassData = $ci->classes_model->get_schools_and_classes();
+?>
+<?= school_class_widget($schoolClassData, ''); ?>
