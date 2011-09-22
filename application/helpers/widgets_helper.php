@@ -1,209 +1,4 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-$dialog_id = 0;
-
-function last_dialog_id()
-{
-    global $dialog_id;
-        
-    return "showDialogEx$dialog_id";
-}
-
-function schools_selector_widget($schoolsData, $target, $caller)
-{
-    global $dialog_id;
-    
-    $dialog_title = "Выбор школ";
-    $dialog_id++;
-    
-    $out = '';
-    $out .= "<script type=\"text/javascript\">\n";
-    $out .= "window.addEvent('domready', function()\n{\n";
-    
-    $schools = array();
-    $schoolIDs = array();
-    foreach($schoolsData as $school)
-    {
-        $schools[] = '"' . htmlspecialchars($school->school) . '"';
-        $schoolIDs[] = (int)$school->id;        
-    }
-    $schools = implode(', ', $schools);
-    $schoolIDs = implode(', ', $schoolIDs);
-    
-    $out .= "var schools$dialog_id = [$schools];\n";
-    $out .= "var schoolIDs$dialog_id = [$schoolIDs];\n";
-    
-    $out .= "var content$dialog_id = new Array();\n
-    schools$dialog_id.each(function(schoolEl, schoolKey){
-       content{$dialog_id}[schoolKey] = new Element('div').grab(
-           new Element('label', {
-              html: schoolEl
-           }).grab(new Element('input', {
-              type: 'checkbox',
-              name: 'school',
-              value: schoolIDs{$dialog_id}[schoolKey]
-           }), 'top').grab(new Element('br'))
-           );
-       });
-    content$dialog_id = new Element('form', {id: 'dialogForm$dialog_id'}).adopt(content$dialog_id);
-    
-    var showDialogEx$dialog_id = function()
-    {
-        showDialog(\"$dialog_title\", content$dialog_id, onSubmit$dialog_id);
-    }
-    
-    var onSubmit$dialog_id = function()
-    {
-        var selected = '';
-
-        $$('#dialogForm$dialog_id input').each(function(el)
-        {
-            if(el.checked)
-                selected += el.value + ',';
-        });
-    ";
-    
-    if(substr($target, 0, 4) == 'http')
-        $out .= "var mJax = new Request.JSON(
-            {
-               url: '$target',
-               method: 'post',
-               async: true,
-               data: {
-                'operator' : \"11\",
-                'classes' : selected
-                }
-            });
-            mJax.send();
-        ";
-    else
-        $out .= "
-            $('$target').value = selected;";
-    
-    $out .= "
-        this.close();
-    }
-    ";
-    
-    $out .= "$('$caller').addEvent('click', showDialogEx$dialog_id);";
-    
-    $out .= "});\n</script>";
-    
-    return $out;
-}
-
-function class_selector_widget($schoolClassData, $target, $caller)
-{
-    global $dialog_id;
-    
-    $dialog_title = "Выбор класса";
-    $dialog_id++;
-    
-    $out = '';
-    $out .= "<script type=\"text/javascript\">\n";
-    $out .= "window.addEvent('domready', function()\n{";
-    
-    $out .= 
-    "var classes$dialog_id = new Array();
-     var classIDs$dialog_id = new Array();\n";
-    $schools = array();
-    foreach($schoolClassData as $key => $school)
-    {
-        $schools[] = '"' . htmlspecialchars($school->school) . '"';
-        
-        $classes = array();
-        $classIDs = array();
-        foreach($school->classes as $class)
-        {
-            $classes[] = '"' . htmlspecialchars($class->class) . '"';
-            $classIDs[] = (int)$class->id;
-        }
-        $classes = implode(', ', $classes);
-        $classIDs= implode(', ', $classIDs);
-    
-        $out .= "classes{$dialog_id}[$key] = [$classes];\n";
-        $out .= "classIDs{$dialog_id}[$key] = [$classIDs];\n";
-    }
-    $schools = implode(', ', $schools);
-    
-    $out .= "var schools$dialog_id = [$schools];\n\n";
-    
-    $out .= "var content$dialog_id = new Array();
-    schools$dialog_id.each(function(schoolEl, schoolKey){
-    content{$dialog_id}[schoolKey] = new Element('div').grab(
-    new Element('p', {html: schoolEl}) );
-
-    classes{$dialog_id}[schoolKey].each(function(classEl, classKey){
-       content{$dialog_id}[schoolKey].grab(
-           new Element('label', {
-              html: classes{$dialog_id}[schoolKey][classKey]
-           }).grab(new Element('input', {
-              type: 'radio',
-              name: 'class',
-              value: classIDs{$dialog_id}[schoolKey][classKey]
-           }), 'top').grab(new Element('br'))
-           );
-       });
-    });
-    content$dialog_id = new Element('form', {id: 'dialogForm$dialog_id'}).adopt(content$dialog_id);
-    
-    var showDialogEx$dialog_id = function()
-    {
-        showDialog(\"$dialog_title\", content$dialog_id, onSubmit$dialog_id);
-    }
-    
-    var onSubmit$dialog_id = function()
-    {
-        var selected = '';
-
-        $$('#dialogForm$dialog_id input').each(function(el)
-        {
-            if(el.checked)
-                selected = el.value;
-        });
-        $('$target').value = selected;
-
-        this.close();
-    }
-    ";
-    
-    $out .= "$('$caller').addEvent('click', showDialogEx$dialog_id);";
-    
-    $out .= "});\n</script>";
-    
-    return $out;
-}
-
-function comment_widget($caller)
-{
-    global $dialog_id;
-        
-    $dialog_title = "Замечание";
-    $dialog_id++;
-    
-    $out = '';
-    $out .= "<script type=\"text/javascript\">\n";
-    $out .= "window.addEvent('domready', function()\n{";
-    
-    $out .= "var content$dialog_id = new Array();\n
-    content = new Element('textarea', {id: 'commentField$dialog_id', style: 'width: 350px; height: 400px'});
-
-    var showDialogEx$dialog_id = function()
-    {
-        showDialog(\"$dialog_title\", content$dialog_id, onSubmit$dialog_id);
-    }
-    
-    var onSubmit$dialog_id = function()
-    {
-        var selected = $('commentField$dialog_id').value;
-        $('comment').value = selected;
-        this.close();
-    }
-    ";
-    
-    $out .= "});\n</script>";
-    
-    return $out;
-}
 
 function school_class_widget($schoolClassData, $target)
 {
@@ -214,52 +9,126 @@ function school_class_widget($schoolClassData, $target)
     
     $out .= "
 <script type=\"text/javascript\">    
-    window.addEvent('domready', function()
-    {
-        var classes = new Array();
-        var classIDs = new Array();\n";
-    
+        var classes = new Array();\n";
+
     $schools = array();
-    $schoolIDs = array();
-    foreach($schoolClassData as $key => $school)
+    $classes = array();
+    foreach($schoolClassData as $school)
     {
-        $schools[$key] = htmlspecialchars($school->school);
-        $schoolIDs[$key] = (int)$school->id;
+        $school_id = (int)$school->id;
+        $schools[$school_id] = $school->school;
         
-        $classes[$key] = array();
-        $classIDs[$key] = array();
+        $classes[$school_id] = array();
+        $classesTmp          = array();
         foreach($school->classes as $class)
         {
-            $classes[$key][] = $class->class;
-            $classIDs[$key][] = (int)$class->id;
+            $class_id = (int)$class->id;
+            $classes[$school_id][] = $class->class;
+            
+            $classesTmp[] = ' "' . $class->id . '":"' . addslashes($class->class) . '"';
         }
-        $classesStr = implode(', ', array_map(create_function('$class', 'return \'"\' . addslashes($class) . \'"\';'), $classes[$key]));
-        $classIDsStr = implode(', ', $classIDs[$key]);
-        
-        $out .= "classes[{$school->id}] = [$classesStr]\n";
-        $out .= "classIDs[{$school->id}] = [$classIDsStr]\n";
+        $out .= "classes[$school->id] = ";
+        $out .= '{' . implode(',', $classesTmp) . "};\n";
     }
         
-    $out .= "$('schoolselector').addEvent('change', function(){
-            $('classselector').set('html', '');
-            var schoolID = $('schoolselector').value;
-            classes[schoolID].each(function(item, key)
-            {
-                new Element('option',
-                {
-                        'value': classIDs[schoolID][key],
-                        'text' : item
-                }).inject($('classselector'));
-            });
-        });
-    });
+    $out .= "
+    var updateClassListEx = function()
+    {
+        updateClassList(classes, $('schoolselector'), $('classselector'));
+    }
 </script>
         ";
-    //@TODO: cookies!
-    $out .= form_dropdown('school', array_combine($schoolIDs, $schools), NULL, 'id="schoolselector"');
-    $out .= form_dropdown('class', array_combine($classIDs[0], $classes[0]), NULL, 'id="classselector"');//@TODO cookies
+    $school_ids = array_keys($schools);
+    $first_school_classes = $classes[$school_ids[0]];
+    
+    $out .= form_dropdown('school', $schools, NULL, 'id="schoolselector" onchange="updateClassListEx()"');
+    $out .= form_dropdown('class', $first_school_classes, NULL, 'id="classselector"');//@TODO cookies
     $out .= form_submit('submit', "OK", 'id="submit"');
     $out .= form_close();
     
     return $out;
 }
+
+function get_next_dialog_id()
+{
+    static $dialog_id = 0;
+    return $dialog_id++;
+}
+
+function form_class_selector($schoolsData, $linkText)
+{
+    $dialog_id = get_next_dialog_id();
+    $dialog_title = "Выбор класса";
+    
+    $ci = & get_instance();
+    $ci->load->helper('form');
+    
+    $out  = "<div style=\"display:none\">\n";
+    $out .= "<div id=\"dialogForm$dialog_id\">\n";
+    
+    foreach($schoolsData as $school)
+    {
+        $out .= "<div>\n";
+        
+        $out .= "<p>{$school->school}</p>\n";
+        foreach($school->classes as $class)
+        {
+            $out .= "<label>";
+            $out .= form_radio('class', $class->id, set_radio('class', $class->id));
+            $out .= "{$class->class}<br /></label>";
+        }
+        
+        $out .= "</div>\n";
+    }
+    
+    $out .= "</div>";
+    $out .= "</div>\n";
+    $out .= "<a href=\"#\" onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id'), true)\">$linkText</a>\n";
+    
+    return $out;
+}
+
+function form_schools_selector($schoolsData, $linkText)
+{
+    $dialog_id = get_next_dialog_id();
+    $dialog_title = "Выбор школ";
+    
+    $ci = & get_instance();
+    $ci->load->helper('form');
+    
+    $out  = "<div style=\"display:none\">\n";
+    $out .= "<div id=\"dialogForm$dialog_id\">\n";
+    
+    $out .= "<div>\n";
+    foreach($schoolsData as $school)
+    {
+        $out .= "<label>";
+        $out .= form_checkbox('schools[]', $school->id, set_checkbox('schools[]', $school->id));
+        $out .= "{$school->school}<br /></label>";
+    }
+    $out .= "</div>\n";
+    
+    $out .= "</div>";
+    $out .= "</div>\n";
+    $out .= "<a href=\"#\" onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id'))\">$linkText</a>\n";
+    
+    return $out;
+}
+
+function form_comment($comment, $linkText)
+{
+    $dialog_id = get_next_dialog_id();
+    $dialog_title = "Замечание";
+    
+    $out  = "<div style=\"display:none\">\n";
+    $out .= "<div id=\"dialogForm$dialog_id\">\n";
+    
+    $out .= form_textarea('comment', $comment);//@BUG: Здесь явно ошибка, которая проявится при большом количестве полей
+    
+    $out .= "</div>";
+    $out .= "</div>\n";
+    $out .= "<a href=\"#\" onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id'))\">$linkText</a>\n";
+    
+    return $out;
+}
+

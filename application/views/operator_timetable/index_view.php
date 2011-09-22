@@ -1,43 +1,12 @@
+<script type="text/javascript" src="/scripts/addAutocompletion.js"></script> 
 <script type="text/javascript">
 window.addEvent('domready', function()
 {
-    var meioList = new Meio.Element.List();
-    
-    var subjectFields = $$('#scheduleForm input.subjectField')
-   subjectFields .each(function(field, i)
-    {
-        new Meio.Autocomplete.Select(field, '<?php echo base_url(); ?>index.php/ajax/autocomplete', {
-            delay: 200,
-            minChars: 0,
-            cacheLenght: 20,
-            cacheType: 'shared',
-            selectOnTab: true,
-            maxVisibleItems: 10,
-            requestOptions: { 
-            formatResponse: function(jsonResponse){ // this function should return the array of autocomplete data from your jsonResponse 
-                return jsonResponse; 
-            }, 
-            noCache: true  // nocache is setted by default to avoid cache problem on ie 
-            // you can pass any of the Request.JSON options here -> http://mootools.net/docs/core/Request/Request.JSON 
-            },
-            urlOptions: {
-                queryVarName: 'q',
-                max:20
-            }
-        }, meioList );
-        field.addEvent('keypress', function(e)
-        {
-            if(e.key == 'enter') {
-                e.stop();
-                if(subjectFields[i+1])
-                    subjectFields[i+1].focus();
-                if(i == subjectFields.length - 1)
-                    $('submit').focus();
-            }
-        }
-    )
-    });
-})
+    addAutocompletion(
+        $$('#scheduleForm input.subjectField'),
+        $('submit'),
+        '<?php echo base_url(); ?>index.php/ajax/autocomplete');
+});
 </script>
 
 <h1>Расписание</h1>

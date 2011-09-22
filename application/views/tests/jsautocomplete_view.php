@@ -6,7 +6,6 @@
 window.addEvent('domready', function()
 {
     var meioList = new Meio.Element.List();
-    
     $$('#scheduleForm input.subjectField').each(function(field)
     {
         new Meio.Autocomplete.Select(field, 'http://dnevnikam.net/index.php/ajax/livesearch', {
@@ -96,6 +95,7 @@ license: MIT-style license
     <input type="text" class="subjectField"  /><br/>    
 </form>
 
+<script type="text/javascript" src="/scripts/schoolClassWidget.js"></script>
 <?php 
 $this->load->helper('widgets');
 $ci = & get_instance();
