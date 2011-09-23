@@ -265,4 +265,45 @@ class MY_Controller extends CI_Controller {
         $styles .= "<style type=\"text/css\">\n$style\n</style>\n";
         $this->load_var('styles', $styles);
     }
+    
+    protected function operator_class()
+    {
+        //@TODO: Здесь потенциальная проблема с безопасностью - можно загрузить класс к которому
+        // не должно быть доступа у оператора
+        $this->load->model('classes_model');
+        
+        // Если получен post-ом class (class_id),
+        if($this->input->post('class') !== false)
+        {
+            // то:
+            // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе
+            $class = $this->classes_model->get_class_info($this->input->post('class'));
+            // И сохраняем в куки выбранный класс
+            if(isset($class->class_id))
+                $this->input->set_cookie('operator_class', $class->class_id, 3 * 30 * 24 * 60 * 60);
+        } elseif ($this->input->cookie('operator_class')) {
+            // Если получен из куки, то
+            // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе
+            $class = $this->classes_model->get_class_info($this->input->cookie('operator_class'));
+        } else {
+            // иначе:
+            // Загружаем информацию о дефолтном классе из БД, в т.ч. информацию о школе
+            $class = $this->classes_model->get_default_class_info(/*@TODO: список ограничений*/);
+        }
+        
+        //@TODO: добавить влияение operators_schools
+        
+        // Передаем найденную информацию о классе и школе в view
+        $data = array('school' => NULL, 'school_id' => NULL, 'class' => NULL, 'class_id' => NULL);
+        if(is_object($class))
+        {
+            $data = array('school' => $class->school, 'school_id' => $class->school_id,
+                          'class' => $class->class, 'class_id' => $class->class_id);
+       
+        }
+        $this->load->vars($data);
+
+        // Возвращаем class_id
+        return $data['class_id'];
+    }
 }

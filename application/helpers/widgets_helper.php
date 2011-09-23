@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-function school_class_widget($schoolClassData, $target)
+function school_class_widget($schoolClassData, $target, $default_school = NULL, $default_class = NULL)
 {
     $ci = & get_instance();
     $ci->load->helper('form');
@@ -23,7 +23,7 @@ function school_class_widget($schoolClassData, $target)
         foreach($school->classes as $class)
         {
             $class_id = (int)$class->id;
-            $classes[$school_id][] = $class->class;
+            $classes[$school_id][$class_id] = $class->class;
             
             $classesTmp[] = ' "' . $class->id . '":"' . addslashes($class->class) . '"';
         }
@@ -38,11 +38,17 @@ function school_class_widget($schoolClassData, $target)
     }
 </script>
         ";
-    $school_ids = array_keys($schools);
-    $first_school_classes = $classes[$school_ids[0]];
+
+    if($default_school == NULL)
+    {
+        $school_ids = array_keys($schools);
+        $default_school = $school_ids[0];
+    }
     
-    $out .= form_dropdown('school', $schools, NULL, 'id="schoolselector" onchange="updateClassListEx()"');
-    $out .= form_dropdown('class', $first_school_classes, NULL, 'id="classselector"');//@TODO cookies
+    $default_school_classes = $classes[$default_school];
+    
+    $out .= form_dropdown('school', $schools, $default_school, 'id="schoolselector" onchange="updateClassListEx()"');
+    $out .= form_dropdown('class', $default_school_classes, $default_class, 'id="classselector"');//@TODO cookies
     $out .= form_submit('submit', "OK", 'id="submit"');
     $out .= form_close();
     

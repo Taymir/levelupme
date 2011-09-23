@@ -37,6 +37,7 @@ class timetables_model extends MY_Model {
         // Запрос на список предметов
         $this->db->select('num, day, subject');
         $this->db->from($this->subjects_table_name);
+        $this->db->where('timetable_id', $data->id);
         $query = $this->db->get();
         $unformatted_timetable = $query->result();
         

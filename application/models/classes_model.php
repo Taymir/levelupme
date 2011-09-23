@@ -12,6 +12,7 @@
  */
 class classes_model extends MY_Model {
     private $table_name = 'classes';
+    private $schools_table_name = 'schools';
     
     public function add_class($data)
     {
@@ -40,6 +41,42 @@ class classes_model extends MY_Model {
     public function save_class($id, $data)
     {
         return $this->typical_update($this->table_name, $data, $id);
+    }
+    
+    public function get_class_info($class_id)
+    {
+        // получить полную информацию о классе, включая информацию о школе (JOIN)
+        $this->db->select('*, ' . $this->table_name . '.id AS class_id');
+        
+        $this->db->from($this->table_name);
+        $this->db->join($this->schools_table_name, $this->schools_table_name . '.id = ' . $this->table_name . '.school_id');
+        $this->db->where($this->table_name . '.id', $class_id);
+        
+        $query = $this->db->get();
+        if($query->num_rows() == 1) return $query->row();
+        return NULL;
+    }
+    
+    public function get_default_class_info($school_list = null)
+    {
+        // получить полную информацию о первом попавшемся классе из списка школ, включая информацию о школе
+                $this->db->select('*, ' . $this->table_name . '.id AS class_id');
+                
+        $this->db->from($this->table_name);
+        $this->db->join($this->schools_table_name, $this->schools_table_name . '.id = ' . $this->table_name . '.school_id');
+        $this->db->order_by('LENGTH(' . $this->schools_table_name . '.school)');
+        $this->db->order_by($this->schools_table_name . '.school');
+        $this->db->order_by('LENGTH(' . $this->table_name . '.class)');
+        $this->db->order_by($this->table_name . '.class');
+        $this->db->limit(1);
+        
+        //@TODO
+        //if(!is_null($school_list)) $this->db->where_in($this->schools_table_name . '.id', $school_list);
+        $query = $this->db->get();
+        
+        if($query->num_rows() == 1)
+            return $query->row();
+        return NULL;
     }
     
     public function get_classes_by_school($school_id)

@@ -20,14 +20,18 @@ class operator_timetable extends MY_Controller {
     
     public function index()
     {
-        $class_data = $this->classes_model->get_class(1); //@TMP
-        $data = $this->timetables_model->get_timetable_by_class(1); //@TMP
+        $class = $this->operator_class();
+        $class_data = $this->classes_model->get_class($class);
+        $data = $this->timetables_model->get_timetable_by_class($class);
+        $schools_classes = $this->classes_model->get_schools_and_classes();
         
-        $this->load_scripts('mootools-core', 'mootools-more', 'Meio.Autocomplete');
+        $this->load_scripts('mootools-core', 'mootools-more', 'Meio.Autocomplete', 'addAutocompletion', 'schoolClassWidget');
         $this->load_style('autocomplete');
         $this->load_var('timetable', $data);
         $this->load_var('class', $class_data);
-        return $this->load_view('operator_timetable/index_view', "Расписание");
+        $this->load_var('schools_classes', $schools_classes);
+        
+        return $this->load_view('operator_timetable/index_view', "Расписание"); 
     }
     
     public function save()

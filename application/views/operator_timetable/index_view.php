@@ -1,4 +1,6 @@
-<script type="text/javascript" src="/scripts/addAutocompletion.js"></script> 
+<?php $this->load->helper('widgets'); ?>
+<?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
+
 <script type="text/javascript">
 window.addEvent('domready', function()
 {
@@ -33,14 +35,15 @@ window.addEvent('domready', function()
 <?php for($num = 1; $num - 1 < $this->config->item('max_lessons'); $num++): ?>
 <tr>
 <th><?= $num?></th>
-<?php for($day = 1; $day -1 < 7; $day++): ?>
-<td><?= form_input("subject[$num][$day]", @$timetable->timetable[$num][$day], 'size="12" tabindex="' . ($num + $day * $this->config->item('max_lessons')) . '" class="subjectField"'); ?></td>
+<?php for($day = 1; $day -1 < 7; $day++): 
+$value = isset($timetable->timetable[$num][$day]) ? $timetable->timetable[$num][$day] : '';
+?>
+<td><?= form_input("subject[$num][$day]", $value, 'size="12" tabindex="' . ($num + $day * $this->config->item('max_lessons')) . '" class="subjectField"'); ?></td>
 <?php endfor; ?>
 </tr>
 <?php endfor; ?>
 </tbody>
 </table>
-
 <p>
 <?= form_label("Комментарий к расписанию:", 'description') ?>
 <?= form_textarea('description', set_value('description', $timetable->description)) ?>
@@ -50,3 +53,4 @@ window.addEvent('domready', function()
 <?= form_submit('submit', "Сохранить", 'class="submit" id="submit"'); ?>
 </p>
 <?= form_close(); ?>
+
