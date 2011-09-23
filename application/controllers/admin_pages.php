@@ -57,6 +57,9 @@ class Admin_pages extends MY_Controller {
             else
                 $data = $this->get_empty_arr ('link', 'title', 'text');
 
+            $this->load_scripts('mootools-core', 'mootools-more');
+            $this->load_scripts('Locale/Locale.ru-RU.MooEditable', 'MooEditable/MooEditable', 'MooEditable/MooEditable.UI.MenuList', 'MooEditable/MooEditable.Extras');
+            $this->load_styles('MooEditable/MooEditable', 'MooEditable/MooEditable.Extras', 'MooEditable/MooEditable.SilkTheme');
             return $this->load_view('admin_pages/edit_view', "Добавление страницы", $data);
         }
         

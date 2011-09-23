@@ -1,29 +1,5 @@
 <h1>Добавление страницы</h1>
 
-<style type="text/css"> 
-        body{
-                font-family: sans-serif;
-                font-size: .9em;
-        }
-        #wysiwyg{
-                width: 720px;
-                height: 200px;
-                padding: 10px;
-                border: 2px solid #ddd;
-        }
-</style> 
-
-<link rel="stylesheet" type="text/css" href="/styles/MooEditable/MooEditable.css"> 
-<link rel="stylesheet" type="text/css" href="/styles/MooEditable/MooEditable.Extras.css"> 
-<link rel="stylesheet" type="text/css" href="/styles/MooEditable/MooEditable.SilkTheme.css"> 
-
-<script type="text/javascript" src="/scripts/mootools-core.js"></script> 
-<script type="text/javascript" src="/scripts/mootools-more.js"></script> 
-
-<script type="text/javascript" src="/scripts/Locale/Locale.ru-RU.MooEditable.js"></script>
-<script type="text/javascript" src="/scripts/MooEditable/MooEditable.js"></script>
-<script type="text/javascript" src="/scripts/MooEditable/MooEditable.UI.MenuList.js"></script> 
-<script type="text/javascript" src="/scripts/MooEditable/MooEditable.Extras.js"></script> 
 <script type="text/javascript"> 
     window.addEvent('domready', function(){
         $('wysiwyg').mooEditable({

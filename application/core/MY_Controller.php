@@ -292,10 +292,8 @@ class MY_Controller extends CI_Controller {
         } else {
             // иначе:
             // Загружаем информацию о дефолтном классе из БД, в т.ч. информацию о школе
-            $class = $this->classes_model->get_default_class_info(/*@TODO: список ограничений*/);
+            $class = $this->classes_model->get_default_class_info($this->user_profile_model->get_operators_school_list());
         }
-        
-        //@TODO: добавить влияение operators_schools
         
         // Передаем найденную информацию о классе и школе в view
         $data = array('school' => NULL, 'school_id' => NULL, 'class' => NULL, 'class_id' => NULL);

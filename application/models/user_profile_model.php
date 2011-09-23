@@ -120,7 +120,7 @@ class user_profile_model extends MY_Model {
             if ($this->getRole() == 'admin')
                 return '*';
             elseif ($this->getRole() != 'operator')
-                return null;//@TODO: operator, null
+                return null;
             else
                 $operator = $this->getId();
         }

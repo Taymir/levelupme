@@ -57,7 +57,7 @@ class classes_model extends MY_Model {
         return NULL;
     }
     
-    public function get_default_class_info($school_list = null)
+    public function get_default_class_info($school_list = '*')
     {
         // получить полную информацию о первом попавшемся классе из списка школ, включая информацию о школе
         $this->db->select('*, ' . $this->table_name . '.id AS class_id');
@@ -70,8 +70,8 @@ class classes_model extends MY_Model {
         $this->db->order_by($this->table_name . '.class');
         $this->db->limit(1);
         
-        //@TODO
-        //if(!is_null($school_list)) $this->db->where_in($this->schools_table_name . '.id', $school_list);
+        if(($school_list) != '*')
+            $this->db->where_in($this->schools_table_name . '.id', $school_list);
         $query = $this->db->get();
         
         if($query->num_rows() == 1)
@@ -94,11 +94,11 @@ class classes_model extends MY_Model {
         return $query->result();
     }
     
-    public function get_schools_and_classes()
+    public function get_schools_and_classes($school_list = '*')
     {
         $ci = & get_instance();
         $ci->load->model('schools_model');
-        $schools = $ci->schools_model->get_schools();
+        $schools = $ci->schools_model->get_schools($school_list);
         
         foreach($schools as $key=>$school)
         {
