@@ -43,9 +43,14 @@ class admin_users extends MY_Controller {
             $data['class_id'] = (int)$data['class_id'];
             
             $this->user_profile_model->add_user_profile($data);
-            return $this->redirect_message('admin_users', "Пользователь добавлен");
+            return $this->redirect_message(array('admin_users', '?class=' . $data['class_id']), "Пользователь добавлен");
         }
+        $this->load->model('classes_model');
+        $schools_classes = $this->classes_model->get_schools_and_classes();
         
+        $this->load_scripts('mootools-core', 'mootools-more', 'MUX.Dialog', 'showDialog');
+        $this->load_style('MUX.Dialog');
+        $this->load_var('schools_classes', $schools_classes);
         return $this->load_view('admin_users/add_user_view', "Добавление пользователя");
     }
     

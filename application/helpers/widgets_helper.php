@@ -80,7 +80,7 @@ function form_class_selector($schoolsData, $linkText)
         foreach($school->classes as $class)
         {
             $out .= "<label>";
-            $out .= form_radio('class', $class->id, set_radio('class', $class->id));
+            $out .= form_radio('class_id', $class->id, set_radio('class_id', $class->id));
             $out .= "{$class->class}<br /></label>";
         }
         

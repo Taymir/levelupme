@@ -281,6 +281,10 @@ class MY_Controller extends CI_Controller {
             // И сохраняем в куки выбранный класс
             if(isset($class->class_id))
                 $this->input->set_cookie('operator_class', $class->class_id, 3 * 30 * 24 * 60 * 60);
+        } elseif ($this->input->get('class')) {
+            // Если получен из GET, то
+            // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе
+            $class = $this->classes_model->get_class_info($this->input->get('class'));
         } elseif ($this->input->cookie('operator_class')) {
             // Если получен из куки, то
             // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе

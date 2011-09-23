@@ -20,8 +20,16 @@
 <tbody>
  <?php foreach($users as $user): ?>
 <tr>
-    <td><?= $user->username ?></td>
-    <td><?= $user->name ?></td>
+    <td>
+    <?php if($user->banned) echo "<strike>" ?>
+    <?= $user->username ?>
+    <?php if($user->banned) echo "</strike>" ?>
+    </td>
+    <td>
+    <?php if($user->banned) echo "<strike>" ?>
+    <?= $user->name ?>
+    <?php if($user->banned) echo "</strike>" ?>
+    </td>
     <td>
     <nobr>
     <?php echo anchor(array('admin_users', 'remove_user', $user->id), "[X]", array('class' => "editbutton", 'onclick' => "return confirm('Вы уверены, что хотите удалить пользователя?')")); ?>
