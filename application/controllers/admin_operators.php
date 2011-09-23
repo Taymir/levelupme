@@ -45,7 +45,12 @@ class admin_operators extends MY_Controller {
             $this->user_profile_model->add_operator_profile($data);
             return $this->redirect_message('admin_operators', "Оператор добавлен");
         }
+        $this->load->model('schools_model');
+        $schools = $this->schools_model->get_schools();
         
+        $this->load_scripts('mootools-core', 'mootoools-more', 'MUX.Dialog', 'showDialog');
+        $this->load_style('MUX.Dialog');
+        $this->load_var('schools', $schools);
         return $this->load_view('admin_operators/add_operator', "Добавление оператора");
     }
     

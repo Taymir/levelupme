@@ -41,27 +41,9 @@
 </p>
 
 <p>
-<script type="text/javascript" src="/scripts/mootools-core.js"></script> 
-<script type="text/javascript" src="/scripts/mootools-more.js"></script> 
-<script type="text/javascript" src="/scripts/MUX.Dialog.js"></script>
-<script type="text/javascript" src="/scripts/showDialog.js"></script>
-<link rel="stylesheet" href="/styles/MUX.Dialog.css"> 
-
-<style type="text/css">
-     .link {
-	cursor: pointer;
-	text-decoration: none;
-	color: inherit;
-	font-size: inherit;
-     }
- </style>
-<?php $this->load->helper('widgets');
-$ci = & get_instance();
-$ci->load->model('schools_model');
-$schools = $ci->schools_model->get_schools();
-echo schools_selector_widget($schools, 'schools', 'opendialog');
-echo '<input type="hidden" id="schools" name="schools" />';
-echo "<a href=\"#\" id=\"opendialog\">Выбрать школы</a>\n";
+<?php 
+$this->load->helper('widgets');
+echo form_schools_selector($schools, "Выбрать школы");
 echo form_error('schools');
 ?>
 </p>

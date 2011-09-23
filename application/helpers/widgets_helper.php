@@ -109,7 +109,7 @@ function form_schools_selector($schoolsData, $linkText)
     foreach($schoolsData as $school)
     {
         $out .= "<label>";
-        $out .= form_checkbox('schools[]', $school->id, set_checkbox('schools[]', $school->id));
+        $out .= form_checkbox('schools[]', $school->id, set_checkbox('schools', $school->id));
         $out .= "{$school->school}<br /></label>";
     }
     $out .= "</div>\n";

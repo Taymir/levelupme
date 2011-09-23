@@ -135,9 +135,6 @@ class user_profile_model extends MY_Model {
     
     public function save_operators_school_list($operator, $schools)
     {
-        if(!is_array($schools))
-            $schools = $this->school_list_2_array($schools);
-        
         $batch_data = array();
         
         foreach($schools as $school)
@@ -145,14 +142,6 @@ class user_profile_model extends MY_Model {
             $batch_data[] = array('user_id' => (int)$operator,  'school_id' => (int)$school);
         }
         return $this->db->insert_batch($this->operators_table_name, $batch_data);
-    }
-    
-    private function school_list_2_array($strList)
-    {
-        if(substr($strList, -1) == ',')
-            $strList = substr_replace($strList, '', -1, 1);
-        
-        return explode(',', $strList);
     }
     
     public function get_users_by_class($class_id)
