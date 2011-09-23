@@ -52,15 +52,24 @@ class ajax extends MY_Controller {
         exit();//no profiling in JSON-answer
     }
     
-    public function saveOpClasses()
+    public function save_op_schools()
     {
-        header('Content-type: application/json; charset=utf-8');
-
-        $data[] = $this->input->post('operator');
-        $data[] = $this->input->post('classes');
-        echo json_encode($data);
-        
-        exit();//no profiling in JSON-answer
-        //@TODO 
+        // Проверить наличие прав у пользователя на доступ к этому разделу
+        if($this->allowAccessFor('admin'))
+        {
+            // Подгрузить модель
+            $this->load->model('user_profile_model');
+            // Получить user_id (оператора)
+            $operator = $this->input->post('operator');
+            // Получить schools[] (список школ)
+            $schools = $this->input->post('schools');
+            // Сохранить в модель список школ
+            $result = $this->user_profile_model->save_operators_school_list($operator, $schools);
+            
+            header('Content-type: application/json; charset=utf-8');
+            echo json_encode($result);
+            
+            exit();
+        }
     }
 }

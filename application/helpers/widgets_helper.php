@@ -121,6 +121,36 @@ function form_schools_selector($schoolsData, $linkText)
     return $out;
 }
 
+function form_ajax_schools_selector($schoolsData, $selectedData, $ajax_url, $operator_id, $linkText)
+{
+    if(!is_array($selectedData)) return '';
+    
+    $dialog_id = get_next_dialog_id();
+    $dialog_title = "Выбор школ";
+    
+    $ci = & get_instance();
+    $ci->load->helper('form');
+    
+    $out = "<div style=\"display:none\">\n";
+    $out .= form_open($ajax_url, "id=\"dialogForm$dialog_id\"", array('operator' => $operator_id));
+    
+    $out .= "<div>\n";
+    foreach($schoolsData as $school)
+    {
+        $value = in_array($school->id, $selectedData) ? true : false;
+        $out .= "<label>";
+        $out .= form_checkbox('schools[]', $school->id, set_checkbox('schools', $school->id, $value));
+        $out .= "{$school->school}<br /></label>";
+    }
+    $out .= "</div>\n";
+    
+    $out .= "</div>";
+    $out .= form_close();
+    $out .= "<a href=\"#\" onclick=\"launchAjaxDialog('$dialog_title', $('dialogForm$dialog_id'), '$ajax_url', $operator_id)\">$linkText</a>\n";//@todo: другой код диалога: динамический сабмит
+    
+    return $out;
+}
+
 function form_comment($comment, $linkText)
 {
     $dialog_id = get_next_dialog_id();

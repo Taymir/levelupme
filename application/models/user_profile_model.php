@@ -113,24 +113,25 @@ class user_profile_model extends MY_Model {
         return $this->typical_find_obj($this->users_table_name, $id);
     }
     
-    public function get_operators_school_list()
+    public function get_operators_school_list($operator = null)
     {
-        if($this->getRole() == 'operator')
+        if(is_null($operator))
         {
-            $this->db->select('class_id');
-            $this->db->from($this->operators_table_name);
-            $this->db->where('user_id', $this->getId());
-            $this->db->group_by('class_id');
-            $query = $this->db->get();
-            
-            return $this->Arr2List($query->result_array(), 'class_id');
+            if ($this->getRole() == 'admin')
+                return '*';
+            elseif ($this->getRole() != 'operator')
+                return null;//@TODO: operator, null
+            else
+                $operator = $this->getId();
         }
-        elseif ($this->getRole() == 'admin')
-        {
-            return '*';
-        }
-        else
-            return null;      
+        
+        $this->db->select('school_id');
+        $this->db->from($this->operators_table_name);
+        $this->db->where('user_id', $operator);
+        $this->db->group_by('school_id');
+        $query = $this->db->get();
+
+        return $this->Arr2List($query->result_array(), 'school_id');
     }
     
     public function save_operators_school_list($operator, $schools)
@@ -141,7 +142,21 @@ class user_profile_model extends MY_Model {
         {
             $batch_data[] = array('user_id' => (int)$operator,  'school_id' => (int)$school);
         }
-        return $this->db->insert_batch($this->operators_table_name, $batch_data);
+        
+        $this->db->trans_start();
+        $this->clear_operators_school_list($operator);
+        $result = $this->db->insert_batch($this->operators_table_name, $batch_data);
+        $this->db->trans_complete();
+        
+        return $result;
+    }
+    
+    public function clear_operators_school_list($operator)
+    {
+        $this->db->where('user_id', $operator);
+        $this->db->delete($this->operators_table_name);
+        
+        return TRUE;
     }
     
     public function get_users_by_class($class_id)
@@ -224,7 +239,8 @@ class user_profile_model extends MY_Model {
         if($result)
         {
             $this->typical_update($this->table_name, $profile_data, $result['user_id']);
-            $this->save_operators_school_list($result['user_id'], $data['schools']);
+            if($data['role'] != 'admin')
+                $this->save_operators_school_list($result['user_id'], $data['schools']);
             return TRUE;
         }
         else
@@ -233,7 +249,7 @@ class user_profile_model extends MY_Model {
         }
     }
     
-    public function get_operators()
+    public function get_operators($with_school_lists = false)
     {
         //@TODO: добавить настройки школ
         $this->db->select(
@@ -253,7 +269,22 @@ class user_profile_model extends MY_Model {
         $this->db->order_by($this->table_name . '.name');
         
         $query = $this->db->get();
-        return $query->result();
+        $operators = $query->result();
+        
+        if($with_school_lists)
+        {
+            foreach($operators as $key=>$operator)
+            {
+                if($operator->role == 'operator')
+                    $operators[$key]->schools = $this->get_operators_school_list($operator->id);
+                elseif($operator->role == 'admin')
+                    $operators[$key]->schools = '*';
+                else
+                    $operators[$key]->schools = 'n/a';
+            }
+        }
+        
+        return $operators;
     }
 
 }

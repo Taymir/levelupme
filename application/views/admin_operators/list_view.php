@@ -9,7 +9,8 @@
 </tr>
 </thead>
 <tbody>
- <?php foreach($operators as $operator): ?>
+<?php $this->load->helper('widgets') ?>
+<?php foreach($operators as $operator): ?>
 <tr>
     <td>
     <?= $operator->role == 'admin' ? '<strong>' : '' ?>
@@ -20,7 +21,7 @@
     <td>
     <nobr>
     <?php echo anchor(array('admin_operators', 'remove_operator', $operator->id), "[X]", array('class' => "editbutton", 'onclick' => "return confirm('Вы уверены, что хотите удалить оператора?')")); ?>
-    <?php echo anchor(array('admin_operators', 'select_schools', $operator->id), "[...]", array('class' => "editbutton")); ?>
+    <?php echo form_ajax_schools_selector($schools, $operator->schools, base_url() . 'index.php/ajax/save_op_schools', $operator->id, "[...]") ?>
     </nobr>
     </td>
 </tr>

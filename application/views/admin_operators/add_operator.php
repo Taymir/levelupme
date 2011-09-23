@@ -35,11 +35,12 @@
 
 <p>
 <label>
-<?= form_checkbox('admin', 'admin', set_radio('admin')) ?>
+<?= form_checkbox('schools', '*', set_checkbox('schools', '*'), 'onChange="showHide($(\'schoolSelectorBlock\'))"') ?>
 Администратор</label>
 <?= form_error('admin') ?>
 </p>
 
+<div id="schoolSelectorBlock">
 <p>
 <?php 
 $this->load->helper('widgets');
@@ -47,6 +48,7 @@ echo form_schools_selector($schools, "Выбрать школы");
 echo form_error('schools');
 ?>
 </p>
+</div>
 
 <p>
 <?= form_submit('submit', "Добавить", 'class="submit"') ?>

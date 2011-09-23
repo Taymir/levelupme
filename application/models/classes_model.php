@@ -60,7 +60,7 @@ class classes_model extends MY_Model {
     public function get_default_class_info($school_list = null)
     {
         // получить полную информацию о первом попавшемся классе из списка школ, включая информацию о школе
-                $this->db->select('*, ' . $this->table_name . '.id AS class_id');
+        $this->db->select('*, ' . $this->table_name . '.id AS class_id');
                 
         $this->db->from($this->table_name);
         $this->db->join($this->schools_table_name, $this->schools_table_name . '.id = ' . $this->table_name . '.school_id');

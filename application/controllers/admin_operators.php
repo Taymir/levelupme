@@ -20,10 +20,15 @@ class admin_operators extends MY_Controller {
     
     public function index()
     {
-        $data = $this->user_profile_model->get_operators();
+        $this->load->model('schools_model');
+        $schools = $this->schools_model->get_schools();
+        $data = $this->user_profile_model->get_operators(true);
         
+        $this->load_scripts('mootools-core', 'mootools-more', 'MUX.Dialog', 'showDialog');
+        $this->load_style('MUX.Dialog');
+        $this->load_var('schools', $schools);
         $this->load_var('operators', $data);
-        return $this->load_view('admin_operators/list_view');
+        return $this->load_view('admin_operators/list_view', "Операторы");
     }
     
     public function add_operator()
@@ -33,10 +38,13 @@ class admin_operators extends MY_Controller {
         if($this->form_validation->run())
         {
             $data = $this->get_post_params('username', 'password', 'name', 'email', 'admin', 'schools');
-            if($data['admin'] == 'admin')
+            if(
+                (is_array($data['schools']) && in_array('*', $data['schools'])) ||
+                (is_string($data['schools']) && '*' == $data['schools'])
+              )
             {
                 $data['role'] = 'admin';
-                unset($data['admin']);
+                unset($data['schools']);
             } else
             {
                 $data['role'] = 'operator';
@@ -48,7 +56,7 @@ class admin_operators extends MY_Controller {
         $this->load->model('schools_model');
         $schools = $this->schools_model->get_schools();
         
-        $this->load_scripts('mootools-core', 'mootoools-more', 'MUX.Dialog', 'showDialog');
+        $this->load_scripts('mootools-core', 'mootools-more', 'MUX.Dialog', 'showDialog');
         $this->load_style('MUX.Dialog');
         $this->load_var('schools', $schools);
         return $this->load_view('admin_operators/add_operator', "Добавление оператора");
