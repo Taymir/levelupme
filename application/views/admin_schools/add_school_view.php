@@ -1,15 +1,17 @@
-<h1>Добавление школы</h1>
+<h2>Добавление школы</h2>
 
 <?php $this->load->helper('form'); ?>
 <?= form_open('', 'class="niceform"') ?>
-<p>
-    <?= form_label('Название: ', 'school') ?>
+
+<div class="clearfix"><?= form_label('Название', 'school') ?>
+    <div class="input">
     <?= form_input('school') ?>
     <?= form_error('school') ?>
-</p>
+    </div>
+</div>
 
-<p>
-    <?= form_submit('submit', "Сохранить", 'class="submit"') ?>
-</p>
+<div class="actions">
+    <?= form_submit('submit', "Сохранить", 'class="btn primary"') ?>
+</div>
 
 <?= form_close(); ?>

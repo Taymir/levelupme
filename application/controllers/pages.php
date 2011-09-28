@@ -17,6 +17,11 @@ class pages extends MY_Controller {
         $this->load->model('pages_model');
     }
     
+    public function index()
+    {
+        return $this->display(7);//@TMP
+    }
+    
     public function display($id)
     {
         $data = $this->pages_model->get_page($id);

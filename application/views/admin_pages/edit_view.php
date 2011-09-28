@@ -1,4 +1,4 @@
-<h1>Добавление страницы</h1>
+<h2>Редактор страницы</h2>
 
 <script type="text/javascript"> 
     window.addEvent('domready', function(){
@@ -11,27 +11,30 @@
 
 <?php $this->load->helper('form'); ?>
 <?= form_open('admin_pages/edit', 'class="niceform"', isset($id) ? array('id' => $id) : null); ?>
-<p>
+
+<div class="clearfix">
 <?= form_label('Название:', 'title'); ?>
-<?= form_input('title', set_value('title', $title)); ?>
-<?= form_error('title'); ?>
-</p>
+    <div class="input">
+    <?= form_input('title', set_value('title', $title)); ?>
+    <?= form_error('title'); ?>
+    </div>
+</div>
 
-<p>
-<?= form_textarea('text', set_value('text', $text), 'id="wysiwyg"'); ?>
-</p>
-<p>
-<?= form_error('text'); ?>
-</p>
-
-<p>
+<div class="clearfix">
 <?= form_label('Ссылка:', 'link'); ?>
-<?= form_input('link', set_value('link', $link)); ?>
-<?= form_error('link'); ?>
-</p>
+    <div class="input">
+    <?= form_input('link', set_value('link', $link)); ?>
+    <?= form_error('link'); ?>
+    </div>
+</div>
 
-<p>
-<?= form_submit('submit', "Отправить", 'class="submit"'); ?>
-</p>
+<div class="clearfix">
+<?= form_textarea('text', set_value('text', $text), 'id="wysiwyg"'); ?>
+<?= form_error('text'); ?>
+</div>
+
+<div class="actions">
+<?= form_submit('submit', "Сохранить", 'class="btn primary"'); ?>
+</div>
 
 <?= form_close(); ?>

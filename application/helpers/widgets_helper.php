@@ -5,7 +5,7 @@ function school_class_widget($schoolClassData, $target, $default_school = NULL, 
     $ci = & get_instance();
     $ci->load->helper('form');
     
-    $out = form_open($target);
+    $out = form_open($target,  'class="school-class-widget"');
     
     $out .= "
 <script type=\"text/javascript\">    
@@ -49,7 +49,7 @@ function school_class_widget($schoolClassData, $target, $default_school = NULL, 
     
     $out .= form_dropdown('school', $schools, $default_school, 'id="schoolselector" onchange="updateClassListEx()"');
     $out .= form_dropdown('class', $default_school_classes, $default_class, 'id="classselector"');//@TODO cookies
-    $out .= form_submit('submit', "OK", 'id="submit"');
+    $out .= form_submit('submit', "OK", 'class="btn primary"');
     $out .= form_close();
     
     return $out;
@@ -61,7 +61,7 @@ function get_next_dialog_id()
     return $dialog_id++;
 }
 
-function form_class_selector($schoolsData, $linkText)
+function form_class_selector($schoolsData, $linkText, $extra='')
 {
     $dialog_id = get_next_dialog_id();
     $dialog_title = "Выбор класса";
@@ -69,8 +69,8 @@ function form_class_selector($schoolsData, $linkText)
     $ci = & get_instance();
     $ci->load->helper('form');
     
-    $out  = "<div style=\"display:none\">\n";
-    $out .= "<div id=\"dialogForm$dialog_id\">\n";
+    $out  = "<div style=\"display:none;\">\n";
+    $out .= "<div style=\"text-align: left;\" id=\"dialogForm$dialog_id\">\n";
     
     foreach($schoolsData as $school)
     {
@@ -89,12 +89,12 @@ function form_class_selector($schoolsData, $linkText)
     
     $out .= "</div>";
     $out .= "</div>\n";
-    $out .= "<a href=\"#\" onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id'), true)\">$linkText</a>\n";
+    $out .= "<a href=\"#\" $extra onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id'), true)\">$linkText</a>\n";
     
     return $out;
 }
 
-function form_schools_selector($schoolsData, $linkText)
+function form_schools_selector($schoolsData, $linkText, $extra='')
 {
     $dialog_id = get_next_dialog_id();
     $dialog_title = "Выбор школ";
@@ -103,7 +103,7 @@ function form_schools_selector($schoolsData, $linkText)
     $ci->load->helper('form');
     
     $out  = "<div style=\"display:none\">\n";
-    $out .= "<div id=\"dialogForm$dialog_id\">\n";
+    $out .= "<div style=\"text-align: left;\" id=\"dialogForm$dialog_id\">\n";
     
     $out .= "<div>\n";
     foreach($schoolsData as $school)
@@ -116,12 +116,12 @@ function form_schools_selector($schoolsData, $linkText)
     
     $out .= "</div>";
     $out .= "</div>\n";
-    $out .= "<a href=\"#\" onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id'))\">$linkText</a>\n";
+    $out .= "<a href=\"#\" $extra onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id'))\">$linkText</a>\n";
     
     return $out;
 }
 
-function form_ajax_schools_selector($schoolsData, $selectedData, $ajax_url, $operator_id, $linkText)
+function form_ajax_schools_selector($schoolsData, $selectedData, $ajax_url, $operator_id, $linkText, $extra='')
 {
     if(!is_array($selectedData)) return '';
     
@@ -134,7 +134,7 @@ function form_ajax_schools_selector($schoolsData, $selectedData, $ajax_url, $ope
     $out = "<div style=\"display:none\">\n";
     $out .= form_open($ajax_url, "id=\"dialogForm$dialog_id\"", array('operator' => $operator_id));
     
-    $out .= "<div>\n";
+    $out .= "<div style=\"text-align: left;\">\n";
     foreach($schoolsData as $school)
     {
         $value = in_array($school->id, $selectedData) ? true : false;
@@ -146,7 +146,7 @@ function form_ajax_schools_selector($schoolsData, $selectedData, $ajax_url, $ope
     
     $out .= "</div>";
     $out .= form_close();
-    $out .= "<a href=\"#\" onclick=\"launchAjaxDialog('$dialog_title', $('dialogForm$dialog_id'), '$ajax_url', $operator_id)\">$linkText</a>\n";//@todo: другой код диалога: динамический сабмит
+    $out .= "<a href=\"#\" $extra onclick=\"launchAjaxDialog('$dialog_title', $('dialogForm$dialog_id'), '$ajax_url', $operator_id)\">$linkText</a>\n";
     
     return $out;
 }

@@ -1,4 +1,4 @@
-<h1>Список страниц</h1>
+<h2>Список страниц</h2>
 
 <table class="nicetable">
 <thead>
@@ -15,14 +15,19 @@
     <td><?php echo anchor(array('pages', 'display', $page->id), html_escape($page->title)); ?></td>
     <td>
     <nobr>
-    <?php echo anchor(array('admin_pages', 'edit', $page->id), "РЕД", array('class' => "editbutton")); ?>&nbsp;
-    <?php echo anchor(array('admin_pages', 'delete', $page->id), "X", array('class' => "editbutton", 'onclick' => "return confirm('Вы уверены, что хотите удалить эту страницу?')")); ?>
+    <?php echo anchor(array('admin_pages', 'delete', $page->id),
+            '<img src="' . base_url() . 'styles/icons/delete.png" />',
+            array('class' => "btn tiny error", 'title' => "Удаление страницы", 'onclick' => "return confirm('Вы уверены, что хотите удалить эту страницу?')")); ?>
+    <?php echo anchor(array('admin_pages', 'edit', $page->id),
+            '<img src="' . base_url() . 'styles/icons/page_edit.png" />',
+            array('class' => "btn tiny", 'title' => "Редактирование страницы")); ?>
     </nobr>
-    <!-- TODO: Заменить на Mux.Dialog -->
     </td>
 </tr>
 <?php endforeach; ?>
 </tbody>
 </table>
 
-<?php echo anchor('admin_pages/create', "Добавить страницу", array('class' => "newbutton"));//@TODO: для этих кнопок надо сделать хелпер, а можно также сделать хелпер проверки админских полномочий через user_model ?>
+<div class="actions">
+<?php echo anchor('admin_pages/create', '<img src="' . base_url() . 'styles/icons/add.png" />Добавить страницу', array('class' => "btn success")); ?>
+</div>

@@ -1,24 +1,35 @@
-<h1>Школы и классы</h1>
+<h2>Школы и классы</h2>
 
 <table class="nicetable">
 <tbody>
 <?php foreach($schools  as $school): ?>
 <tr>
-    <th style="text-align: left;"><?= html_escape($school->school) ?></th>
-    <td>
+    <th style="text-align: left;" colspan="2"><?= html_escape($school->school) ?>&nbsp;&nbsp;&nbsp;
     <nobr>
-        <?php echo anchor(array('admin_schools', 'remove_school', $school->id), "[X]", array('class' => "editbutton", 'onclick' => "return confirm('Вы уверены, что хотите удалить эту школу?')")); ?>
-        <?php echo anchor(array('admin_schools', 'add_class', $school->id), "[+]"); ?>
+        <?php echo anchor(array('admin_schools', 'remove_school', $school->id),
+                '<img src="' . base_url() . 'styles/icons/delete.png" />',
+                array('class' => "btn tiny error", 'title'=>"Удаление школы", 'onclick' => "return confirm('Вы уверены, что хотите удалить эту школу?')"));
+        ?>
+        <?php echo anchor(array('admin_schools', 'add_class', $school->id),
+                '<img src="' . base_url() . 'styles/icons/class_add.png" />',
+                'class="btn tiny success" title="Добавить класс"');
+        ?>
     </nobr>
-    </td>
+    </th>
 </tr>
 <?php foreach( $school->classes as $class): ?>
 <tr>
     <td><?= html_escape($class->class) ?></td>
     <td>
 <nobr>
-<?php echo anchor(array('admin_schools', 'remove_class', $class->id), "[X]", array('class' => "editbutton", 'onclick' => "return confirm('Вы уверены, что хотите удалить этот класс?')")); ?>
-<?php echo anchor(array('operator_timetable', "?class={$class->id}"), "[O]", array('class' => "editbutton")); ?>
+<?php echo anchor(array('admin_schools', 'remove_class', $class->id),
+        '<img src="' . base_url() . 'styles/icons/delete.png" />',
+        array('class' => "btn tiny error", 'title' => "Удаление класса", 'onclick' => "return confirm('Вы уверены, что хотите удалить этот класс?')"));
+?> 
+<?php echo anchor(array('operator_timetable', "?class={$class->id}"),
+        '<img src="' . base_url() . 'styles/icons/timetable.png" />',
+        'class="btn tiny" title="Расписание класса"');
+?>
 </nobr>
 </td>
 </tr>
@@ -27,6 +38,6 @@
 </tbody>
 </table>
 
-<p>
-<?php echo anchor('admin_schools/add_school', "Добавить школу", array('class' => "newbutton")) ?>
-</p>
+<div class="actions">
+<?php echo anchor('admin_schools/add_school', '<img src="' . base_url() . 'styles/icons/add.png" />Добавить школу', 'class="btn success"') ?>
+</div>

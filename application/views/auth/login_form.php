@@ -7,9 +7,9 @@ $login = array(
 	'size'	=> 30,
 );
 if ($login_by_username AND $login_by_email) {
-	$login_label = 'Email or login';
+	$login_label = 'Email или логин';
 } else if ($login_by_username) {
-	$login_label = 'Login';
+	$login_label = 'Логин';
 } else {
 	$login_label = 'Email';
 }
@@ -39,7 +39,7 @@ $captcha = array(
 		<td style="color: red;"><?php echo form_error($login['name']); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo form_label('Password', $password['id']); ?></td>
+		<td><?php echo form_label('Пароль', $password['id']); ?></td>
 		<td><?php echo form_password($password); ?></td>
 		<td style="color: red;"><?php echo form_error($password['name']); ?></td>
 	</tr>
@@ -67,13 +67,15 @@ $captcha = array(
 	</tr>
 	<?php } else { ?>
 	<tr>
-		<td colspan="3">
-			<p>Enter the code exactly as it appears:</p>
+                <td></td>
+		<td>
+			<p>Введите код в точности как на изображении:</p>
 			<?php echo $captcha_html; ?>
 		</td>
+                <td></td>
 	</tr>
 	<tr>
-		<td><?php echo form_label('Confirmation Code', $captcha['id']); ?></td>
+		<td><?php echo form_label('Код', $captcha['id']); ?></td>
 		<td><?php echo form_input($captcha); ?></td>
 		<td style="color: red;"><?php echo form_error($captcha['name']); ?></td>
 	</tr>
@@ -81,13 +83,17 @@ $captcha = array(
 	} ?>
 
 	<tr>
-		<td colspan="3">
+                <td></td>
+		<td colspan>
 			<?php echo form_checkbox($remember); ?>
-			<?php echo form_label('Remember me', $remember['id']); ?>
-			<?php echo anchor('/auth/forgot_password/', 'Forgot password'); ?>
+			<?php echo form_label('Запомнить меня', $remember['id']); ?>
 			<?php if ($this->config->item('allow_registration', 'tank_auth')) echo anchor('/auth/register/', 'Register'); ?>
 		</td>
+                <td></td>
 	</tr>
 </table>
-<?php echo form_submit('submit', 'Let me in'); ?>
+<div class="actions">
+<?php echo form_submit('submit', 'Войти', 'class="btn primary"'); ?>&nbsp;&nbsp;&nbsp;
+<?php echo anchor('/auth/forgot_password/', 'Забыл пароль', 'class="btn error"'); ?>
+</div>
 <?php echo form_close(); ?>

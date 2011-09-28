@@ -1,7 +1,7 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
 
-<h1>Пользователи</h1>
+<h2>Пользователи</h2>
 
 <p>
 <em>Здесь перечислены счет родителей и имена детей, подключенных к системе в выбранном классе:</em><br />
@@ -32,11 +32,20 @@
     </td>
     <td>
     <nobr>
-    <?php echo anchor(array('admin_users', 'remove_user', $user->id), "[X]", array('class' => "editbutton", 'onclick' => "return confirm('Вы уверены, что хотите удалить пользователя?')")); ?>
+    <?php echo anchor(array('admin_users', 'remove_user', $user->id),
+            '<img src="' . base_url() . 'styles/icons/user_delete.png" />',
+            array('class' => "btn tiny error", 'title'=>"Удалить пользователя", 'onclick' => "return confirm('Вы уверены, что хотите удалить пользователя?')"));
+    ?>
     <?php if(!$user->banned): ?>
-    <?php echo anchor(array('admin_users', 'ban_user', $user->id), "[-]", array('class' => "editbutton")); ?>
+    <?php echo anchor(array('admin_users', 'ban_user', $user->id),
+            '<img src="' . base_url() . 'styles/icons/user_ban.png" />',
+            array('class' => "btn tiny error", 'title'=>"Временная блокировка пользователя"));
+    ?>
    <?php else: ?>
-   <?php echo anchor(array('admin_users', 'unban_user', $user->id), "[+]", array('class' => "editbutton")); ?>     
+   <?php echo anchor(array('admin_users', 'unban_user', $user->id),
+           '<img src="' . base_url() . 'styles/icons/user_unban.png" />',
+           array('class' => "btn tiny success",  'title'=>"Разблокировка пользователя"));
+   ?>     
    <?php endif; ?>
     </nobr>
     </td>
@@ -45,6 +54,6 @@
 </tbody>
 </table>
 
-<p>
-<?php echo anchor('admin_users/add_user', "Добавить пользователя", array('class' => "newbutton")) ?>
-</p>
+<div class="actions">
+<?php echo anchor('admin_users/add_user', '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить пользователя', array('class' => "btn success")) ?>
+</div>
