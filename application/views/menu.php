@@ -10,7 +10,7 @@
 <?php if($role == 'admin' || $role == 'operator'): ?>
 <strong>Раздел оператора:</strong>
 <ul>
-    <li><a href="/op/journal">Журнал</a></li>
+    <li><a href="/operator_journal">Журнал</a></li>
     <li><a href="/operator_timetable">Расписание</a></li>
     <li><a href="/op/mailing">Рассылки</a></li>
     <li><a href="/op/settings">Настройки</a></li>

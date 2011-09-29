@@ -55,7 +55,7 @@
         <div class="sidebar-block">
                 <h3>Контакты</h3>
                 <p class="mail-text"><a href="mailto:mail@dnevnikam.net">mail@dnevnikam.net</a></p>
-                <nobr class="phone-text">+7 (909) 123-45-67</nobr>
+                <nobr class="phone-text"><a href="callto:+79091234567">+7 (909) 123-45-67</a></nobr>
         </div> <!-- end .sidebar-block -->
 </div> <!-- end .sidebar -->
 </div> <!-- end .container -->

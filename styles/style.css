@@ -328,6 +328,37 @@ body#home #sidebar { padding-top: 65px; }
                             width: 580px;
                             height: 100px;
                         }
+                        
+                        .datepickerlink {
+                            background: url(icons/calendar.png) no-repeat right center;
+                            padding: 0px 6px;
+                            text-decoration: none;
+                        }
+                        
+                        #gradesBlock {
+                            overflow:auto;
+                        }
+                        #gradesBlock td{
+                            text-align: right;
+                        }
+                        
+                        #gradesBlock .subjectField {
+                            width: 70px;
+                        }
+                        #gradesBlock .gradeField {
+                            width: 50px;
+                        }
+                        #gradesBlock .gradesCol {
+                           
+                        }
+                        
+                        #gradesBlock .studentsCol {
+                            border-right: #bbb 1px solid;
+                        }
+                        
+                        #gradesBlock .subjectsRow {
+                            border-bottom: #bbb 1px solid;
+                        }
 			
 			.niceform {
 			  margin-bottom: 18px;
@@ -628,7 +659,7 @@ body#home #sidebar { padding-top: 65px; }
 			  -moz-border-radius: 4px;
 			  border-radius: 4px;
 			}
-			.nicetable th, table td {
+			.nicetable th, .nicetable td {
 			  padding: 10px 10px 9px;
 			  line-height: 18px;
 			  text-align: left;
@@ -642,7 +673,7 @@ body#home #sidebar { padding-top: 65px; }
 			.nicetable td {
 			  vertical-align: middle;
 			}
-			.nicetable th + th, table td + td {
+			.nicetable th + th, .nicetable table td + td {
 			  border-left: 1px solid #ddd;
 			}
 			.nicetable tr + tr td {

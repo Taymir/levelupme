@@ -1,5 +1,4 @@
-<?php
-
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -167,6 +166,7 @@ class user_profile_model extends MY_Model {
                 $this->users_table_name . '.email,'.
                 $this->users_table_name . '.banned,'.
                 
+                $this->table_name . '.id AS profile_id,'.
                 $this->table_name . '.name,'.
                 $this->table_name . '.phone,'.
                 $this->table_name . '.acc_type'

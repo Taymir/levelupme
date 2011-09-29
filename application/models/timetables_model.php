@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * To change this template, choose Tools | Templates
@@ -56,6 +56,28 @@ class timetables_model extends MY_Model {
         return $data;
     }
     
+    public function get_subjects_by_class_and_date($class_id, $date)
+    {
+        // Получение дня недели
+        $time = strtotime(str_replace(array(',-/'), '.', $date));
+        $day  = (int)date('w', $time);
+        // FIX for dates starting with saturday
+        if($day == 0)
+            $day = 7;
+        
+        // Запрос списка предметов
+        $this->db->select('num, subject');
+        $this->db->from($this->subjects_table_name);
+        $this->db->join($this->table_name, $this->table_name . '.id = ' . $this->subjects_table_name . '.timetable_id');
+        $this->db->where('class_id', $class_id);
+        $this->db->where('day', $day);
+        $this->db->order_by('num');
+        $query = $this->db->get();
+        if($query->num_rows() > 0) 
+            return $this->Arr2List($query->result_array(), 'num', 'subject');
+        return NULL;
+    }
+    
     public function save_timetable($id, $description, $data)
     {
         //Формат $data:
@@ -75,7 +97,7 @@ class timetables_model extends MY_Model {
         {
             for($day = 1; ($day-1) < sizeof($data[$num]); ++$day)
             {
-                if($data[$num][$day] != '')
+                if(isset($data[$num][$day]) && trim($data[$num][$day]) != '')
                 {
                     $batch_data[] = array(
                         'num' => $num,
@@ -93,7 +115,8 @@ class timetables_model extends MY_Model {
         //  очистить расписание
         $this->clear_timetable($id);
         //  сохранить все ячейки нового расписания
-        $this->db->insert_batch($this->subjects_table_name, $batch_data);
+        if(sizeof($batch_data) > 0)
+            $this->db->insert_batch($this->subjects_table_name, $batch_data);
         $this->db->trans_complete();
         
         return TRUE;
@@ -125,5 +148,3 @@ class timetables_model extends MY_Model {
     
     
 }
-
-?>

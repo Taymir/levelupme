@@ -70,5 +70,3 @@ class pages_model extends MY_Model {
         return $string;    
     }*/
 }
-
-?>

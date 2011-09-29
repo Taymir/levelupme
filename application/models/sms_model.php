@@ -45,5 +45,3 @@ class sms_model extends MY_Model {
     
     
 }
-
-?>

@@ -72,4 +72,26 @@ class ajax extends MY_Controller {
             exit();
         }
     }
+    
+    public function get_timetable()
+    {
+        // Проверить наличие прав у пользователя на доступ к этому разделу
+        if($this->allowAccessFor(array('admin', 'operator')))
+        {
+            
+            // Подгрузить модель
+            $this->load->model('timetables_model');
+            // Получить class_id
+            $class_id = $this->input->post('class');
+            // Получить date (дату)
+            $date = $this->input->post('date');
+            // Сохранить в модель список школ
+            $result = $this->timetables_model->get_subjects_by_class_and_date($class_id, $date);
+            
+            header('Content-type: application/json; charset=utf-8');
+            echo json_encode($result);
+            
+            exit();
+        }
+    }
 }
