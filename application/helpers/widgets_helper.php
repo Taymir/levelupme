@@ -151,7 +151,7 @@ function form_ajax_schools_selector($schoolsData, $selectedData, $ajax_url, $ope
     return $out;
 }
 
-function form_comment($comment, $linkText)
+function form_comment($name, $comment, $linkText, $extra = '')
 {
     $dialog_id = get_next_dialog_id();
     $dialog_title = "Замечание";
@@ -159,11 +159,11 @@ function form_comment($comment, $linkText)
     $out  = "<div style=\"display:none\">\n";
     $out .= "<div id=\"dialogForm$dialog_id\">\n";
     
-    $out .= form_textarea('comment', $comment);//@BUG: Здесь явно ошибка, которая проявится при большом количестве полей
+    $out .= form_textarea($name, $comment, "style=\"width: 300px\" id=\"txt$dialog_id\" onchange=\"updateButtonColor('txt$dialog_id', 'dialogLauncher$dialog_id')\"");
     
     $out .= "</div>";
     $out .= "</div>\n";
-    $out .= "<a href=\"#\" onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id'))\">$linkText</a>\n";
+    $out .= "<a href=\"#\" $extra id=\"dialogLauncher$dialog_id\" onclick=\"launchTypicalDialog('$dialog_title', $('dialogForm$dialog_id')); return false\">$linkText</a>";
     
     return $out;
 }

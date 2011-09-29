@@ -2,7 +2,7 @@
 <?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
 
 <h2>Журнал</h2>
-
+<!-- //@REFACTOR -->
 <script type="text/javascript">
 window.addEvent('domready', function()
 {
@@ -37,11 +37,39 @@ window.addEvent('domready', function()
         });
     }
     picker.addEvent('close', loadSubjects);
+    
+    var inputs = $$('#gradesBlock input');
+    var i = 0;
+    inputs.each(function(field){
+        field.addEvent('keypress', function(e)
+        {
+            if(e.key == 'enter') {
+                e.stop();
+                if(inputs[i+1])
+                    inputs[i+1].focus();
+                if(i == inputs.length - 1)
+                    $('submit').focus();
+                i++;
+            }
+        });
+    });
+    
+
 });
+var setNto = function(profile_id)
+{
+    $$('.std' + profile_id).each(function(input){
+       if(input.value == "Н")
+           input.value = "";
+       else
+           input.value = "Н"; 
+    });
+    return false;
+}
 </script>
 
 <?php $this->load->helper('form'); ?>
-<?= form_open('operator_journal/save', 'id="journalForm" class="niceform journal-form"', array('class_id' => $class->id)); ?>
+<?= form_open('http://form-data.appspot.com/' /*'operator_journal/save'*/, 'id="journalForm" class="niceform journal-form"', array('class_id' => $class->id)); ?>
 
 <div class="clearfix">
     <label>Школа</label>
@@ -75,9 +103,12 @@ window.addEvent('domready', function()
 <?php foreach($students as $student): ?>
 <tr>
 <th class="studentField"><nobr><a href="#"><?= $student->name ?></a></nobr></th>
-<td><a href="#" class="btn tiny">Н</a></td>
+<td><a href="#" class="btn tiny" title="Неприсутствовал весь день" onclick="return setNto(<?=$student->profile_id?>)">Н</a></td>
 <?php for($num = 1; ($num - 1) < $this->config->item('max_lessons'); $num++): ?>
-<td><nobr><a href="#" class="btn tiny" title="Добавить комментарий"><img src="<?=base_url()?>styles/icons/comment.png" /></a>&nbsp;<?= form_input("grades[{$student->profile_id}][$num]", '', 'class="gradeField"') ?></nobr></td>
+<td><nobr>
+<?= form_comment("comments[{$student->profile_id}][$num]", '', '<img src="' . base_url() .'styles/icons/comment.png" />', 'class="btn tiny" title="Добавить комментарий"') ?>&nbsp;
+<?= form_input("grades[{$student->profile_id}][$num]", '', 'class="gradeField std' . $student->profile_id . '"') ?>
+</nobr></td>
 <?php endfor; ?>
 </tr>
 <?php endforeach; ?>
@@ -86,6 +117,6 @@ window.addEvent('domready', function()
 </div>
 
 <div class="actions">
-    <?= form_submit('submit', 'Сохранить', 'class="btn primary"') ?>
+    <?= form_submit('submit', 'Сохранить', 'class="btn primary" id="submit"') ?>
     <em>При сохранении, оценки будут разосланы родителям!</em>
 </div>

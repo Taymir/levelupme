@@ -23,6 +23,7 @@ var launchTypicalDialog = function(dialogTitle, contentEl, use_chrome_radio_fix)
     var oldParent = contentEl.getParent();
     var content = contentEl;
     var contentBackup = contentEl.clone(true, true);
+    contentBackup.cloneEvents(contentEl);
     //@BUGFIX: в google chrome не копируются значение checked:
     if(use_chrome_radio_fix === true)
     {
@@ -50,7 +51,6 @@ var launchTypicalDialog = function(dialogTitle, contentEl, use_chrome_radio_fix)
        if(!this.submitted)
        {   
             oldParent.adopt(contentBackup);
-            content.dispose();
        } else {
            oldParent.adopt(content);
            contentBackup.dispose();
@@ -125,4 +125,21 @@ var showHide = function(El)
         El.setStyle('display', '');
     else
         El.setStyle('display', 'none');
+}
+
+var updateButtonColor = function(textareaname, buttonname)
+{
+    var textarea = $(textareaname);
+    var button = $(buttonname);
+    
+    if(textarea.value.trim() == '')
+    {
+        button.removeClass('success');
+        button.setProperty('title', 'Добавить комментарий');
+    }
+    else
+    {
+        button.addClass('success');
+        button.setProperty('title', textarea.value);
+    }
 }
