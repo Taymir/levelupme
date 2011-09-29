@@ -11,16 +11,18 @@ window.addEvent('domready', function()
 });
 </script>
 
-<h1>Расписание</h1>
+<h2>Расписание</h2>
 
 <?php $this->load->helper('form'); ?>
-<?= form_open('operator_timetable/save', 'id="scheduleForm"', array('class_id' => $class->id, 'id' => $timetable->id)); ?>
-<p>
+<?= form_open('operator_timetable/save', 'id="scheduleForm" class="timetable-form"', array('class_id' => $class->id, 'id' => $timetable->id)); ?>
+<div class="clearfix">
 <?= form_label("Информация о классе:", 'class_description') ?>
-<?= form_textarea('class_description', set_value('class_description', $class->description)) ?>
-</p>
+    <div class="input">
+    <?= form_textarea('class_description', set_value('class_description', $class->description)) ?>
+    </div>
+</div>
 
-<table class="nicetable">
+<table >
 <thead>
 <th></th>
 <th>Пн</th>
@@ -49,8 +51,8 @@ $value = isset($timetable->timetable[$num][$day]) ? $timetable->timetable[$num][
 <?= form_textarea('description', set_value('description', $timetable->description)) ?>
 </p>
 
-<p>
-<?= form_submit('submit', "Сохранить", 'class="submit" id="submit"'); ?>
-</p>
+<div class="actions">
+<?= form_submit('submit', "Сохранить", 'class="btn primary" id="submit"'); ?>
+</div>
 <?= form_close(); ?>
 

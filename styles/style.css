@@ -312,6 +312,22 @@ body#home #sidebar { padding-top: 65px; }
 				*top: -5px;
 				/* IE6-7 */
 			}
+                        
+                        .timetable-form th {
+                            text-align: center;
+                        }
+                        
+                        .timetable-form td {
+                            border:none;
+                            padding: 1px;
+                        }
+                        .timetable-form .subjectField {
+                            width: 75px;
+                        }
+                        .timetable-form textarea {
+                            width: 580px;
+                            height: 100px;
+                        }
 			
 			.niceform {
 			  margin-bottom: 18px;
