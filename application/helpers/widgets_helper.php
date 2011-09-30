@@ -159,7 +159,12 @@ function form_comment($name, $comment, $linkText, $extra = '')
     $out  = "<div style=\"display:none\">\n";
     $out .= "<div id=\"dialogForm$dialog_id\">\n";
     
-    $out .= form_textarea($name, $comment, "style=\"width: 300px\" id=\"txt$dialog_id\" onchange=\"updateButtonColor('txt$dialog_id', 'dialogLauncher$dialog_id')\"");
+    $out .= form_textarea($name, $comment, "style=\"width: 300px\" id=\"txt$dialog_id\"");
+    $out .= "<script type=\"text/javascript\">
+            window.addEvent('domready', function(){
+            $('txt$dialog_id').addEvent('change', function(){updateButtonColor('txt$dialog_id', 'dialogLauncher$dialog_id')}); 
+            });
+            </script>\n";
     
     $out .= "</div>";
     $out .= "</div>\n";

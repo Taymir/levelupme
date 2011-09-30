@@ -19,11 +19,16 @@ var showDialog = function(title, content, onsubmit, onclose)
 }
 
 var launchTypicalDialog = function(dialogTitle, contentEl, use_chrome_radio_fix)
-{   
+{
     var oldParent = contentEl.getParent();
     var content = contentEl;
     var contentBackup = contentEl.clone(true, true);
-    contentBackup.cloneEvents(contentEl);
+    
+    //@BUGFIX: для работы кнопки "отмена" с textarea
+    if(contentBackup.getElement('textarea'))
+        contentBackup.getElement('textarea').cloneEvents(contentEl.getElement('textarea'), 'change');
+    //@END: cancel bugfix
+    
     //@BUGFIX: в google chrome не копируются значение checked:
     if(use_chrome_radio_fix === true)
     {
@@ -51,6 +56,12 @@ var launchTypicalDialog = function(dialogTitle, contentEl, use_chrome_radio_fix)
        if(!this.submitted)
        {   
             oldParent.adopt(contentBackup);
+            content.dispose();
+            
+            //@BUGFIX: для работы кнопки "отмена" с textarea
+            if(contentBackup.getElement('textarea'))
+                contentBackup.getElement('textarea').fireEvent('change');
+            //@END: cancel bugfix
        } else {
            oldParent.adopt(content);
            contentBackup.dispose();
@@ -58,6 +69,14 @@ var launchTypicalDialog = function(dialogTitle, contentEl, use_chrome_radio_fix)
        this.submitted = false;
     });
 }
+Element.implement({
+  hasEvent: function(eventType,fn) {
+    //get the element's events
+    var myEvents = this.retrieve('events');
+    //can we shoot this down?
+    return myEvents && myEvents[eventType] && (fn == undefined || myEvents[eventType].keys.contains(fn));
+  }
+});
 
 var launchAjaxDialog = function(dialogTitle, contentEl, ajax_url, operator, use_chrome_radio_fix)
 {   
@@ -131,7 +150,7 @@ var updateButtonColor = function(textareaname, buttonname)
 {
     var textarea = $(textareaname);
     var button = $(buttonname);
-    
+
     if(textarea.value.trim() == '')
     {
         button.removeClass('success');
