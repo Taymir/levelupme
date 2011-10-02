@@ -34,30 +34,31 @@ class grades_model extends MY_Model {
         // );
         $ci = & get_instance();
         $max_lessons = $ci->config->item('max_lessons');
+        $students = $data['students'];
         $subjects = $data['subjects'];
         $grades   = $data['grades'];
         $comments = $data['comments'];
         
         $batch_data = array();
-        foreach($studens as $user_profile_id => $student)
+        foreach($students as $user_profile_id => $student)
         {
             for($num = 1; ($num - 1) < $max_lessons; ++$num)
             {
                 $batch_row = array();
+                $batch_row['user_profile_id'] = $user_profile_id;
+                $batch_row['subject'] = $subjects[$num];
+                $batch_row['num'] = $num;
+                $batch_row['date'] = $date;
+                $batch_row['grade'] = '';
+                $batch_row['comment'] = '';
+                
                 if(isset($grades[$user_profile_id][$num]) && trim($grades[$user_profile_id][$num]) != '')
                     $batch_row['grade'] = $grades[$user_profile_id][$num];
                 if(isset($comments[$user_profile_id][$num]) && trim($comments[$user_profile_id][$num]) != '')
                     $batch_row['comment'] = $comments[$user_profile_id][$num];
                 
-                if(sizeof($batch_row) > 0)
-                {
-                    $batch_row['user_profile_id'] = $user_profile_id;
-                    $batch_row['subject'] = $subjects[$num];
-                    $batch_row['num'] = $num;
-                    $batch_row['date'] = $date;   
-                    
+                if(trim($batch_row['grade']) != '' || trim($batch_row['comment']) != '')
                     $batch_data[] = $batch_row;
-                }
             }
         }
         

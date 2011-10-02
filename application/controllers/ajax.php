@@ -72,7 +72,7 @@ class ajax extends MY_Controller {
             exit();
         }
     }
-    
+    /*
     public function get_timetable()
     {
         // Проверить наличие прав у пользователя на доступ к этому разделу
@@ -94,4 +94,5 @@ class ajax extends MY_Controller {
             exit();
         }
     }
+    */
 }

@@ -1,43 +1,12 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
+<?= date_widget('', $date) ?>
 
 <h2>Журнал</h2>
 <!-- //@REFACTOR -->
 <script type="text/javascript">
 window.addEvent('domready', function()
 {
-    Locale.use('ru-RU');
-    var picker = new Picker.Date($('datepicker'), {
-        timePicker: false,
-        positionOffset: {x: 0, y: 0},
-        pickerClass: 'datepicker_vista',
-        useFadeInOut: false,//!Browser.ie,
-        toggle: $('datepicklink')
-    });
-    var loadSubjects = function()
-    {
-        var myJson = new Request.JSON(
-        {
-            url: '<?= base_url() ?>index.php/ajax/get_timetable',
-            data: {'date': $('datepicker').value, 'class': <?=$class_id ?>},
-            method: 'post',
-            async: true,
-            onSuccess: updateSubjects
-        });
-        
-        myJson.send();
-    }
-    var updateSubjects = function(data) 
-    {
-        $$('.subjectField').each(function(subject, num)
-        {
-           subject.value = '';
-           if(data[num+1] != undefined && data[num+1] != '')
-               subject.value = data[num+1];
-        });
-    }
-    picker.addEvent('close', loadSubjects);
-    
     var inputs = $$('#gradesBlock input');
     var i = 0;
     inputs.each(function(field){
@@ -69,7 +38,7 @@ var setNto = function(profile_id)
 </script>
 
 <?php $this->load->helper('form'); ?>
-<?= form_open('http://form-data.appspot.com/' /*'operator_journal/save'*/, 'id="journalForm" class="niceform journal-form"', array('class_id' => $class->id)); ?>
+<?= form_open('operator_journal/save', 'id="journalForm" class="niceform journal-form"', array('class_id' => $class->id, 'date' => $date)); ?>
 
 <div class="clearfix">
     <label>Школа</label>
@@ -81,11 +50,11 @@ var setNto = function(profile_id)
 <div class="clearfix">
 <label>Дата</label>
     <div class="input">
-    <input type="text" id="datepicker" value="<?= $date ?>" size="10" onchange="loadSubjects()" />
-    <a id="datepicklink" class="datepickerlink" onclick="return false;" href="#">&nbsp;</a>
+        <strong><?= $date ?></strong>
     </div>
 </div>
 
+<?php if(sizeof($students)): ?>
 <div id="gradesBlock" class="clearfix">
 <table>
 <col class="studentsCol" />
@@ -102,7 +71,7 @@ var setNto = function(profile_id)
 <tbody>
 <?php foreach($students as $student): ?>
 <tr>
-<th class="studentField"><nobr><a href="#"><?= $student->name ?></a></nobr></th>
+    <th class="studentField"><nobr><a href="#"><?= $student->name ?></a><?= form_hidden("students[{$student->profile_id}]", $student->name) ?></nobr></th>
 <td><a href="#" class="btn tiny" title="Неприсутствовал весь день" onclick="return setNto(<?=$student->profile_id?>)">Н</a></td>
 <?php for($num = 1; ($num - 1) < $this->config->item('max_lessons'); $num++): ?>
 <td><nobr>
@@ -120,3 +89,12 @@ var setNto = function(profile_id)
     <?= form_submit('submit', 'Сохранить', 'class="btn primary" id="submit"') ?>
     <em>При сохранении, оценки будут разосланы родителям!</em>
 </div>
+
+<?php else: ?>
+<div class="clearfix">
+<label></label>
+    <div class="input">
+        <strong>В выбранном классе не зарегистрировано ни одного ученика</strong>
+    </div>
+</div>
+<?php endif; ?>

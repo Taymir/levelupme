@@ -1,5 +1,35 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+function date_widget($target, $default_date = NULL)
+{
+    $ci = & get_instance();
+    $ci->load->helper('form');
+    
+    $out = form_open($target, 'class="date-widget"');
+    
+    $out .= "
+<script type=\"text/javascript\">
+window.addEvent('domready', function()
+{
+    Locale.use('ru-RU');
+    var picker = new Picker.Date($('datepicker'), {
+        timePicker: false,
+        positionOffset: {x: 0, y: 0},
+        pickerClass: 'datepicker_vista',
+        useFadeInOut: false,//!Browser.ie,
+        toggle: $('datepicklink')
+    });
+});
+</script>\n";
+    
+    $out .= "<label>Дата:&nbsp;<input type=\"text\" name=\"date\" id=\"datepicker\" value=\"$default_date\" size=\"10\" /></label>\n";
+    $out .= "<a id=\"datepicklink\" class=\"datepickerlink\" onclick=\"return false;\" href=\"#\">&nbsp;</a>\n";
+    $out .= form_submit('updatedate', 'OK', 'class="btn primary"');
+    $out .= form_close();
+    
+    return $out; 
+}
+
 function school_class_widget($schoolClassData, $target, $default_school = NULL, $default_class = NULL)
 {
     $ci = & get_instance();

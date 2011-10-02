@@ -163,7 +163,7 @@ class MY_Controller extends CI_Controller {
             'message_title' => $message_title,
             'message' => $message . ' ' . $message_extra,
             'page_title' => $message_title,
-            'content_template' => 'message'
+            'page_template' => 'message'
         ));
     }
     

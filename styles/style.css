@@ -282,22 +282,33 @@ body#home #sidebar { padding-top: 65px; }
             /*--------------------[FORMS]---------------------*/
             /*------------------------------------------------*/
 			.school-class-widget {
-				
-				/*border: 1px grey solid;*/
 				background-color: #f0f6f7;
 				border: 1px #e0e7eb solid;
-				padding: 10px 0px;
+				padding: 10px 20px;
 				margin: 10px 0px;
-				
 			}
 			.school-class-widget select {
 				width: 210px;
-				margin: 0px 20px;
+                                margin-right: 40px;
 			}
 			
-			.school-class-widget input {
+                        .school-class-widget .primary {
 				width: 50px;
-				margin: 0px 20px;
+				float: right;
+			}
+                        
+                        .date-widget {
+				background-color: #f0f6f7;
+				border: 1px #e0e7eb solid;
+				padding: 10px 20px;
+				margin: 10px 0px;
+                        }
+                        .date-widget input {
+				width: 100px;
+			}
+                        .date-widget .primary {
+				width: 50px;
+				float: right;
 			}
 			
 			.validation-err {
