@@ -71,6 +71,11 @@ class grades_model extends MY_Model {
         
         return TRUE;
     }
+    
+    public function load_grades($date, $class_id)
+    {
+        
+    }
 }
 
 ?>

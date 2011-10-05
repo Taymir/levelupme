@@ -266,15 +266,17 @@ class MY_Controller extends CI_Controller {
         $this->load_var('styles', $styles);
     }
     
-    protected function operator_class()
+    protected function operator_class($prefered_class = null)
     {
         //@TODO: Здесь потенциальная проблема с безопасностью - можно загрузить класс к которому
         // не должно быть доступа у оператора
         $this->load->model('classes_model');
         
+        // Если известен наиболее подходящий класс
+        if($prefered_class !== null) {
+            $class = $this->classes_model->get_class_info($prefered_class);
         // Если получен post-ом class (class_id),
-        if($this->input->post('class') !== false)
-        {
+        } elseif($this->input->post('class') !== false) {
             // то:
             // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе
             $class = $this->classes_model->get_class_info($this->input->post('class'));

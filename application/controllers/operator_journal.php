@@ -35,7 +35,7 @@ class operator_journal extends MY_Controller {
         $subjects = $this->timetables_model->get_subjects_by_class_and_date($class, $date);
         
         $this->load_style('datepicker_vista/datepicker_vista');
-        $this->load_scripts('mootools-core', 'mootools-more', 'datepicker/Locale.ru-RU.DatePicker',
+        $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget', 'datepicker/Locale.ru-RU.DatePicker',
         'datepicker/Picker', 'datepicker/Picker.Attach', 'datepicker/Picker.Date', 'showDialog', 'MUX.Dialog');
         $this->load_style('MUX.Dialog');
         $this->load_var('class', $class_data);

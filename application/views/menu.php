@@ -12,17 +12,17 @@
 <ul>
     <li><a href="/operator_journal">Журнал</a></li>
     <li><a href="/operator_timetable">Расписание</a></li>
-    <li><a href="/op/mailing">Рассылки</a></li>
-    <li><a href="/op/settings">Настройки</a></li>
+    <li><a href="/operator_messages">Рассылки</a></li>
+    <li><a href="/operator_settings">Настройки</a></li>
 </ul>
 <?php endif; ?>
 <?php if($role == 'parent'): ?>
 <strong>Раздел родителя:</strong>
 <ul>
-    <li><a href="/users/recordbook">Дневник</a></li>
-    <li><a href="/users/schedule">Расписание</a></li>
-    <li><a href="/users/payment">Оплата</a></li>
-    <li><a href="/users/settings">Настройки</a></li>
+    <li><a href="/recordbook">Дневник</a></li>
+    <li><a href="/schedule">Расписание</a></li>
+    <li><a href="/payment">Оплата</a></li>
+    <li><a href="/settings">Настройки</a></li>
 </ul>
 <?php endif; ?>
 <strong>Меню:</strong>

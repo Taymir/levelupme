@@ -38,7 +38,7 @@ class admin_users extends MY_Controller {
         
         if($this->form_validation->run())
         {
-            $data = $this->get_post_params('username', 'password', 'name', 'class_id', 'acc_type', 'phone', 'email');
+            $data = $this->get_post_params('username', 'password', 'name', 'class_id', 'tariff', 'phone', 'email');
             $data['phone'] = $this->clean_phone_number($data['phone']);
             $data['class_id'] = (int)$data['class_id'];
             
@@ -46,11 +46,14 @@ class admin_users extends MY_Controller {
             return $this->redirect_message(array('admin_users', '?class=' . $data['class_id']), "Пользователь добавлен");
         }
         $this->load->model('classes_model');
+        $this->load->model('tariffs_model');
         $schools_classes = $this->classes_model->get_schools_and_classes();
+        $tariffs = $this->tariffs_model->get_tariffs_for_selector();
         
         $this->load_scripts('mootools-core', 'mootools-more', 'MUX.Dialog', 'showDialog');
         $this->load_style('MUX.Dialog');
         $this->load_var('schools_classes', $schools_classes);
+        $this->load_var('tariffs', $tariffs);
         return $this->load_view('admin_users/add_user_view', "Добавление пользователя");
     }
     

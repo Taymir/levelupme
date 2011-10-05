@@ -1,5 +1,21 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+function tariff_widget($target, $tariffs, $default_tariff = NULL)
+{
+    $ci = & get_instance();
+    $ci->load->helper('form');
+    
+    $out = form_open($target, 'class="tariff-widget"');
+    
+    $out .= "<label>Тариф:&nbsp;";
+    $out .= form_dropdown('tariff', $tariffs, $default_tariff);
+    $out .= "</label>\n";
+    $out .= form_submit('updatetariff', 'OK', 'class="btn primary"');
+    $out .= form_close();
+    
+    return $out; 
+}
+
 function date_widget($target, $default_date = NULL)
 {
     $ci = & get_instance();

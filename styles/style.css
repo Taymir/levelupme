@@ -289,24 +289,39 @@ body#home #sidebar { padding-top: 65px; }
 			}
 			.school-class-widget select {
 				width: 210px;
-                                margin-right: 40px;
+                margin-right: 40px;
 			}
 			
-                        .school-class-widget .primary {
+            .school-class-widget .primary {
 				width: 50px;
 				float: right;
 			}
                         
-                        .date-widget {
+            .date-widget {
 				background-color: #f0f6f7;
 				border: 1px #e0e7eb solid;
 				padding: 10px 20px;
 				margin: 10px 0px;
                         }
-                        .date-widget input {
+            .date-widget input {
 				width: 100px;
 			}
-                        .date-widget .primary {
+            .date-widget .primary {
+				width: 50px;
+				float: right;
+			}
+            .tariff-widget {
+				background-color: #f0f6f7;
+				border: 1px #e0e7eb solid;
+				padding: 10px 20px;
+				margin: 10px 0px;
+            }
+			.tariff-widget select {
+				width: 210px;
+                margin-right: 40px;
+			}
+			
+            .tariff-widget .primary {
 				width: 50px;
 				float: right;
 			}
@@ -324,52 +339,52 @@ body#home #sidebar { padding-top: 65px; }
 				/* IE6-7 */
 			}
                         
-                        .timetable-form th {
-                            text-align: center;
-                        }
-                        
-                        .timetable-form td {
-                            border:none;
-                            padding: 1px;
-                        }
-                        .timetable-form .subjectField {
-                            width: 75px;
-                        }
-                        .timetable-form textarea {
-                            width: 580px;
-                            height: 100px;
-                        }
-                        
-                        .datepickerlink {
-                            background: url(icons/calendar.png) no-repeat right center;
-                            padding: 0px 6px;
-                            text-decoration: none;
-                        }
-                        
-                        #gradesBlock {
-                            overflow:auto;
-                        }
-                        #gradesBlock td{
-                            text-align: right;
-                        }
-                        
-                        #gradesBlock .subjectField {
-                            width: 70px;
-                        }
-                        #gradesBlock .gradeField {
-                            width: 50px;
-                        }
-                        #gradesBlock .gradesCol {
-                           
-                        }
-                        
-                        #gradesBlock .studentsCol {
-                            border-right: #bbb 1px solid;
-                        }
-                        
-                        #gradesBlock .subjectsRow {
-                            border-bottom: #bbb 1px solid;
-                        }
+            .timetable-form th {
+                text-align: center;
+            }
+
+            .timetable-form td {
+                border:none;
+                padding: 1px;
+            }
+            .timetable-form .subjectField {
+                width: 75px;
+            }
+            .timetable-form textarea {
+                width: 580px;
+                height: 100px;
+            }
+
+            .datepickerlink {
+                background: url(icons/calendar.png) no-repeat right center;
+                padding: 0px 6px;
+                text-decoration: none;
+            }
+
+            #gradesBlock {
+                overflow:auto;
+            }
+            #gradesBlock td{
+                text-align: right;
+            }
+
+            #gradesBlock .subjectField {
+                width: 70px;
+            }
+            #gradesBlock .gradeField {
+                width: 50px;
+            }
+            #gradesBlock .gradesCol {
+
+            }
+
+            #gradesBlock .studentsCol {
+                border-right: #bbb 1px solid;
+            }
+
+            #gradesBlock .subjectsRow {
+                border-bottom: #bbb 1px solid;
+            }
 			
 			.niceform {
 			  margin-bottom: 18px;
@@ -458,6 +473,46 @@ body#home #sidebar { padding-top: 65px; }
 			  box-shadow: none;
 			  outline: 1px dotted #666;
 			}
+            
+            .inputs-list {
+              margin: 0 0 5px;
+              width: 100%;
+            }
+            .inputs-list li {
+              display: block;
+              padding: 0;
+              width: 100%;
+            }
+            .inputs-list label {
+              display: block;
+              float: none;
+              width: auto;
+              padding: 0;
+              line-height: 18px;
+              text-align: left;
+              white-space: normal;
+            }
+            .inputs-list label strong {
+              color: #808080;
+            }
+            .inputs-list label small {
+              font-size: 11px;
+              font-weight: normal;
+            }
+            .inputs-list .inputs-list {
+              margin-left: 25px;
+              margin-bottom: 10px;
+              padding-top: 0;
+            }
+            .inputs-list:first-child {
+              padding-top: 6px;
+            }
+            .inputs-list li + li {
+              padding-top: 2px;
+            }
+            .inputs-list input[type=radio], .inputs-list input[type=checkbox] {
+              margin-bottom: 0;
+            }
 			.btn.danger,
 			.alert-message.danger,
 			.btn.danger:hover,

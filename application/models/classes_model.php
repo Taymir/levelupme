@@ -93,6 +93,21 @@ class classes_model extends MY_Model {
         return $query->result();
     }
     
+    public function get_classlist_by_school($school_id)
+    {
+        $this->db->select('id, class');
+
+        $this->db->from($this->table_name);
+        $this->db->order_by('LENGTH(' . $this->table_name . '.class)');
+        $this->db->order_by($this->table_name . '.class');
+        
+         $this->db->where_in('school_id', $school_id);
+
+        $query = $this->db->get();
+
+        return $this->Arr2List($query->result_array(), 'id', 'class');
+    }
+    
     public function get_schools_and_classes($school_list = '*')
     {
         $ci = & get_instance();

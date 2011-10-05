@@ -48,10 +48,10 @@ echo form_error('class_id');
 </div>
 
 <div class="clearfix">
-<?= form_label('Тариф', 'acc_type') /*@TMP */ ?>
+<?= form_label('Тариф', 'tariff') ?>
     <div class="input">
-    <?= form_input('acc_type', set_value('acc_type')) ?>
-    <?= form_error('acc_type') ?>
+    <?= form_dropdown('tariff', $tariffs, set_value('tarriff')); ?>    
+    <?= form_error('tariff') ?>
     </div>
 </div>
 

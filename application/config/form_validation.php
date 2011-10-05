@@ -70,7 +70,7 @@ $config = array(
             'rules' => 'required'
         ),
         array(
-            'field' => 'acc_type',
+            'field' => 'tariff',
             'label' => 'тариф',
             'rules' => 'trim'
         ),

@@ -49,9 +49,9 @@ class user_profile_model extends MY_Model {
         return $this->getProperty('role');
     }
     
-    public function getAccType()
+    public function getTariff()
     {
-        return $this->getProperty('acc_type');
+        return $this->getProperty('tariff');
     }
     
     public function getClassName()
@@ -169,7 +169,7 @@ class user_profile_model extends MY_Model {
                 $this->table_name . '.id AS profile_id,'.
                 $this->table_name . '.name,'.
                 $this->table_name . '.phone,'.
-                $this->table_name . '.acc_type'
+                $this->table_name . '.tariff'
                 );
         
         $this->db->from($this->table_name);
@@ -182,22 +182,44 @@ class user_profile_model extends MY_Model {
         return $query->result();
     }
     
-    public function get_userlist_by_class($class_id)
+    public function get_userlist_by_class($class_id, $min_tariff = NULL)
     {
-        $this->db->select('user_id, name' );
+        $this->db->select('id AS user_profile_id, name' );
         $this->db->from($this->table_name);
         $this->db->where('class_id', $class_id);
+        if($min_tariff != NULL)
+            $this->db->where('tariff >=', $min_tariff);
+        
         $this->db->order_by('name');
         
         $query = $this->db->get();
-        return $this->Arr2List($query->result, 'user_id', 'name');
+        return $this->Arr2List($query->result_array(), 'user_profile_id', 'name');
+    }
+    
+    public function get_userlist_by_school($school_id, $min_tariff = NULL)
+    {
+        $ci = & get_instance();
+        $ci->load->model('classes_model');
+        $classes = $ci->classes_model->get_classlist_by_school($school_id);
+        $classes = array_keys($classes);
+        
+        $this->db->select('id AS user_profile_id, name' );
+        $this->db->from($this->table_name);
+        $this->db->where_in('class_id', $classes);
+        if($min_tariff != NULL)
+            $this->db->where('tariff >=', $min_tariff);
+        
+        $this->db->order_by('name');
+        
+        $query = $this->db->get();
+        return $this->Arr2List($query->result_array(), 'user_profile_id', 'name');
     }
     
     public function add_user_profile($data)
     {
         $profile_data = array(
             'name' => $data['name'],
-            'acc_type' => $data['acc_type'],
+            'tariff' => $data['tariff'],
             'phone' => $data['phone'],
             'role' => 'parent',
             'class_id' => $data['class_id']
