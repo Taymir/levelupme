@@ -17,6 +17,8 @@ class mailings_model extends MY_Model {
     private $classes_table_name = 'classes';
     private $schools_table_name = 'schools';
     
+    public $total_mailings_found;
+    
     public function add_single_mailing($data)
     {
         $data['email_status'] = 'pending';
@@ -26,9 +28,9 @@ class mailings_model extends MY_Model {
         return $this->typical_insert($this->table_name, $data);
     }
     
-    public function add_multi_mailing($type, $datas)
+    public function add_multi_mailing($type, $datas, $recipient = '')
     {
-        $pack_id = $this->create_mailing_pack($type);
+        $pack_id = $this->create_mailing_pack($type, $recipient);
         if($pack_id !== FALSE)
         {
             $batch_data = array();
@@ -49,9 +51,9 @@ class mailings_model extends MY_Model {
         return FALSE;
     }
     
-    public function create_mailing_pack($type)
+    public function create_mailing_pack($type, $recipient= '')
     {
-        $data = array('type' => $type);
+        $data = array('type' => $type, 'recipient' => $recipient);
         if($this->typical_insert($this->packs_table_name, $data))
             return $this->db->insert_id();
         return FALSE;
@@ -115,9 +117,12 @@ class mailings_model extends MY_Model {
         return $this->db->update($this->table_name);
     }
     
-    public function get_all_mailings($school_id = '*', $class_id = '*', $type = '*')
+    public function get_all_mailings($school_id = '*', $class_id = '*', $type = '*', $limit = 0, $offset = 0)
     {
-        $this->db->select(
+        $prefix = '';
+        if($limit > 0)
+            $prefix = 'SQL_CALC_FOUND_ROWS ';
+        $this->db->select($prefix .
                           $this->table_name . '.id AS mailing_id,'.
                           $this->table_name . '.*,'.
                           $this->packs_table_name . '.type,'.
@@ -125,7 +130,7 @@ class mailings_model extends MY_Model {
                           $this->classes_table_name . '.id AS class_id,'.
                           $this->classes_table_name . '.class,'.
                           $this->schools_table_name . '.id AS school_id,'.
-                          $this->schools_table_name . '.school');
+                          $this->schools_table_name . '.school', FALSE);
         
         $this->db->from($this->table_name);
         $this->db->order_by($this->table_name . '.' .  'created DESC');
@@ -151,12 +156,21 @@ class mailings_model extends MY_Model {
         
         if($type != '*')
         {
-            if(in_array('user', $type) && !in_array(NULL, $type))
-                $type[] = NULL;
             $this->db->where_in($this->packs_table_name . '.type', $type);
+            if(in_array('user', $type))
+                $this->db->or_where ($this->packs_table_name . '.type', NULL);
         }
         
+        if($limit >0)
+            $this->db->limit($limit, $offset);
+        
         $query = $this->db->get();
+        
+        if($limit > 0)
+        {
+            $rows_found_result = $this->db->query('SELECT FOUND_ROWS() as rowcount')->result();
+            $this->total_mailings_found = $rows_found_result[0]->rowcount;
+        }
         
         return $query->result();
     }

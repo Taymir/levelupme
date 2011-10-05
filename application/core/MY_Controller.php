@@ -19,7 +19,7 @@ class MY_Controller extends CI_Controller {
     private function authenticate()
     {
         $this->load->helper(array('form', 'url'));
-        $this->load->library('form_validation');
+        //$this->load->library('form_validation');//@BUGFIX
         $this->load->library('security');
         $this->load->library('tank_auth');
         $this->lang->load('tank_auth');

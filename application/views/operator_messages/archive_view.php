@@ -64,7 +64,21 @@
 </tbody>
 </table>
 
+<div class="pagination"><?= $this->pagination->create_links(); ?></div>
+
 <div class="actions">
-<!--//@TODO: FILTERS -->
-<?php echo anchor('operator_messages/index', '<img src="' . base_url() . 'styles/icons/add.png" />Новая рассылка', array('class' => "btn success")) ?>
+    <?= form_open('') ?>
+    <?= form_fieldset('Выводить только:') ?>
+    <div class="input">
+    <ul class="inputs-list">
+        <li><label><?= form_checkbox('filters[]', 'school', set_checkbox('filters', 'school', TRUE)) ?> <span>Рассылки по школе</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'class', set_checkbox('filters', 'class', TRUE)) ?> <span>Рассылки по классу</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'user', set_checkbox('filters', 'user', TRUE)) ?> <span>Рассылки индвидульно родителям</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'other', set_checkbox('filters', 'other', TRUE)) ?> <span>Рассылки прочие</span></label></li>
+    </ul>
+    </div>
+<?= form_submit('submit', 'Обновить', 'class="btn primary"') ?><br />
+<?= form_fieldset_close(); ?>
+<?= form_close() ?>
+<?= anchor('operator_messages/index', '<img src="' . base_url() . 'styles/icons/add.png" />Новая рассылка', array('class' => "btn success")) ?>
 </div>

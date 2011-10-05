@@ -89,9 +89,17 @@ class operator_messages extends MY_Controller {
                 {
                     // получить список всех учеников в классе
                     $user_list = $this->user_profile_model->get_userlist_by_class($class_id, $tariff);
+                    
+                    $this->load->model('classes_model');
+                    $recipient = $this->classes_model->get_class_info($class_id);
+                    $recipient = $recipient->class;
                 } else {
                     // получить список всех учеников в школе
                     $user_list = $this->user_profile_model->get_userlist_by_school($school_id, $tariff);
+                    
+                    $this->load->model('classes_model');
+                    $recipient = $this->classes_model->get_class_info($class_id);
+                    $recipient = $recipient->school;
                 }
                 
                 $batch_data = array();
@@ -103,7 +111,7 @@ class operator_messages extends MY_Controller {
                     $batch_data[] = $tmp_data;
                 }
                 
-                $mailed = $this->mailings_model->add_multi_mailing($type, $batch_data);
+                $mailed = $this->mailings_model->add_multi_mailing($type, $batch_data, $recipient);
             }
             
             if($mailed)
@@ -114,20 +122,42 @@ class operator_messages extends MY_Controller {
         $this->denyAccess();
     }
     
-    public function archive()
+    public function archive($offset = 0)
     {
+        $this->load->library('pagination');
         $this->load->model('classes_model');
+        
+        $mailings_type = '*';
+        if($this->input->post('filters'))
+        {
+            $mailings_type = $this->input->post('filters');
+            if(in_array('other', $mailings_type))
+            {
+                $mailings_type[] = 'analytic';
+                $mailings_type[] = 'grades';
+            }
+        }
+        
+        $paginator['base_url'] = base_url() . 'operator_messages/archive'; //@TODO: как же post-фильтры?
+        $paginator['per_page'] = 10;
+        $paginator['num_links'] = 5;
+        $paginator['first_link'] = "Первая";
+        $paginator['last_link'] = "Последняя";
         
         $class = $this->operator_class();
         $class_data = $this->classes_model->get_class_info($class);
         $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
-        $mailings = $this->mailings_model->get_all_mailings($class_data->school_id, $class_data->class_id);
+        $mailings = $this->mailings_model->get_all_mailings($class_data->school_id, $class_data->class_id, $mailings_type, $paginator['per_page'], $offset);
+        
+        $paginator['total_rows'] = $this->mailings_model->total_mailings_found;
+        $this->pagination->initialize($paginator);
         
         $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget');
         $this->load_var('mailings', $mailings);
         $this->load_var('class', $class_data);
+        //$this->load_var('paginator', $class_data);
         $this->load_var('schools_classes', $schools_classes);
-        //@TODO: фильтры
+        //@TODO: фильтры+
         //@TODO: пагинация
         //@TODO: просмотр сообщений
         //@TODO: ссылка на архив, ссылка из архива

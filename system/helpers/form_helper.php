@@ -773,7 +773,7 @@ if ( ! function_exists('set_checkbox'))
 				}
 				return '';
 			}
-
+            
 			$field = $_POST[$field];
 
 			if (is_array($field))
