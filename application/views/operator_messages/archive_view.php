@@ -80,5 +80,5 @@
 <?= form_submit('submit', 'Обновить', 'class="btn primary"') ?><br />
 <?= form_fieldset_close(); ?>
 <?= form_close() ?>
-<?= anchor('operator_messages/index', '<img src="' . base_url() . 'styles/icons/add.png" />Новая рассылка', array('class' => "btn success")) ?>
+<?= anchor('operator_messages/add', '<img src="' . base_url() . 'styles/icons/add.png" />Новая рассылка', array('class' => "btn success")) ?>
 </div>

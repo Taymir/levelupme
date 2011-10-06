@@ -17,7 +17,7 @@ class operator_messages extends MY_Controller {
         $this->load->model('mailings_model');
     }
     
-    public function index($selected_student = NULL)
+    public function add($selected_student = NULL)
     {   
         $this->load->model('classes_model');
         $this->load->model('user_profile_model');
@@ -53,7 +53,7 @@ class operator_messages extends MY_Controller {
         $this->load_var('tariff_id',  $tariff);
         $this->load_var('tariffs',  $tariffs);
         
-        return $this->load_view('operator_messages/index_view', "Рассылки");
+        return $this->load_view('operator_messages/add_view', "Рассылки");
     }
     
     public function send()
@@ -122,6 +122,11 @@ class operator_messages extends MY_Controller {
         $this->denyAccess();
     }
     
+    public function index($offset = 0)
+    {
+        return $this->archive($offset);
+    }
+    
     public function archive($offset = 0)
     {
         $this->load->library('pagination');
@@ -162,10 +167,10 @@ class operator_messages extends MY_Controller {
         $this->load_var('schools_classes', $schools_classes);
         //@TODO: фильтры+
         //@TODO: пагинация+
-        //@TODO: просмотр сообщений.
+        //@TODO: просмотр сообщений+
         //@TODO: ссылка на архив, ссылка из архива
         //@TODO: рассылка сообщений по крону
-        //@TODO: группировка пакетов сообщений во view
+        //@TODO: группировка пакетов сообщений во view-
         return $this->load_view('operator_messages/archive_view', "Архив рассылок");
     }
     

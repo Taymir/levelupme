@@ -1,6 +1,6 @@
 <?php $this->load->helper('widgets'); ?>
-<?= school_class_widget($schools_classes, '/operator_messages', $school_id, $class_id) ?>
-<?= tariff_widget('/operator_messages', $tariffs, $tariff_id) ?>
+<?= school_class_widget($schools_classes, '/operator_messages/add', $school_id, $class_id) ?>
+<?= tariff_widget('/operator_messages/add', $tariffs, $tariff_id) ?>
 
 <h2>Рассылки</h2>
 <?php $this->load->helper('form'); ?>
