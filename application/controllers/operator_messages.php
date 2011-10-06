@@ -136,9 +136,13 @@ class operator_messages extends MY_Controller {
                 $mailings_type[] = 'analytic';
                 $mailings_type[] = 'grades';
             }
+            $this->input->set_cookie('filters', serialize($mailings_type), 60 * 60 * 24 * 3);
+        } elseif ($this->input->cookie('filters')) {
+            $mailings_type = unserialize($this->input->cookie('filters'));
+            $_POST['filters'] = $mailings_type; // for view
         }
         
-        $paginator['base_url'] = base_url() . 'operator_messages/archive'; //@TODO: как же post-фильтры?
+        $paginator['base_url'] = base_url() . 'operator_messages/archive';
         $paginator['per_page'] = 10;
         $paginator['num_links'] = 5;
         $paginator['first_link'] = "Первая";

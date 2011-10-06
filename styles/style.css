@@ -852,3 +852,39 @@ body#home #sidebar { padding-top: 65px; }
 			}
 			.nicetable .headerSortUp.purple, table .headerSortDown.purple {
 			  background-color: #e2d5f0;
+            }
+              /* PAGINATION */
+              /* Page Numbers */
+            .pagination {
+             font: 83%/1.4 arial, helvetica, sans-serif;
+                padding: 1em;
+                margin: 1em 0;
+                clear: left;
+                font-size: 85%;
+            }
+
+            .pagination a, .pagination strong {
+                color:#003366;
+                display: block;
+                float: left;
+                padding: 0.2em 0.5em;
+                margin-right: 0.1em;
+                border: 1px solid #fff;
+                background: #fff;
+            }
+
+            .pagination strong {
+                border: 1px solid #2E6AB1;
+                font-weight: bold;
+                background: #2E6AB1;
+                color: #fff;
+            }
+
+            .pagination a {
+                border: 1px solid #9AAFE5;
+                text-decoration: none;
+            }
+
+            .pagination a:hover {
+                border-color: #2E6AB1;
+            }
