@@ -117,6 +117,18 @@ class mailings_model extends MY_Model {
         return $this->db->update($this->table_name);
     }
     
+    public function get_mailing($mailing_id)
+    {
+        $this->db->select('*');
+        $this->db->from($this->table_name);
+        $this->db->join($this->packs_table_name, $this->packs_table_name . '.id = ' . $this->table_name . '.pack_id', 'left');
+        $this->db->where($this->table_name . '.id', $mailing_id);
+    
+        $query = $this->db->get();
+
+        return $query->row();
+    }
+    
     public function get_all_mailings($school_id = '*', $class_id = '*', $type = '*', $limit = 0, $offset = 0)
     {
         $prefix = '';

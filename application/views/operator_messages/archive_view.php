@@ -56,7 +56,7 @@
         if($mailing->email_text == '')
             $text = $mailing->sms_text;
         
-        echo anchor('#TODO', ellipsize(strip_tags($text), 50, 1));
+        echo anchor('operator_messages/view/' . $mailing->mailing_id, ellipsize(strip_tags($text), 50, 1));
         ?>
     </td>
 </tr>

@@ -159,14 +159,21 @@ class operator_messages extends MY_Controller {
         $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget');
         $this->load_var('mailings', $mailings);
         $this->load_var('class', $class_data);
-        //$this->load_var('paginator', $class_data);
         $this->load_var('schools_classes', $schools_classes);
         //@TODO: фильтры+
-        //@TODO: пагинация
-        //@TODO: просмотр сообщений
+        //@TODO: пагинация+
+        //@TODO: просмотр сообщений.
         //@TODO: ссылка на архив, ссылка из архива
         //@TODO: рассылка сообщений по крону
         //@TODO: группировка пакетов сообщений во view
         return $this->load_view('operator_messages/archive_view', "Архив рассылок");
+    }
+    
+    public function view($mailing_id)
+    {
+        $data = $this->mailings_model->get_mailing($mailing_id);
+        $data->text = $data->email_text;
+        
+        return $this->load_view('operator_messages/view_view', "Просмотр рассылки", $data);
     }
 }
