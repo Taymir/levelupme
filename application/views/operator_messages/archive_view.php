@@ -51,12 +51,16 @@
     <td><?= $mailing->name . ', ' . $mailing->school . ', ' . $mailing->class ?></td>
     <td>
         <?php 
-        $this->load->helper('text');
-        $text = $mailing->email_text;
-        if($mailing->email_text == '')
-            $text = $mailing->sms_text;
-        
-        echo anchor('operator_messages/view/' . $mailing->mailing_id, ellipsize(strip_tags($text), 50, 1));
+        $title = $mailing->email_title;
+        if($title == '')
+        {
+            $this->load->helper('text');
+            $text = $mailing->email_text;
+            if($mailing->email_text == '')
+                $text = $mailing->sms_text;
+            $title = ellipsize(strip_tags($text), 50, 1);
+        }
+        echo anchor('operator_messages/view/' . $mailing->mailing_id, $title);
         ?>
     </td>
 </tr>

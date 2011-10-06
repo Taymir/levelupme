@@ -7,6 +7,14 @@
 <?= form_open('operator_messages/send', 'id="messagesForm" class="niceform journal-form"', array('class_id' => $class_id, 'school_id' => $school_id, 'tariff' => $tariff_id)); ?>
 
 <div class="clearfix">
+    <?= form_label("Заголовок:", 'title') ?>
+    <div class="input">
+        <?= form_input('title', set_value('title')); ?> <em>(только для email)</em>
+    </div>
+</div>
+
+
+<div class="clearfix">
     <?= form_label("Сообщение:", 'text') ?>
 </div>
 

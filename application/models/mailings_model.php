@@ -83,9 +83,11 @@ class mailings_model extends MY_Model {
     public function mark_old_email_errored($older_then = 3)
     {
         $this->db->where_in('email_status', array('pending', 'tmp_error'));
-        $this->db->where('created <', date('Y-m-d H:i:s', time() - 24 * 60 * 60 * $last_days));
+        $this->db->where('created <', date('Y-m-d H:i:s', time() - 24 * 60 * 60 * $older_then));
         $this->db->set('email_status', 'pm_error');
-        return $this->db->update($this->table_name);
+        $this->db->update($this->table_name);
+        
+         return $this->db->affected_rows();
     }
     
     public function get_sms_queue($last_days = 3)
@@ -112,9 +114,11 @@ class mailings_model extends MY_Model {
     public function mark_old_sms_errored($older_then = 3)
     {
         $this->db->where_in('sms_status', array('pending', 'tmp_error'));
-        $this->db->where('created <', date('Y-m-d H:i:s', time() - 24 * 60 * 60 * $last_days));
+        $this->db->where('created <', date('Y-m-d H:i:s', time() - 24 * 60 * 60 * $older_then));
         $this->db->set('sms_status', 'pm_error');
-        return $this->db->update($this->table_name);
+        $this->db->update($this->table_name);
+        
+        return $this->db->affected_rows();
     }
     
     public function get_mailing($mailing_id)

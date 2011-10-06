@@ -1,0 +1,5 @@
+Level UP!
+
+<?= $title ?>
+
+<?= $text ?>

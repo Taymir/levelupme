@@ -16,6 +16,13 @@ class Sms {
     private $debug_mode;
     private $sms_model;
     
+    private $_to = '';
+    private $_text = '';
+    
+    private $_dont_send_at_night = true;
+    private $_begin_night_period;
+    private $_end_night_period;
+    
     public function __construct()
     {
         $CI = & get_instance();
@@ -26,59 +33,73 @@ class Sms {
         
         $this->debug_mode = $CI->config->item('debug_mode');
         $this->smsPilot = new SMSPilot($CI->config->item('api_key'), false, $CI->config->item('sender_name'));
+        
+        $this->_begin_night_period = $CI->config->item('begin_night_period');
+        $this->_end_night_period = $CI->config->item('end_night_period');
     }
     
-    public function sendSms($to, $text)
+    public function to($to)
     {
-        $data = $this->send($to, $text);
-        $this->sms_model->add_sms($data);
+        return $this->_to = $to;
     }
     
-    private function send($to, $text)
+    public function text($text)
     {
-        if($this->debug_mode)
-        {
-            $status = 2;
-            $tmp_id = -1;
-        }
-        else
-        {
-            $result = $this->smsPilot->send($to, $text);
+        return $this->_text = $text;
+    }
+    
+    public function dont_send_at_night($flag = true)
+    {
+        $this->_dont_send_at_night = $flag;
+    }
+    
+    public function is_at_night_period()
+    {
+        $hour = (int)date('G');
+        if($hour >= $this->_begin_night_period && $hour < $this->_end_night_period)
+            return true;
+        return false;
+    }
+    
+    public function send()
+    {
+        //@TODO: сюда можно добавить проверку баланса и оповещение о критическом балансе
+        if(trim($this->_to) == '' || trim($this->_text) == '')
+            return FALSE;
+        
+        if($this->_dont_send_at_night && $this->is_at_night_period())
+            return FALSE;
+        
+        if($this->debug_mode) {
+            $result[0]['status'] = 2;
+            $result[0]['server_id'] = -1;
+        } else {
+            $result = $this->smsPilot->send($this->_to, $this->_text);
+
             if($result == false)
             {
-                if($this->smsPilot->error == 'CONNECTION ERROR')
-                    $status = -4;
-                else
-                    $status = -3;
-                $tmp_id = -1;
-                log_message('error', "SMS to $to error: {$this->smsPilot->error}");
-            } else {
-                $status = $result[0]['status'];
-                $tmp_id = $result[0]['id'];
+                log_message('error', "SMS to {$this->_to} error: {$this->smsPilot->error}");
+                return FALSE;
+            }
+
+            foreach($result as $sms)
+            {
+                if($sms['status'] == -2)
+                {
+                    log_message ('error', "SMS to {$this->_to} errorcode: {$sms['error']}");
+                    return FALSE;
+                }
             }
         }
-        
-        
-        return array(
-            'to' => $to,
-            'text' => $text,
-            'status' => $status,
-            'tmp_id' => $tmp_id
-        );
-    }
-    
-    public function resend_sms_queue()
-    {
-        $unsent = $this->sms_model->get_unsent_sms();
-        foreach($unsent as $sms)
-        {
-            $result = $this->send($sms->to, $sms->text);
-            $this->sms_model->update_sms($sms->id, $result);
-        }
+            
+        $this->sms_model->add_sms(array(
+            'to' => $this->_to,
+            'text' => $this->_text,
+            'status' => $result[0]['status'],
+            'tmp_id' => $result[0]['server_id']
+        ));
         return TRUE;
     }
-   
-    
 }
 
 ?>

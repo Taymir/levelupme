@@ -60,6 +60,7 @@ class operator_messages extends MY_Controller {
     {
         if($this->input->post('submit'))
         {
+            $title = trim($this->input->post('title'));
             $text = trim($this->input->post('text'));
             $type = $this->input->post('recipient_type');
             $user = (int)$this->input->post('user');
@@ -74,6 +75,7 @@ class operator_messages extends MY_Controller {
                 return $this->show_message ("Ошибка: Не указан получатель");
             
             $data = array(
+                'email_title' => $title,
                 'email_text' => $text, //@TODO: В будущем дать возможность пользователю редактировать отдельно текст 
                 'sms_text' => $text,   // для email и для sms
              );
@@ -165,12 +167,6 @@ class operator_messages extends MY_Controller {
         $this->load_var('mailings', $mailings);
         $this->load_var('class', $class_data);
         $this->load_var('schools_classes', $schools_classes);
-        //@TODO: фильтры+
-        //@TODO: пагинация+
-        //@TODO: просмотр сообщений+
-        //@TODO: ссылка на архив, ссылка из архива
-        //@TODO: рассылка сообщений по крону
-        //@TODO: группировка пакетов сообщений во view-
         return $this->load_view('operator_messages/archive_view', "Архив рассылок");
     }
     

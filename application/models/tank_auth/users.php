@@ -110,9 +110,9 @@ class Users extends CI_Model
 	 */
 	function is_email_available($email)
 	{
-                                    // ДОБАВИЛ, чтобы использовать пустой email
-                                    if($email == '')
-                                        return TRUE;
+        // ДОБАВИЛ, чтобы использовать пустой email
+        if($email == '')
+            return TRUE;
             
 		$this->db->select('1', FALSE);
 		$this->db->where('LOWER(email)=', strtolower($email));

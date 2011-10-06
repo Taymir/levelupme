@@ -10,8 +10,8 @@
  * @author U7
  */
 class user_profile_model extends MY_Model {
-    private $table_name	= 'user_profiles';	// user profiles
-    private $users_table_name = 'users';                     // users
+    private $table_name	= 'user_profiles';               // user profiles
+    private $users_table_name = 'users';                 // users
     private $operators_table_name = 'operators_schools'; //Таблица разрешений для операторов
     
     const unloaded = -1;
@@ -84,7 +84,7 @@ class user_profile_model extends MY_Model {
         $ci->load->library('tank_auth');
         
         if($ci->tank_auth->is_logged_in())
-            $this->profileData = $this->get_user_profile($ci->tank_auth->get_user_id());//@TMP
+            $this->profileData = $this->get_user_profile_by_user_id($ci->tank_auth->get_user_id());//@TMP
     }
     
     public function loadUserData($id)
@@ -95,7 +95,19 @@ class user_profile_model extends MY_Model {
             return $this->userData;
     }
     
-    public function get_user_profile($user_id)
+    public function get_user_profile($profile_id)
+    {
+        $this->db->select('*');
+
+        $this->db->from($this->table_name);
+        $this->db->where('id', $profile_id);
+
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) return $query->row();
+            return NULL;
+    }
+    
+    public function get_user_profile_by_user_id($user_id)
     {
         $this->db->select('*');
 
