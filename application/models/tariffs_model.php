@@ -42,6 +42,20 @@ class tariffs_model {
         
         return $result;
     }
+    
+    public function rule_send_email($tariff)
+    {
+        if($tariff >= 4)
+            return true;
+        return false;
+    }
+    
+    public function rule_send_sms($tariff)
+    {
+        if($tariff >= 1)
+            return true;
+        return false;
+    }
 }
 
 ?>

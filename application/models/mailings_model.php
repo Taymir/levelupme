@@ -19,10 +19,24 @@ class mailings_model extends MY_Model {
     
     public $total_mailings_found;
     
+    private function _set_statuses($data)
+    {
+        if(!isset($data['email_text']) || $data['email_text'] == '')
+            $data['email_status'] = 'empty';
+        else
+            $data['email_status'] = 'pending';
+        
+        if(!isset($data['sms_text']) || $data['sms_text'] == '')
+            $data['sms_status'] = 'empty';
+        else
+            $data['sms_status'] = 'pending';
+        
+        return $data;
+    }
+    
     public function add_single_mailing($data)
     {
-        $data['email_status'] = 'pending';
-        $data['sms_status'] = 'pending';
+        $data = $this->_set_statuses($data);
         $data = $this->add_created_field($data);
         
         return $this->typical_insert($this->table_name, $data);
@@ -36,9 +50,8 @@ class mailings_model extends MY_Model {
             $batch_data = array();
             foreach($datas as $data)
             {
+                $data = $this->_set_statuses($data);
                 $data['pack_id'] = $pack_id;
-                $data['email_status'] = 'pending';
-                $data['sms_status'] = 'pending';
                 $data = $this->add_created_field($data);
                 
                 $batch_data[] = $data;

@@ -58,6 +58,9 @@ class operator_messages extends MY_Controller {
     
     public function send()
     {
+        $this->load->model('user_profile_model');
+        $this->load->model('tariffs_model');
+        
         if($this->input->post('submit'))
         {
             $title = trim($this->input->post('title'));
@@ -74,30 +77,41 @@ class operator_messages extends MY_Controller {
             if(!in_array($type, array('school','class','user')))
                 return $this->show_message ("Ошибка: Не указан получатель");
             
-            $data = array(
-                'email_title' => $title,
-                'email_text' => $text, //@TODO: В будущем дать возможность пользователю редактировать отдельно текст 
-                'sms_text' => $text,   // для email и для sms
-             );
+            $data = array();
+            $data['email_title'] = $title;
+            $data['email_text'] = $text;
+            $data['sms_text'] = $text;//@TODO: В будущем дать возможность пользователю редактировать отдельно текст смс
+            
             if($type == 'user')
             {
                 // Отправка одному пользователю
                 $data['user_profile_id'] = $user;
+                
+                if(!$this->tariffs_model->rule_send_email($tariff))
+                {
+                    unset($data['email_title']);
+                    unset($data['email_text']);
+                }
+
+                if(!$this->tariffs_model->rule_send_sms($tariff))
+                {
+                    unset($data['sms_text']);
+                }
+                
                 $mailed = $this->mailings_model->add_single_mailing($data);
             } else
             {
-                $this->load->model('user_profile_model');
                 if($type == 'class') 
                 {
                     // получить список всех учеников в классе
-                    $user_list = $this->user_profile_model->get_userlist_by_class($class_id, $tariff);
+                    $user_list = $this->user_profile_model->get_users_by_class_without_school($class_id, $tariff);
                     
                     $this->load->model('classes_model');
                     $recipient = $this->classes_model->get_class_info($class_id);
                     $recipient = $recipient->class;
                 } else {
                     // получить список всех учеников в школе
-                    $user_list = $this->user_profile_model->get_userlist_by_school($school_id, $tariff);
+                    $user_list = $this->user_profile_model->get_users_by_school($school_id, $tariff);
                     
                     $this->load->model('classes_model');
                     $recipient = $this->classes_model->get_class_info($class_id);
@@ -105,10 +119,23 @@ class operator_messages extends MY_Controller {
                 }
                 
                 $batch_data = array();
-                foreach($user_list as $user_profile_id => $name)
+                foreach($user_list as  $user_row)
                 {
+                    $user_profile_id = $user_row->id;
+                    $name = $user_row->id;
                     $tmp_data = $data;
                     $tmp_data['user_profile_id'] = $user_profile_id;
+                    
+                    if(!$this->tariffs_model->rule_send_email($user_row->tariff))
+                    {
+                        unset($tmp_data['email_title']);
+                        unset($tmp_data['email_text']);
+                    }
+                    
+                    if(!$this->tariffs_model->rule_send_sms($user_row->tariff))
+                    {
+                        unset($tmp_data['sms_text']);
+                    }
                     
                     $batch_data[] = $tmp_data;
                 }

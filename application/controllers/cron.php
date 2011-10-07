@@ -51,7 +51,13 @@ class cron extends CI_Controller {
                         // Сохранить результат в бд
                         $this->mailings_model->mark_email_sent($mailing->id);
                         $success_mailings++;
+                    } else {
+                        // Сохранить результат в бд
+                        $this->mailings_model->mark_email_sent($mailing->id, 'tmp_error');
                     }
+                } else {
+                    // Сохранить результат в бд
+                    $this->mailings_model->mark_email_sent($mailing->id, 'pm_error');
                 }
             }
             echo 'Успешно отправлено: ' . $success_mailings . " email рассылок\n";
@@ -80,7 +86,13 @@ class cron extends CI_Controller {
                             // Сохранить результат в бд
                             $this->mailings_model->mark_sms_sent($mailing->id);
                             $success_mailings++;
+                        } else {
+                            // Сохранить результат в бд
+                            $this->mailings_model->mark_sms_sent($mailing->id, 'tmp_error');
                         }
+                    } else {
+                        // Сохранить результат в бд
+                        $this->mailings_model->mark_sms_sent($mailing->id, 'pm_error');
                     }
                 }
                 echo 'Успешно отправлено: ' . $success_mailings . " sms рассылок\n";

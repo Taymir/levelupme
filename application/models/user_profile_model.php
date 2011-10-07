@@ -208,6 +208,20 @@ class user_profile_model extends MY_Model {
         return $this->Arr2List($query->result_array(), 'user_profile_id', 'name');
     }
     
+    public function get_users_by_class_without_school($class_id, $min_tariff = NULL)
+    {
+        $this->db->select('*' );
+        $this->db->from($this->table_name);
+        $this->db->where('class_id', $class_id);
+        if($min_tariff != NULL)
+            $this->db->where('tariff >=', $min_tariff);
+        
+        $this->db->order_by('name');
+        
+        $query = $this->db->get();
+        return $query->result();
+    }
+    
     public function get_userlist_by_school($school_id, $min_tariff = NULL)
     {
         $ci = & get_instance();
@@ -225,6 +239,25 @@ class user_profile_model extends MY_Model {
         
         $query = $this->db->get();
         return $this->Arr2List($query->result_array(), 'user_profile_id', 'name');
+    }
+    
+    public function get_users_by_school($school_id, $min_tariff = NULL)
+    {
+        $ci = & get_instance();
+        $ci->load->model('classes_model');
+        $classes = $ci->classes_model->get_classlist_by_school($school_id);
+        $classes = array_keys($classes);
+        
+        $this->db->select('*' );
+        $this->db->from($this->table_name);
+        $this->db->where_in('class_id', $classes);
+        if($min_tariff != NULL)
+            $this->db->where('tariff >=', $min_tariff);
+        
+        $this->db->order_by('name');
+        
+        $query = $this->db->get();
+        return $query->result();
     }
     
     public function add_user_profile($data)
@@ -246,7 +279,7 @@ class user_profile_model extends MY_Model {
         $result = $ci->tank_auth->create_user($username, $email, $password, false);
         if($result)
         {
-            $this->typical_update($this->table_name, $profile_data, $result['user_id']);
+            $this->typical_update($this->table_name, $profile_data, $result['user_id']);//@TODO: Добавить сюда email
             return TRUE;
         }
         else

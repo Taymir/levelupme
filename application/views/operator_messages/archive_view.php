@@ -20,31 +20,35 @@
 <tr>
     <td>
         <?php
-        if($mailing->sms_status == 'pending') {
-            $status = 'pending';
-            $title = 'В очереди';
-        } elseif($mailing->sms_status == 'sent') {
-            $status = 'sent';
-            $title = 'Отправлено';
-        } else {
-            $status = 'error';
-            $title = 'Ошибка отправки';
-        }
+        if($mailing->sms_status != 'empty'){
+            if($mailing->sms_status == 'pending') {
+                $status = 'pending';
+                $title = 'В очереди';
+            } elseif($mailing->sms_status == 'sent') {
+                $status = 'sent';
+                $title = 'Отправлено';
+            } else {
+                $status = 'error';
+                $title = 'Ошибка отправки';
+            }
+
+            echo '<img src="' . base_url() . 'styles/icons/sms_' . $status . '.png" title="SMS: ' . $title . '" />&nbsp;';
+        } else echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         
-        echo '<img src="' . base_url() . 'styles/icons/sms_' . $status . '.png" title="SMS: ' . $title . '" />&nbsp;';
-        
-        if($mailing->email_status == 'pending') {
-            $status = 'pending';
-            $title = 'В очереди';
-        } elseif($mailing->email_status == 'sent') {
-            $status = 'sent';
-            $title = 'Отправлено';
-        } else {
-            $status = 'error';
-            $title = 'Ошибка отправки';
-        }
-        
-        echo '<img src="' . base_url() . 'styles/icons/mail_' . $status . '.png" title="EMail: ' . $title . '" />&nbsp;';
+        if($mailing->email_status != 'empty'){
+            if($mailing->email_status == 'pending') {
+                $status = 'pending';
+                $title = 'В очереди';
+            } elseif($mailing->email_status == 'sent') {
+                $status = 'sent';
+                $title = 'Отправлено';
+            } else {
+                $status = 'error';
+                $title = 'Ошибка отправки';
+            }
+
+            echo '<img src="' . base_url() . 'styles/icons/mail_' . $status . '.png" title="EMail: ' . $title . '" />&nbsp;';
+        } else echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         ?>
     </td>
     <td><?= date('d.m.Y', strtotime($mailing->created)) ?></td>
