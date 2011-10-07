@@ -267,7 +267,8 @@ class user_profile_model extends MY_Model {
             'tariff' => $data['tariff'],
             'phone' => $data['phone'],
             'role' => 'parent',
-            'class_id' => $data['class_id']
+            'class_id' => $data['class_id'],
+            'email' => $data['email']
         );
         $username = $data['username'];
         $email = $data['email'];

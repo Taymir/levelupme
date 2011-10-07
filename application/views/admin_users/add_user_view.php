@@ -50,7 +50,7 @@ echo form_error('class_id');
 <div class="clearfix">
 <?= form_label('Тариф', 'tariff') ?>
     <div class="input">
-    <?= form_dropdown('tariff', $tariffs, set_value('tarriff')); ?>    
+    <?= form_dropdown('tariff', $tariffs, set_value('tariff')); ?>    
     <?= form_error('tariff') ?>
     </div>
 </div>
