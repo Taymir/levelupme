@@ -32,17 +32,17 @@
     </td>
     <td>
     <nobr>
-    <?php echo anchor(array('admin_users', 'remove_user', $user->id),
+    <?php echo anchor(array('admin_users', 'remove_user', $user->profile_id),
             '<img src="' . base_url() . 'styles/icons/user_delete.png" />',
             array('class' => "btn tiny error", 'title'=>"Удалить пользователя", 'onclick' => "return confirm('Вы уверены, что хотите удалить пользователя?')"));
     ?>
     <?php if(!$user->banned): ?>
-    <?php echo anchor(array('admin_users', 'ban_user', $user->id),
+    <?php echo anchor(array('admin_users', 'ban_user', $user->profile_id),
             '<img src="' . base_url() . 'styles/icons/user_ban.png" />',
             array('class' => "btn tiny error", 'title'=>"Временная блокировка пользователя"));
     ?>
    <?php else: ?>
-   <?php echo anchor(array('admin_users', 'unban_user', $user->id),
+   <?php echo anchor(array('admin_users', 'unban_user', $user->profile_id),
            '<img src="' . base_url() . 'styles/icons/user_unban.png" />',
            array('class' => "btn tiny success",  'title'=>"Разблокировка пользователя"));
    ?>     

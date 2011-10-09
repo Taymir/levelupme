@@ -176,16 +176,16 @@ class user_profile_model extends MY_Model {
                 $this->users_table_name . '.id,'.
                 $this->users_table_name . '.username,'.
                 $this->users_table_name . '.email,'.
-                $this->users_table_name . '.banned,'.
                 
                 $this->table_name . '.id AS profile_id,'.
                 $this->table_name . '.name,'.
                 $this->table_name . '.phone,'.
-                $this->table_name . '.tariff'
+                $this->table_name . '.tariff,'.
+                $this->table_name . '.banned'
                 );
         
         $this->db->from($this->table_name);
-        $this->db->join($this->users_table_name, $this->table_name  . '.user_id = ' . $this->users_table_name . '.id');
+        $this->db->join($this->users_table_name, $this->table_name  . '.user_id = ' . $this->users_table_name . '.id', 'left');
         
         $this->db->where($this->table_name . '.class_id', $class_id);
         $this->db->order_by($this->table_name . '.name');
@@ -353,6 +353,40 @@ class user_profile_model extends MY_Model {
         }
         
         return $operators;
+    }
+    
+    public function ban_user($user_profile_id)
+    {
+        $ci = & get_instance();
+        $ci->load->model('tank_auth/users');
+        
+        $this->typical_update($this->table_name, array('banned' => 1), $user_profile_id);
+        $user_profile = $this->typical_find($this->table_name, $user_profile_id);
+        
+        return $ci->users->ban_user($user_profile->user_id);
+    }
+    
+    public function unban_user($user_profile_id)
+    {
+        $ci = & get_instance();
+        $ci->load->model('tank_auth/users');
+        
+        $this->typical_update($this->table_name, array('banned' => 0), $user_profile_id);
+        $user_profile = $this->typical_find($this->table_name, $user_profile_id);
+        
+        return $ci->users->unban_user($user_profile->user_id);
+    }
+    
+    public function delete_user($user_profile_id)//*
+    {
+        $ci = & get_instance();
+        $ci->load->model('tank_auth/users');
+        
+        $user_profile = $this->typical_find($this->table_name, $user_profile_id);
+        if($user_profile->user_id >= 0)
+            return $this->users->delete_user($user_profile_id);
+        else 
+            $this->typical_delete ($this->table_name, $user_profile_id);
     }
 
 }

@@ -57,29 +57,23 @@ class admin_users extends MY_Controller {
         return $this->load_view('admin_users/add_user_view', "Добавление пользователя");
     }
     
-    public function ban_user($id)
+    public function ban_user($profile_id)
     {
-        $this->load->model('tank_auth/users');
-        
-        $this->users->ban_user($id);
+        $this->user_profile_model->ban_user($profile_id);
         
         return $this->redirect_message('admin_users', "Пользователь заблокирован");
     }
     
-    public function unban_user($id)
+    public function unban_user($profile_id)
     {
-        $this->load->model('tank_auth/users');
-        
-        $this->users->unban_user($id);
+        $this->user_profile_model->unban_user($profile_id);
         
         return $this->redirect_message('admin_users', "Пользователь разблокирован");
     }
     
-    public function remove_user($id)
+    public function remove_user($profile_id)
     {
-        $this->load->model('tank_auth/users');
-        
-        $this->users->delete_user($id);
+        $this->user_profile_model->delete_user($profile_id);
         
         return $this->redirect_message('admin_users', "Пользователь удален");
     }
