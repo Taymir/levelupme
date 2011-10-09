@@ -107,7 +107,7 @@ function get_next_dialog_id()
     return $dialog_id++;
 }
 
-function form_class_selector($schoolsData, $linkText, $extra='')
+function form_class_selector($schoolsData, $linkText, $extra='', $default = null)
 {
     $dialog_id = get_next_dialog_id();
     $dialog_title = "Выбор класса";
@@ -126,7 +126,7 @@ function form_class_selector($schoolsData, $linkText, $extra='')
         foreach($school->classes as $class)
         {
             $out .= "<label>";
-            $out .= form_radio('class_id', $class->id, set_radio('class_id', $class->id));
+            $out .= form_radio('class_id', $class->id, set_radio('class_id', $class->id, $class->id == $default));
             $out .= "{$class->class}<br /></label>";
         }
         

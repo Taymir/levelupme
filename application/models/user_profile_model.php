@@ -260,6 +260,22 @@ class user_profile_model extends MY_Model {
         return $query->result();
     }
     
+    public function batch_add_users($names, $class_id)
+    {
+        $batch_data = array();
+        foreach($names as $name)
+        {
+            if($name != '')
+                $batch_data[] = array('name' => $name, 'class_id' => $class_id);
+        }
+        
+        if(sizeof($batch_data) > 0)
+            $this->db->insert_batch ($this->table_name, $batch_data);
+        
+        return sizeof($batch_data);
+        
+    }
+    
     public function add_user_profile($data)
     {
         $profile_data = array(
@@ -377,7 +393,7 @@ class user_profile_model extends MY_Model {
         return $ci->users->unban_user($user_profile->user_id);
     }
     
-    public function delete_user($user_profile_id)//*
+    public function delete_user($user_profile_id)
     {
         $ci = & get_instance();
         $ci->load->model('tank_auth/users');

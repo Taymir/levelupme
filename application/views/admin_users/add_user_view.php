@@ -41,7 +41,7 @@
     <div class="input">
 <?php 
 $this->load->helper('widgets');
-echo form_class_selector($schools_classes, "Выбрать класс", 'title="Выбор класса" class="btn"');
+echo form_class_selector($schools_classes, "Выбрать класс", 'title="Выбор класса" class="btn"', $default_class);
 echo form_error('class_id');
 ?>
     </div>

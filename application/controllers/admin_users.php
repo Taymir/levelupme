@@ -32,9 +32,11 @@ class admin_users extends MY_Controller {
         return $this->load_view('admin_users/list_view', "Пользователи");
     }
     
-    public function add_user()
+    public function add_user($class_id = null)
     {
         $this->load->library('form_validation');
+        if($class_id == null)
+            $class_id = $this->input->post('class_id');
         
         if($this->form_validation->run())
         {
@@ -53,8 +55,36 @@ class admin_users extends MY_Controller {
         $this->load_scripts('mootools-core', 'mootools-more', 'MUX.Dialog', 'showDialog');
         $this->load_style('MUX.Dialog');
         $this->load_var('schools_classes', $schools_classes);
+        $this->load_var('default_class', $class_id);
         $this->load_var('tariffs', $tariffs);
         return $this->load_view('admin_users/add_user_view', "Добавление пользователя");
+    }
+    
+    public function mass_add_user($class_id = null)
+    {
+        $this->load->library('form_validation');
+        if($class_id == null)
+            $class_id = $this->input->post('class_id');
+        
+        if($this->form_validation->run())
+        {
+            $names = $this->input->post('names');
+            $names = str_replace("\r", "", $names);
+            $names = explode("\n", $names);
+            $names = array_map('trim', $names);
+            
+            $this->user_profile_model->batch_add_users($names, $class_id);
+            
+            return $this->redirect_message(array('admin_users', '?class=' . $class_id), "Ученики добавлены");
+        }
+        $this->load->model('classes_model');
+        $schools_classes = $this->classes_model->get_schools_and_classes();
+        
+        $this->load_scripts('mootools-core', 'mootools-more', 'MUX.Dialog', 'showDialog');
+        $this->load_style('MUX.Dialog');
+        $this->load_var('schools_classes', $schools_classes);
+        $this->load_var('default_class', $class_id);
+        return $this->load_view('admin_users/mass_add_user', "Массовое добавление учеников");
     }
     
     public function ban_user($profile_id)

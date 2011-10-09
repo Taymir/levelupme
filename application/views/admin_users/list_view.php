@@ -55,5 +55,6 @@
 </table>
 
 <div class="actions">
-<?php echo anchor('admin_users/add_user', '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить пользователя', array('class' => "btn success")) ?>
+<?php echo anchor('admin_users/mass_add_user/'. $class_id, '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить много учеников', array('class' => "btn success")) ?>&nbsp;
+<?php echo anchor('admin_users/add_user/' . $class_id, '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить ученика', array('class' => "btn success")) ?>
 </div>

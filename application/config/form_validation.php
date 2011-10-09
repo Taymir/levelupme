@@ -43,6 +43,18 @@ $config = array(
     ),
     
     /* ADMIN_USERS */
+    'admin_users/mass_add_user' => array(
+        array(
+            'field' => 'names',
+            'label' => 'Имена',
+            'rules' => 'required'
+        ),
+        array(
+            'field' => 'class_id',
+            'label' => 'Класс',
+            'rules' => 'required'
+        ),
+    ),
     'admin_users/add_user' => array(
         array(
             'field' => 'username',
