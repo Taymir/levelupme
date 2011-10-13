@@ -70,6 +70,19 @@ class admin_operators extends MY_Controller {
         
         return $this->redirect_message('admin_operators', "Оператора удален");
     }
+    
+    public function username_available($username)
+    {
+        $this->load->model('tank_auth/users');
+        
+        if(!$this->users->is_username_available($username))
+        {
+            $this->form_validation->set_message('username_available', "Данный логин уже используется");
+            return false;
+        }
+        
+        return true;
+    }
 }
 
 ?>

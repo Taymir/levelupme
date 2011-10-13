@@ -159,7 +159,7 @@ class Tank_auth
 	 * @param	bool
 	 * @return	array
 	 */
-	function create_user($username, $email, $password, $email_activation)
+	function create_user($username, $email, $password, $email_activation, $create_profile = true)
 	{
 		if ((strlen($username) > 0) AND !$this->ci->users->is_username_available($username)) {
 			$this->error = array('username' => 'auth_username_in_use');
@@ -184,7 +184,7 @@ class Tank_auth
 			if ($email_activation) {
 				$data['new_email_key'] = md5(rand().microtime());
 			}
-			if (!is_null($res = $this->ci->users->create_user($data, !$email_activation))) {
+			if (!is_null($res = $this->ci->users->create_user($data, !$email_activation, $create_profile))) {
 				$data['user_id'] = $res['user_id'];
 				$data['password'] = $password;
 				unset($data['last_ip']);
@@ -393,6 +393,24 @@ class Tank_auth
 		}
 		return FALSE;
 	}
+    
+    /* Добавлен метод для смены пароля при неизвестном старом пароле */
+    function set_new_password($user_id, $pass)
+    {
+		if (!is_null($user = $this->ci->users->get_user_by_id($user_id, TRUE))) {
+            $hasher = new PasswordHash(
+					$this->ci->config->item('phpass_hash_strength', 'tank_auth'),
+					$this->ci->config->item('phpass_hash_portable', 'tank_auth'));
+            
+            // Hash new password using phpass
+            $hashed_password = $hasher->HashPassword($pass);
+
+            // Replace old password with new one
+            $this->ci->users->change_password($user_id, $hashed_password);
+            return TRUE;
+        }
+        return FALSE;
+    }
 
 	/**
 	 * Change user email (only when user is logged in) and return some data about user:

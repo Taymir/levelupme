@@ -1,37 +1,14 @@
-<h2>Добавление пользователя</h2>
+<h2><?= isset($profile) ? 'Изменение пользователя' : 'Добавление пользователя' ?></h2>
 
 <?php $this->load->helper('form'); ?>
-<?= form_open('admin_users/add_user', 'class="niceform"');?>
+<?= form_open('', 'class="niceform"');?>
+<?php if(isset($profile)) echo form_hidden('profile_id', $profile->id); ?>
 
-<div class="clearfix">
-<?= form_label("Логин" , 'username') ?>
-    <div class="input">
-    <?= form_input('username', set_value('username')) ?>
-    <?= form_error('username') ?>
-    </div>
-</div>
-
-
-<div class="clearfix">
-<?= form_label("Пароль", 'password') ?>
-    <div class="input">
-    <?= form_password('password', set_value('password')) ?>
-    <?= form_error('password') ?>
-    </div>
-</div>
-
-<div class="clearfix">
-<?= form_label('Подтверждение пароля', 'confirm') ?>
-    <div class="input">
-    <?= form_password('confirm', set_value('confirm')) ?>
-    <?= form_error('confirm') ?>
-    </div>
-</div>
-
+<?= form_fieldset('Данные ученика') ?>
 <div class="clearfix">
 <?= form_label('Имя ученика', 'name') ?>
     <div class="input">
-    <?= form_input('name', set_value('name')) ?>
+    <?= form_input('name', set_value('name', @$profile->name)) ?>
     <?= form_error('name') ?>
     </div>
 </div>
@@ -50,15 +27,17 @@ echo form_error('class_id');
 <div class="clearfix">
 <?= form_label('Тариф', 'tariff') ?>
     <div class="input">
-    <?= form_dropdown('tariff', $tariffs, set_value('tariff')); ?>    
+    <?= form_dropdown('tariff', $tariffs, set_value('tariff', (isset($profile->tariff)?$profile->tariff:1))); ?>    
     <?= form_error('tariff') ?>
     </div>
 </div>
+<?=form_fieldset_close() ?>
 
+<?= form_fieldset('Контактные данные для рассылок') ?>
 <div class="clearfix">
 <?= form_label('Телефон', 'phone') ?>
     <div class="input">
-    <?= form_input('phone', set_value('phone')) ?>
+    <?= form_input('phone', set_value('phone', @$profile->phone)) ?>
     <?= form_error('phone') ?>
     </div>
 </div>
@@ -66,13 +45,60 @@ echo form_error('class_id');
 <div class="clearfix">
 <?= form_label('Email', 'email') ?>
     <div class="input">
-    <?= form_input('email', set_value('email')) ?>
+    <?= form_input('email', set_value('email', @$profile->email)) ?>
     <?= form_error('email') ?>
     </div>
 </div>
+<?= form_fieldset_close() ?>
+
+<?= form_fieldset("Данные для входа на сайт"); ?>
+<div class="clearfix">
+<?= form_label("Логин" , 'username') ?>
+    <div class="input">
+    <?php if(isset($user)): ?>
+    <strong><?= $user->username ?></strong><br/>
+    <?php else: ?>
+    <?= form_input('username', set_value('username')) ?>
+    <?= form_error('username') ?>
+    <?php endif; ?>
+    </div>
+</div>
+
+<?php if(isset($user)): ?>
+<div class="clearfix">
+    <div class="input">
+        <label>
+        <?= form_checkbox('change_password', '1', set_checkbox('change_password', '1'), 'onChange="showHide($(\'passwordChange\'))"') ?>
+        Сменить пароль
+        </label>
+    </div>
+</div>
+<div id="passwordChange" <?= @$_POST['change_password'] == '1' ? '' : 'style="display:none"' ?>>
+<?php else: ?>
+<div>
+<?php endif; ?>
+
+<div class="clearfix">
+<?= form_label("Новый пароль", 'password') ?>
+    <div class="input">
+    <?= form_password('password', set_value('password')) ?>
+    <?= form_error('password') ?>
+    </div>
+</div>
+
+<div class="clearfix">
+<?= form_label('Подтверждение пароля', 'confirm') ?>
+    <div class="input">
+    <?= form_password('confirm', set_value('confirm')) ?>
+    <?= form_error('confirm') ?>
+    </div>
+</div>
+    
+</div>
+<?= form_fieldset_close(); ?>
 
 <div class="actions">
-<?= form_submit('submit', "Добавить", 'class="btn primary"') ?></p>
+<?= form_submit('submit', isset($profile)?"Сохранить" : "Добавить", 'class="btn primary"') ?></p>
 </div>
 
 <?= form_close() ?>

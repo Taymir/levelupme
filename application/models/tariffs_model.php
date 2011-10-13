@@ -24,6 +24,11 @@ class tariffs_model {
     {
         $result = $this->get_tariffs_for_selector();
         
+        // отсутствующий тариф не нужен, т.к. невозможно рассылать
+        // сообщения незарегистрированным пользователям
+        if(isset($result[0]))
+            unset($result[0]);
+        
         // Добавляем слово " и выше" к названию каждого тарифа
         foreach($result as $k=>$r)
             $result[$k] = $r . ' и выше';
@@ -34,11 +39,6 @@ class tariffs_model {
     public function get_tariffs_for_selector()
     {
         $result = $this->tariffs;
-        
-        // отсутствующий тариф не нужен, т.к. невозможно рассылать
-        // сообщения незарегистрированным пользователям
-        if(isset($result[0]))
-            unset($result[0]);
         
         return $result;
     }

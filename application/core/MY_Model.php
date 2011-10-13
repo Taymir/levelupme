@@ -61,15 +61,15 @@ class MY_Model extends CI_Model {
         return $this->db->insert($table_name, $data);
     }
 
-    protected function typical_update($table_name, $data, $id)
+    protected function typical_update($table_name, $data, $id_value, $id_field = 'id')
     {
-        $this->db->where('id', $id);
+        $this->db->where($id_field, $id_value);
         return $this->db->update($table_name, $data);
     }
 
-    protected function typical_delete($table_name, $id)
+    protected function typical_delete($table_name, $id_value, $id_field = 'id')
     {
-        $this->db->where('id', $id);
+        $this->db->where($id_field, $id_value);
         $this->db->delete($table_name);
 
         return TRUE;

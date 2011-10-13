@@ -293,17 +293,51 @@ class user_profile_model extends MY_Model {
         $ci = & get_instance();
         $ci->load->library('tank_auth');
         
-        $result = $ci->tank_auth->create_user($username, $email, $password, false);
-        if($result)
+        if($username != '')
         {
-            $this->typical_update($this->table_name, $profile_data, $result['user_id']);//@TODO: Добавить сюда email
-            return TRUE;
+            $result = $ci->tank_auth->create_user($username, $email, $password, false);
+            if($result)
+            {
+                return $this->typical_update($this->table_name, $profile_data, $result['user_id'], 'user_id');
+            }
+        } else {
+            $profile_data['user_id'] = NULL;
+            return $this->typical_insert($this->table_name, $profile_data);
         }
-        else
-        {
-            return FALSE;
-        }
+        
+        return FALSE;
     }
+    
+    public function save_user_profile($profile_id, $data)
+    {
+        $result = true;
+        if(isset($data['password']))
+        {
+            $result = false;
+            $ci = & get_instance();
+            $ci->load->library('tank_auth');
+        
+            $password = $data['password'];
+
+            if(isset($data['username']))
+            {
+                $username = $data['username'];
+                $result = $ci->tank_auth->create_user($username, $data['email'], $password, false, false);
+                $data['user_id'] = $result['user_id'];
+            } else {
+                $profile = $this->typical_find($this->table_name, $profile_id);
+                if($profile->user_id)
+                    $result = $ci->tank_auth->set_new_password($profile->user_id, $password);
+            }
+        }
+        unset($data['username']);
+        unset($data['password']);
+        
+        if($result)
+            return $this->typical_update($this->table_name, $data, $profile_id);
+        return $result;
+    }
+    
     
     public function add_operator_profile($data)
     {
@@ -322,7 +356,7 @@ class user_profile_model extends MY_Model {
         $result = $ci->tank_auth->create_user($username, $email, $password, false);
         if($result)
         {
-            $this->typical_update($this->table_name, $profile_data, $result['user_id']);
+            $this->typical_update($this->table_name, $profile_data, $result['user_id'], 'user_id');
             if($data['role'] != 'admin')
                 $this->save_operators_school_list($result['user_id'], $data['schools']);
             return TRUE;
@@ -399,10 +433,10 @@ class user_profile_model extends MY_Model {
         $ci->load->model('tank_auth/users');
         
         $user_profile = $this->typical_find($this->table_name, $user_profile_id);
-        if($user_profile->user_id >= 0)
-            return $this->users->delete_user($user_profile_id);
+        if($user_profile->user_id === null)
+            return $this->typical_delete ($this->table_name, $user_profile_id);
         else 
-            $this->typical_delete ($this->table_name, $user_profile_id);
+            return $this->users->delete_user($user_profile->user_id);
     }
 
 }

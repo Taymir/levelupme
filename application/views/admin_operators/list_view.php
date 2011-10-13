@@ -20,7 +20,9 @@
     <td><?= $operator->name ?></td>
     <td>
     <nobr>
-    <?php echo anchor(array('admin_operators', 'remove_operator', $operator->id),
+    <?php 
+        if($operator->username != 'admin')
+        echo anchor(array('admin_operators', 'remove_operator', $operator->id),
             '<img src="' . base_url() . 'styles/icons/user_delete.png" />',
             array('class' => "btn tiny error", 'title'=>"Удаление оператора", 'onclick' => "return confirm('Вы уверены, что хотите удалить оператора?')"));
     ?>

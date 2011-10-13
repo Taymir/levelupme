@@ -59,17 +59,17 @@ $config = array(
         array(
             'field' => 'username',
             'label' => 'логин',
-            'rules' => 'required|alpha_numeric'
+            'rules' => 'alpha_numeric|callback_username_available'
         ),
         array(
             'field' => 'password',
             'label' => 'пароль',
-            'rules' => 'required|alpha_numeric'
+            'rules' => 'callback_password_required|alpha_numeric'
         ),
         array(
             'field' => 'confirm',
             'label' => 'подтверждение пароля',
-            'rules' => 'required|matches[password]'
+            'rules' => 'callback_password_required|matches[password]'
         ),
         array(
             'field' => 'name',
@@ -97,13 +97,60 @@ $config = array(
             'rules' => 'trim|valid_email'
         )
     ),
+    'admin_users/edit_user' => array(
+        array(
+            'field' => 'username',
+            'label' => 'логин',
+            'rules' => 'callback_username_available|alpha_numeric'
+        ),
+        array(
+            'field' => 'password',
+            'label' => 'пароль',
+            'rules' => 'callback_password_required|alpha_numeric'
+        ),
+        array(
+            'field' => 'confirm',
+            'label' => 'подтверждение пароля',
+            'rules' => 'callback_password_required|matches[password]'
+        ),
+        array(
+            'field' => 'name',
+            'label' => 'имя ученика',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'class_id',
+            'label' => 'класс',
+            'rules' => 'required'
+        ),
+        array(
+            'field' => 'tariff',
+            'label' => 'тариф',
+            'rules' => 'trim'
+        ),
+        array(
+            'field' => 'phone',
+            'label' => 'телефон',
+            'rules' => 'trim|callback_valid_phone'
+        ),
+        array(
+            'field' => 'email',
+            'label' => 'email',
+            'rules' => 'trim|valid_email'
+        ),
+        array(
+            'field' => 'change_password',
+            'label' => 'смена пароля',
+            'rules' => ''
+        )
+    ),
     
     /* ADMIN_OPERATORS */
     'admin_operators/add_operator' => array(
         array(
             'field' => 'username',
             'label' => 'логин',
-            'rules' => 'required|alpha_numeric'
+            'rules' => 'required|alpha_numeric|callback_username_available'
         ),
         array(
             'field' => 'password',
