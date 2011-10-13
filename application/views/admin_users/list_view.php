@@ -32,9 +32,9 @@
     </td>
     <td>
     <nobr>
-    <?php echo anchor(array('admin_users', 'edit_user', $user->profile_id),
-            '<img src="' . base_url() . 'styles/icons/user_edit.png" />',
-            array('class' => "btn tiny", 'title'=>"Изменить пользователя"));
+    <?php echo anchor(array('admin_users', 'remove_user', $user->profile_id),
+            '<img src="' . base_url() . 'styles/icons/user_delete.png" />',
+            array('class' => "btn tiny error", 'title'=>"Удалить пользователя", 'onclick' => "return confirm('Вы уверены, что хотите удалить пользователя?')"));
     ?>
     <?php if(!$user->banned): ?>
     <?php echo anchor(array('admin_users', 'ban_user', $user->profile_id),
@@ -47,9 +47,9 @@
            array('class' => "btn tiny success",  'title'=>"Разблокировка пользователя"));
    ?>     
    <?php endif; ?>
-    <?php echo anchor(array('admin_users', 'remove_user', $user->profile_id),
-            '<img src="' . base_url() . 'styles/icons/user_delete.png" />',
-            array('class' => "btn tiny error", 'title'=>"Удалить пользователя", 'onclick' => "return confirm('Вы уверены, что хотите удалить пользователя?')"));
+    <?php echo anchor(array('admin_users', 'edit_user', $user->profile_id),
+            '<img src="' . base_url() . 'styles/icons/user_edit.png" />',
+            array('class' => "btn tiny", 'title'=>"Изменение пользователя"));
     ?>
     </nobr>
     </td>

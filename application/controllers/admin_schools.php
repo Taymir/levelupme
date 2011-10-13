@@ -45,8 +45,7 @@ class admin_schools extends MY_Controller {
     public function add_class($school_id)
     {
         $this->load->library('form_validation');
-                
-        //@BUGFIX: из-за 1 GET-параметра, form_validation не способен сам определить раздел конфига
+        
         if($this->form_validation->run('admin_schools/add_class')) 
         {
             $data = $this->get_post_params('school_id', 'class');
@@ -56,6 +55,24 @@ class admin_schools extends MY_Controller {
         
         $this->load_var('school_id', $school_id);
         return $this->load_view('admin_schools/add_class_view', "Добавление класса");
+    }
+    
+    public function rename_class($class_id = null)
+    {
+        $this->load->library('form_validation');
+        if($class_id == null)
+            $class_id = $this->input->post('class_id');
+        
+        if($this->form_validation->run('admin_schools/add_class'))
+        {
+            $data = $this->get_post_params('class');
+            $this->classes_model->save_class($class_id, $data);
+            return $this->redirect_message('admin_schools', "Класс сохранен");
+        }
+        $class = $this->classes_model->get_class_info($class_id);
+        
+        $this->load_var('class', $class);
+        return $this->load_view('admin_schools/add_class_view', "Изменение класса");
     }
     
     public function remove_class($class_id)

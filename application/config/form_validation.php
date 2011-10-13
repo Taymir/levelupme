@@ -34,11 +34,6 @@ $config = array(
             'field' => 'class',
             'label' => 'название класса',
             'rules' => 'trim|required'
-        ),
-        array(
-            'field' => 'school_id',
-            'label' => 'идентификатор школы',
-            'rules' => 'required'
         )
     ),
     

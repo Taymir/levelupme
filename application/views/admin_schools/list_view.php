@@ -29,6 +29,10 @@
 <?php echo anchor(array('operator_timetable', "?class={$class->id}"),
         '<img src="' . base_url() . 'styles/icons/timetable.png" />',
         'class="btn tiny" title="Расписание класса"');
+?> 
+<?php echo anchor('admin_schools/rename_class/' . $class->id,
+        '<img src="' . base_url() . 'styles/icons/rename.png" />',
+        'class="btn tiny" title="Смена названия класса"');
 ?>
 </nobr>
 </td>

@@ -1,12 +1,14 @@
-<h2>Добавление класса</h2>
+<h2><?= isset($class) ? 'Изменение класса' : 'Добавление класса' ?></h2>
 
 <?php $this->load->helper('form'); ?>
-<?= form_open('', 'class="niceform"', array('school_id' => $school_id)) ?>
+<?= form_open('', 'class="niceform"') ?>
+<?php if(isset($school_id)) echo form_hidden ('school_id', $school_id); ?>
+<?php if(isset($class)) echo form_hidden ('class_id', $class->id); ?>
 
 <div class="clearfix">
 <?= form_label('Название', 'class') ?>
     <div class="input">
-    <?= form_input('class') ?>
+    <?= form_input('class', set_value('class', @$class->class)) ?>
     <?= form_error('class') ?>
     </div>
 </div>
