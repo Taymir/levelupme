@@ -1,0 +1,9 @@
+span.sf-sub-indicator {padding-left: 2px;}
+div#topnav { z-index: 20; }
+div#image_slideshow { z-index: 19; }
+
+div#images { z-index: 4000; overflow: hidden; zoom: 1; }
+#featured-wrap { zoom: 1; z-index: -1; position: relative; background: transparent; }
+
+ul.nav a#homelink:hover { cursor: pointer; }
+a.readmore:hover, a.featured-button:hover { cursor: pointer; }

@@ -1,0 +1,30 @@
+span.sf-sub-indicator { padding-left: 2px; }
+
+ul.nav a#homelink:hover { cursor: pointer; }
+
+div#topnav { z-index: 20; }
+div#image_slideshow { z-index: 19; }
+
+a.featured-button span, a.readmore span, ul#featured-control li a { display: inline-block; cursor: pointer; }
+a.featured-button { float: left; width: 40%; }
+
+#footer .widget { display: inline; }
+#tabs ul#tab_controls li.active a { background: none; padding-bottom:0px; }
+
+#sidebar { width:308px; }
+
+#featured-wrap { background: none; }
+
+#topmenu { background:url("images/ie6/menu-bg-fs8.png") repeat-x scroll 0 0 transparent; }
+#topmenu-leftbg { background:url("images/ie6/menu-leftbg-fs8.png") no-repeat scroll 0 0 transparent; }
+#topmenu-rightbg { background:url("images/ie6/menu-rightbg-fs8.png") no-repeat scroll 0 0 transparent; }
+#top-box a.featured-button { background:url("images/ie6/button_bg-fs8.png") no-repeat scroll right bottom transparent; }
+#top-box a.featured-button span { background:url("images/ie6/button_bg-fs8.png") no-repeat scroll left top transparent; }
+
+ul#featured-control li { background:url("images/ie6/featured-li-fs8.png") repeat scroll right bottom transparent; }
+	ul#featured-control li a { background:url("images/ie6/featured-li-fs8.png") no-repeat scroll 0 0 transparent; height: 47px; line-height:47px; }
+	
+ul#featured-control li.active { background:url("images/ie6/active-bg-sprite-fs8.png") repeat scroll right bottom transparent; }
+	ul#featured-control li.active a { background:url("images/ie6/active-bg-sprite-fs8.png") no-repeat scroll 0 0 transparent; }
+	
+#switcher-left, #switcher-right, #switcher-content { background: none; }

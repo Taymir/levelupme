@@ -91,7 +91,7 @@ class operator_journal extends MY_Controller {
             if($mailed)
                 return $this->show_message("Оценки сохранены и отправлены. $mailed получателей.");
             else
-                return $this->show_message ("Оценки не отправлены. Проверьте, есть ли в выбранной школе и классе ученики с подходящим тарифом");
+                return $this->show_message ("Оценки сохранены, но не отправлены, т.к. отсутствуют ученики с подходящими тарифами (или не заполнены их контактные данные).");
         }
     }
     
@@ -151,9 +151,15 @@ class operator_journal extends MY_Controller {
                 $subject = $subjects[$num];
 
                 if(isset($grades[$user_profile_id][$num]) && trim($grades[$user_profile_id][$num]) != '')
-                    $pre_data[$subject]['grades'] = $grades[$user_profile_id][$num];
+                {
+                    $pre_data[$num]['grades'] = $grades[$user_profile_id][$num];
+                    $pre_data[$num]['subject'] = $subject;
+                }
                 if(isset($comments[$user_profile_id][$num]) && trim($comments[$user_profile_id][$num]) != '')
-                    $pre_data[$subject]['comment'] = $comments[$user_profile_id][$num];
+                {
+                    $pre_data[$num]['comment'] = $comments[$user_profile_id][$num];
+                    $pre_data[$num]['subject'] = $subject;
+                }
             }
             
             if(sizeof($pre_data) > 0)
@@ -168,13 +174,14 @@ class operator_journal extends MY_Controller {
                 
                 // Композиция письма
                 $email_title = "$student. Оценки $date";
-                $email_text = "<h2>$student</h2><br><b>$date</b><br>";//@TMP
+                $email_text = "<h2>$student<br><b>$date</b></h2><br>";//@TMP
                 $sms_text = "$date $student\n";
                 
                 $email_text .= "<ul>";
-                foreach($pre_data as $subject => $arr)
+                foreach($pre_data as $num => $arr)
                 {
                     //@REFACTOR: это все должно быть во VIEW!!!!!!!
+                    $subject = $pre_data[$num]['subject'];
                     $grade = isset($arr['grades']) ? $arr['grades'] : '';
                     
                     $email_text .= "<li><b>$subject</b>: $grade";

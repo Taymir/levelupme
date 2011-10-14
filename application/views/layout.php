@@ -7,6 +7,15 @@
 <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>styles/style.css" />
 <?= isset($styles) ? $styles : '' ?>
 <?= isset($scripts) ? $scripts : '' ?>
+
+<!--[if lt IE 7]>
+	<link rel="stylesheet" type="text/css" href="<?= base_url(); ?>styles/ie6style.css" />
+	<script type="text/javascript" src="<?= base_url(); ?>scripts/DD_belatedPNG_0.0.8a-min.js"></script>
+	<script type="text/javascript">DD_belatedPNG.fix('#logo, #images img, #testimonial, .testimonials, .service img.icon, #footer .widget ul li, #switcher-left, #switcher-right, #switcher-content a, #switcher-content a.active');</script>
+<![endif]-->
+<!--[if IE 7]>
+	<link rel="stylesheet" type="text/css" href="<?= base_url(); ?>styles/ie7style.css" />
+<![endif]-->
 </head>
 <body id="home">
 <div id="header-wrapper">
@@ -43,9 +52,15 @@
 </div> <!-- end #content-left -->
     
 <div id="sidebar">
+<?php
+$ci = & get_instance();
+$ci->load->library('user_agent');
+$ie6 = $ci->agent->is_browser('Internet Explorer') && (int)$ci->agent->version() == 6;
 
+if(!$ie6):
+?>
 <img src="<?= base_url(); ?>styles/images/iphone.png" style="margin-top: -470px; margin-left: -90px; margin-bottom: -80px;" />
-
+<?php endif; ?>
 
         <?php if($AUTH_FORM) $this->load->view('auth_form.php'); ?>
 
