@@ -194,6 +194,21 @@ class user_profile_model extends MY_Model {
         return $query->result();
     }
     
+    public function get_userlist_by_profile_ids($ids_list)
+    {
+        $this->db->select('*');
+        $this->db->select('id AS user_profile_id');
+        $this->db->from($this->table_name);
+        $this->db->where_in('id', $ids_list);
+        
+        $query = $this->db->get();
+        
+        $res = array();
+        foreach($query->result() as $row)
+            $res[$row->user_profile_id] = $row;
+        return $res;
+    }
+    
     public function get_userlist_by_class($class_id, $min_tariff = NULL)
     {
         $this->db->select('id AS user_profile_id, name' );
@@ -210,7 +225,7 @@ class user_profile_model extends MY_Model {
     
     public function get_users_by_class_without_school($class_id, $min_tariff = NULL)
     {
-        $this->db->select('*' );
+        $this->db->select('*');
         $this->db->from($this->table_name);
         $this->db->where('class_id', $class_id);
         if($min_tariff != NULL)
@@ -248,7 +263,7 @@ class user_profile_model extends MY_Model {
         $classes = $ci->classes_model->get_classlist_by_school($school_id);
         $classes = array_keys($classes);
         
-        $this->db->select('*' );
+        $this->db->select('*');
         $this->db->from($this->table_name);
         $this->db->where_in('class_id', $classes);
         if($min_tariff != NULL)

@@ -58,15 +58,17 @@ class operator_messages extends MY_Controller {
     
     public function send()
     {
+        
         $this->load->model('user_profile_model');
         $this->load->model('tariffs_model');
         
         if($this->input->post('submit'))
         {
+            $mailed = 0;
             $title = trim($this->input->post('title'));
             $text = trim($this->input->post('text'));
             $type = $this->input->post('recipient_type');
-            $user = (int)$this->input->post('user');
+            $profile_id = (int)$this->input->post('user');
             $tariff = $this->input->post('tariff');
             $class_id = $this->input->post('class_id');
             $school_id = $this->input->post('school_id');
@@ -85,20 +87,23 @@ class operator_messages extends MY_Controller {
             if($type == 'user')
             {
                 // Отправка одному пользователю
-                $data['user_profile_id'] = $user;
+                $profile = $this->user_profile_model->get_user_profile($profile_id);
+                $tariff = $profile->tariff;
+                $data['user_profile_id'] = $profile->id;
                 
-                if(!$this->tariffs_model->rule_send_email($tariff))
+                if(!$this->tariffs_model->rule_send_email($tariff) || empty($profile->email))
                 {
                     unset($data['email_title']);
                     unset($data['email_text']);
                 }
 
-                if(!$this->tariffs_model->rule_send_sms($tariff))
+                if(!$this->tariffs_model->rule_send_sms($tariff) || empty($profile->phone))
                 {
                     unset($data['sms_text']);
                 }
                 
-                $mailed = $this->mailings_model->add_single_mailing($data);
+                if( isset($data['email_text']) || isset($data['sms_text']) )
+                    $mailed = $this->mailings_model->add_single_mailing($data);
             } else
             {
                 if($type == 'class') 
@@ -122,25 +127,28 @@ class operator_messages extends MY_Controller {
                 foreach($user_list as  $user_row)
                 {
                     $user_profile_id = $user_row->id;
-                    $name = $user_row->id;
                     $tmp_data = $data;
                     $tmp_data['user_profile_id'] = $user_profile_id;
                     
-                    if(!$this->tariffs_model->rule_send_email($user_row->tariff))
+                    if(!$this->tariffs_model->rule_send_email($user_row->tariff) || empty($user_row->email))
                     {
                         unset($tmp_data['email_title']);
                         unset($tmp_data['email_text']);
                     }
                     
-                    if(!$this->tariffs_model->rule_send_sms($user_row->tariff))
+                    if(!$this->tariffs_model->rule_send_sms($user_row->tariff) || empty($user_row->phone))
                     {
                         unset($tmp_data['sms_text']);
                     }
                     
-                    $batch_data[] = $tmp_data;
+                    if( isset($data['email_text']) || isset($data['sms_text']) )
+                    {
+                        $batch_data[] = $tmp_data;
+                    }
                 }
                 
-                $mailed = $this->mailings_model->add_multi_mailing($type, $batch_data, $recipient);
+                if(sizeof($batch_data) > 0)
+                    $mailed = $this->mailings_model->add_multi_mailing($type, $batch_data, $recipient);
             }
             
             if($mailed)
@@ -201,6 +209,8 @@ class operator_messages extends MY_Controller {
     {
         $data = $this->mailings_model->get_mailing($mailing_id);
         $data->text = $data->email_text;
+        if(empty($data->text))
+             $data->text = '<pre>' . $data->sms_text . '</pre>';
         
         return $this->load_view('operator_messages/view_view', "Просмотр рассылки", $data);
     }

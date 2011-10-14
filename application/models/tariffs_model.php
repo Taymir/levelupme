@@ -56,6 +56,11 @@ class tariffs_model {
             return true;
         return false;
     }
+    
+    public function rule_send_any($tariff)
+    {
+        return $this->rule_send_sms($tariff) || $this->rule_send_email($tariff);
+    }
 }
 
 ?>

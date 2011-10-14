@@ -208,7 +208,7 @@ function form_comment($name, $comment, $linkText, $extra = '')
     $out .= form_textarea($name, $comment, "style=\"width: 300px\" id=\"txt$dialog_id\"");
     $out .= "<script type=\"text/javascript\">
             window.addEvent('domready', function(){
-            $('txt$dialog_id').addEvent('change', function(){updateButtonColor('txt$dialog_id', 'dialogLauncher$dialog_id')}); 
+            $('txt$dialog_id').addEvent('change', function(){updateButtonColor('txt$dialog_id', 'dialogLauncher$dialog_id')});updateButtonColor('txt$dialog_id', 'dialogLauncher$dialog_id');
             });
             </script>\n";
     

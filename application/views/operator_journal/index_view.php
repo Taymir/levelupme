@@ -75,8 +75,17 @@ var setNto = function(profile_id)
 <td><a href="#" class="btn tiny" title="Неприсутствовал весь день" onclick="return setNto(<?=$student->profile_id?>)">Н</a></td>
 <?php for($num = 1; ($num - 1) < $this->config->item('max_lessons'); $num++): ?>
 <td><nobr>
-<?= form_comment("comments[{$student->profile_id}][$num]", '', '<img src="' . base_url() .'styles/icons/comment.png" />', 'class="btn tiny" title="Добавить комментарий"') ?>&nbsp;
-<?= form_input("grades[{$student->profile_id}][$num]", '', 'class="gradeField std' . $student->profile_id . '"') ?>
+<?= form_comment (
+        "comments[{$student->profile_id}][$num]",
+        isset($comments[$student->profile_id][$num]) ? $comments[$student->profile_id][$num] : '',
+        '<img src="' . base_url() .'styles/icons/comment.png" />',
+        'class="btn tiny" title="Добавить комментарий"'
+) ?>&nbsp;
+<?= form_input(
+        "grades[{$student->profile_id}][$num]",
+        isset($grades[$student->profile_id][$num]) ? $grades[$student->profile_id][$num] : '',
+        'class="gradeField std' . $student->profile_id . '"'
+) ?>
 </nobr></td>
 <?php endfor; ?>
 </tr>
@@ -86,8 +95,12 @@ var setNto = function(profile_id)
 </div>
 
 <div class="actions">
+    <?php if(isset($grades)): ?>
+    <strong>Журнал на эту дату уже заполнен и сохранен. Вы не можете сохранить его повторно</strong>
+    <?php else: ?>
     <?= form_submit('submit', 'Сохранить', 'class="btn primary" id="submit"') ?>
     <em>При сохранении, оценки будут разосланы родителям!</em>
+    <?php endif; ?>
 </div>
 <?= form_close() ?>
 <?php else: ?>

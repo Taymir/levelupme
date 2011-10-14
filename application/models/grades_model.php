@@ -64,7 +64,7 @@ class grades_model extends MY_Model {
         
         // сохранение информации
         $this->db->trans_start();
-        //@TODO: решить как действовать со старыми датами жарнала, наверное стирать?
+        $this->clear_grades($date, array_keys($students));//@TOTHINK: Оставить или стереть?
         if(sizeof($batch_data) > 0)
             $this->db->insert_batch ($this->table_name, $batch_data);
         $this->db->trans_complete();
@@ -72,9 +72,74 @@ class grades_model extends MY_Model {
         return TRUE;
     }
     
-    public function load_grades($date, $class_id)
+    public function has_grades($date, $user_profiles_ids)
     {
+        $this->db->select('COUNT(*) as count', FALSE);
+        $this->db->from($this->table_name);
+        $this->db->where('date', $date);
+        $this->db->where_in('user_profile_id', $user_profiles_ids);
+        $query = $this->db->get();
         
+        $result = $query->row();
+        if($result->count > 0)
+            return TRUE;
+        return FALSE;
+    }
+    
+    public function clear_grades($date, $user_profiles_ids)
+    {
+        $this->db->where('date', $date);
+        $this->db->where_in('user_profile_id', $user_profiles_ids);
+        $this->db->delete($this->table_name);
+        
+        return true;
+    }
+    
+    public function load_grades($date, $user_profile_ids)
+    {
+        //Формат таблицы:
+        //$row = array(
+        // user_profile_id
+        // grade
+        // comment
+        // subject
+        // num
+        // date
+        // )
+        //
+        // Надо переформатировать в:
+        //
+        // Формат $data:
+        // $data[subjects] = array(1=>История, 2=>Информатика...);
+        // $data[grades][studentkey][subjectkey] = grade
+        // $data[comments][studentkey][subjectkey] = comment
+        $this->db->select('*');
+        $this->db->from($this->table_name);
+        $this->db->where('date', $date);
+        $this->db->where_in('user_profile_id', $user_profile_ids);
+        $query = $this->db->get();
+        $unformated_grades = $query->result();
+        
+        // Форматируем результат
+        $grades = array();
+        $subjects = array();
+        $comments = array();
+        foreach($unformated_grades as $grade)
+        {
+            $grades[$grade->user_profile_id][$grade->num] = $grade->grade;
+            $comments[$grade->user_profile_id][$grade->num] = $grade->comment;
+            
+            if(!isset($subjects[$grade->num]))
+                $subjects[$grade->num] = $grade->subject;
+        }
+        
+        if(sizeof($subjects) > 0)
+            return array(
+                'grades' => $grades,
+                'subjects' => $subjects,
+                'comments' => $comments
+                );
+        return NULL;
     }
 }
 
