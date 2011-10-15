@@ -1,3 +1,10 @@
 captcha/*
 application/logs/*
 application/cache/*
+/styles/images/old/active-bg-sprite.png
+/styles/images/old/bg.png
+/styles/images/old/button_bg.png
+/styles/images/old/featured-li.png
+/styles/images/old/iphone.png
+/styles/images/old/logo.png
+/styles/images/old/top-bg.jpg

@@ -15,9 +15,11 @@
     <td><?php echo anchor(array('pages', 'display', $page->id), html_escape($page->title)); ?></td>
     <td>
     <nobr>
-    <?php echo anchor(array('admin_pages', 'delete', $page->id),
+    <?php if($page->id != 1) echo anchor(array('admin_pages', 'delete', $page->id),
             '<img src="' . base_url() . 'styles/icons/delete.png" />',
-            array('class' => "btn tiny error", 'title' => "Удаление страницы", 'onclick' => "return confirm('Вы уверены, что хотите удалить эту страницу?')")); ?>
+            array('class' => "btn tiny error", 'title' => "Удаление страницы", 'onclick' => "return confirm('Вы уверены, что хотите удалить эту страницу?')"));
+          else echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    ?>
     <?php echo anchor(array('admin_pages', 'edit', $page->id),
             '<img src="' . base_url() . 'styles/icons/page_edit.png" />',
             array('class' => "btn tiny", 'title' => "Редактирование страницы")); ?>

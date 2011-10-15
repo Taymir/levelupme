@@ -13,24 +13,24 @@
 class pages extends MY_Controller {
     public function __construct() {
         parent::__construct();
-
+        
+        $this->use_short_view(false);
         $this->load->model('pages_model');
     }
     
     public function index()
     {
-        return $this->display(7);//@TMP
+        return $this->display(1, "home");//@HARDFIX
     }
     
-    public function display($id)
+    public function display($id, $url = null)
     {
         $data = $this->pages_model->get_page($id);
         
         if($data == null)
             return show_404 ();
         
-        $this->load_var('page', $data);
-        return $this->load_view('pages/display_view', $data->title);
+        return $this->load_view('pages/display_view', $data->title, array('page' => $data, 'page_name' => $url));
     }
 }
 

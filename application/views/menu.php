@@ -13,23 +13,21 @@
     <li><a href="/operator_journal">Журнал</a></li>
     <li><a href="/operator_timetable">Расписание</a></li>
     <li><a href="/operator_messages">Рассылки</a></li>
-    <li><a href="/operator_settings">Настройки</a></li>
+    <!--<li><a href="/operator_settings">Настройки</a></li>-->
 </ul>
 <?php endif; ?>
-<?php if($role == 'parent'): ?>
+<?php if($role == 'parent'): /*?>
 <strong>Раздел родителя:</strong>
 <ul>
     <li><a href="/recordbook">Дневник</a></li>
     <li><a href="/schedule">Расписание</a></li>
     <li><a href="/payment">Оплата</a></li>
-    <li><a href="/settings">Настройки</a></li>
+    <!--<li><a href="/settings">Настройки</a></li>-->
 </ul>
-<?php endif; ?>
+<?php*/ endif; ?>
 <strong>Меню:</strong>
 <ul>
-    <li><a href="/home">Об электронном дневнике</a></li>
-    <li><a href="/parents">Родителям</a></li>
-    <li><a href="/schools">Школам</a></li>
-    <li><a href="/userhelp">Пользователям</a></li>
-    <li><a href="/tests"><em>Тестирование</em></a></li>
+    <li><a href="/">О системе Levelup</a></li>
+    <li><a href="/join">Подключение</a></li>
+    <li><a href="/help">Пользователям</a></li>
 </ul>

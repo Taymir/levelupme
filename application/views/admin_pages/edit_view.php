@@ -23,7 +23,7 @@
 <div class="clearfix">
 <?= form_label('Ссылка:', 'link'); ?>
     <div class="input">
-    <?= form_input('link', set_value('link', $link)); ?>
+    <?= form_input('link', set_value('link', $link), (isset($id) && $id == 1) ? 'disabled="disabled"' : ''); ?>
     <?= form_error('link'); ?>
     </div>
 </div>

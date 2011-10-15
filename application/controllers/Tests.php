@@ -11,6 +11,8 @@ class Tests extends MY_Controller {
         parent::__construct();
         
         //$this->load->model('name_model');
+        if(ENVIRONMENT != 'development')
+            $this->denyAccess ();
     }
     
     public function index()

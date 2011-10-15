@@ -14,6 +14,12 @@ class MY_Controller extends CI_Controller {
         
         $this->authenticate();
         $this->allowAccessFor($roles_allowed);
+        $this->use_short_view();
+    }
+    
+    protected function use_short_view($use_it = true)
+    {
+        $this->load_var('SHORT_VIEW', $use_it);
     }
     
     private function authenticate()

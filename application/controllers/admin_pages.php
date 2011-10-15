@@ -42,9 +42,11 @@ class Admin_pages extends MY_Controller {
             // Если форма засабмичена
             $data = $this->get_post_params('link', 'title', 'text');
             
-            if($id)
+            if($id) {
+                if($id == 1)
+                    unset($data['link']);
                 $result = $this->pages_model->save_page($id, $data);
-            else
+            } else
                 $result = $this->pages_model->create_page($data);
             
             $this->save_routes();
@@ -67,6 +69,8 @@ class Admin_pages extends MY_Controller {
     
     public function delete($id)
     {
+        if($id == 1)
+            return $this->show_message ("Нельзя удалять страницу со ссылкой home (главную страницу)");
         $this->pages_model->delete_page($id);
         $this->save_routes();
         
@@ -83,7 +87,7 @@ class Admin_pages extends MY_Controller {
         $data = array();
         foreach( $routes as $route )
         {
-            $data[] = '$route["' . $route->link . '"] = "' . "pages/display/{$route->id}" . '";';
+            $data[] = '$route["' . $route->link . '"] = "' . "pages/display/{$route->id}/{$route->link}" . '";';
         }
 
         $output = "<?php\n" . implode("\n", $data);

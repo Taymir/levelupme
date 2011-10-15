@@ -75,7 +75,7 @@ img#about-image { float: left; margin: 3px 8px 8px 0px; }
 .container { text-align: left; width: 960px; margin: 0 auto; position: relative; }
 #header-wrapper { background: url(images/bg.png) repeat 0 1px; }
 #header { background: url(images/top-bg.jpg) no-repeat top center; }
-#header .container { padding-top: 20px; height: 100px; }
+#header .container { padding-top: 20px; height: 150px; }
 body#home #header .container { height: 384px; }
 
 #top-box { width: 417px; margin-top: 38px; padding-left: 3px; }
@@ -93,7 +93,7 @@ body#home #header .container { height: 384px; }
 		#breadcrumbs-content a { color: #535353; }
 			#breadcrumbs-content a:hover, p.tagline a:hover { text-decoration: none; color: #000000; }
 	
-	#top-box p { color: #7bc53b; font-size: 26px; font-family: "Minion Pro Med", "minion-pro-1", "minion-pro-2", "Times New Roman", serif;}
+	#top-box p { color: #7bc53b; font-size: 26px; font-family:"minion-pro-1", "minion-pro-2", "Times New Roman", serif;}
     #top-box p strong { color: #000; font-weight: bold; }
 	#top-box a.featured-button { display: block; float: right; height: 53px; line-height: 45px; padding-right: 32px; background: url(images/button_bg.png) no-repeat bottom right; font-size: 18px; font-family: Georgia, serif; color: #925600; margin: 8px 3px 0px 0px; text-shadow: 1px 1px 1px #fadb82; }
 	#top-box a.featured-button:hover { text-decoration: none; }

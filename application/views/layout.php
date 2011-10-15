@@ -17,15 +17,17 @@
 	<link rel="stylesheet" type="text/css" href="<?= base_url(); ?>styles/ie7style.css" />
 <![endif]-->
 </head>
-<body id="home">
+<body <?= $SHORT_VIEW ? '' : 'id="home"' ?>>
 <div id="header-wrapper">
 <div id="header">
 <div class="container">
 <a href="<?= base_url(); ?>"><img src="<?= base_url(); ?>styles/images/logo.png" alt="Logo" id="logo"/></a>
+<? if(!$SHORT_VIEW): ?>
 <div id="top-box">
-    <p>Успеваемость <strong>ваших детей</strong><br/>&ndash; наша главная цель</p>
-    <a href="#" class="featured-button"><span>Подключиться</span></a>
+    <p>Успеваемость <strong>ваших детей</strong><br/> наша главная цель</p>
+    <a href="/join" class="featured-button"><span>Подключиться</span></a>
 </div> <!-- end #top-box -->
+<? endif; ?>
 </div> <!-- end .container -->
 </div> <!-- end #header -->
 </div> <!-- end #header-wrapper -->
@@ -36,12 +38,13 @@
 <div id="content-left">
 
 <div id="featured-wrap">
+    <? if(!$SHORT_VIEW): ?>
 	<ul id="featured-control">
-		<li class="active"><a href="#">Электронный дневник</a></li>
-		<li><a href="#">Родителям</a></li>
-		<li><a href="#">Школам</a></li>
-		<li><a href="#">Пользователям</a></li>
+		<li <?= @$page_name == 'home' ? 'class="active"' : '' ?>><a href="/">О системе Levelup</a></li>
+		<li <?= @$page_name == 'join' ? 'class="active"' : '' ?>><a href="/join">Подключение</a></li>
+		<li <?= @$page_name == 'help' ? 'class="active"' : '' ?>><a href="/help">Пользователям</a></li>
 	</ul>
+    <? endif; ?>
 	<div id="featured">
 	<div class="slide clearfix">
         <?php $this->load->view($page_template); ?>
@@ -52,6 +55,8 @@
     
 <div id="sidebar">
 <?php
+if(!$SHORT_VIEW):
+   
 $ci = & get_instance();
 $ci->load->library('user_agent');
 $ie6 = $ci->agent->is_browser('Internet Explorer') && (int)$ci->agent->version() == 6;
@@ -59,7 +64,10 @@ $ie6 = $ci->agent->is_browser('Internet Explorer') && (int)$ci->agent->version()
 if(!$ie6):
 ?>
 <img src="<?= base_url(); ?>styles/images/iphone.png" style="width: 202px; height: 450px; margin-top: -400px; margin-left: 20px; margin-bottom: -35px;" />
-<?php endif; ?>
+<?php 
+endif;
+endif;
+?>
 
         <?php if($AUTH_FORM) $this->load->view('auth_form.php'); ?>
 
@@ -68,8 +76,8 @@ if(!$ie6):
         </div> <!-- end .sidebar-block -->
         <div class="sidebar-block">
                 <h3>Контакты</h3>
-                <p class="mail-text"><a href="mailto:mail@dnevnikam.net">mail@dnevnikam.net</a></p>
-                <nobr class="phone-text"><a href="callto:+79091234567">+7 (909) 123-45-67</a></nobr>
+                <p class="mail-text"><a href="mailto:levelupme@gmail.com">levelupme@gmail.com</a></p>
+                <!--<nobr class="phone-text"><a href="callto:+79091234567">+7 (909) 123-45-67</a></nobr>-->
         </div> <!-- end .sidebar-block -->
 </div> <!-- end .sidebar -->
 </div> <!-- end .container -->
@@ -79,7 +87,7 @@ if(!$ie6):
 
 <div id="footer-copyright" class="clearfix">
 	<div class="container">
-		<p id="copyright">&copy; 2011, <a href="#">dnevnikam.net</a></p>
+		<p id="copyright">&copy; 2011, <a href="#">levelupme.ru</a></p>
 	</div> <!-- end .container -->	
 </div> <!-- end #footer-copyright -->
 </body>
