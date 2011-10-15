@@ -110,7 +110,7 @@
     $output = ob_get_contents();
     
     if(defined('CRON_FLUSH_BUFFERS')) {
-        while(@ob_end_flush());        // display buffer contents
+        echo ob_get_flush();
     } else {
         ob_end_clean();
     }
