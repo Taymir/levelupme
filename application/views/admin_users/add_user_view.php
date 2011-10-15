@@ -8,7 +8,7 @@
 <div class="clearfix">
 <?= form_label('Имя ученика', 'name') ?>
     <div class="input">
-    <?= form_input('name', set_value('name', @$profile->name)) ?>
+    <?= form_input('name', set_value('name', isset($profile->name)?$profile->name : '')) ?>
     <?= form_error('name') ?>
     </div>
 </div>
@@ -37,7 +37,7 @@ echo form_error('class_id');
 <div class="clearfix">
 <?= form_label('Телефон', 'phone') ?>
     <div class="input">
-    <?= form_input('phone', set_value('phone', @$profile->phone)) ?>
+    <?= form_input('phone', set_value('phone', isset($profile->phone)?$profile->phone : '')) ?>
     <?= form_error('phone') ?>
     </div>
 </div>
@@ -45,7 +45,7 @@ echo form_error('class_id');
 <div class="clearfix">
 <?= form_label('Email', 'email') ?>
     <div class="input">
-    <?= form_input('email', set_value('email', @$profile->email)) ?>
+    <?= form_input('email', set_value('email', isset($profile->email)?$profile->email : '')) ?>
     <?= form_error('email') ?>
     </div>
 </div>
@@ -73,7 +73,7 @@ echo form_error('class_id');
         </label>
     </div>
 </div>
-<div id="passwordChange" <?= (@$_POST['change_password']) == '1' ? '' : 'style="display:none"' ?>>
+<div id="passwordChange" <?= (isset($_POST['change_password']) && $_POST['change_password'] == '1') ? '' : 'style="display:none"' ?>>
 <?php else: ?>
 <div>
 <?php endif; ?>

@@ -8,7 +8,7 @@
 <div class="clearfix">
 <?= form_label('Название', 'class') ?>
     <div class="input">
-    <?= form_input('class', set_value('class', @$class->class)) ?>
+    <?= form_input('class', set_value('class', isset($class->class) ? $class->class : '')) ?>
     <?= form_error('class') ?>
     </div>
 </div>

@@ -52,7 +52,7 @@
     </div>
 </div>
 
-<div class="clearfix" id="schoolSelectorBlock" <?= @$_POST['schools'] == '*' ? 'style="display:none"' : '' ?>>
+<div class="clearfix" id="schoolSelectorBlock" <?= (isset($_POST['schools']) && $_POST['schools'] == '*') ? 'style="display:none"' : '' ?>>
     <label>Школы</label>
     <div class="input">
     <?php 
