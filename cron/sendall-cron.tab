@@ -1,0 +1,1 @@
+# 0 0,2,4,6,8,10,12,14,16,18,20,22 * * * php -f D:\U7\Documents\WebRoot\ednevnik\cron\cron.php -- --run=/cron/send_mailings

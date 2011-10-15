@@ -24,7 +24,7 @@
 <a href="<?= base_url(); ?>"><img src="<?= base_url(); ?>styles/images/logo.png" alt="Logo" id="logo"/></a>
 <? if(!$SHORT_VIEW): ?>
 <div id="top-box">
-    <p>Успеваемость <strong>ваших детей</strong><br/> наша главная цель</p>
+    <p>Высокая успеваемость <strong>ваших детей</strong><br/> &ndash; наша главная цель</p>
     <a href="/join" class="featured-button"><span>Подключиться</span></a>
 </div> <!-- end #top-box -->
 <? endif; ?>
@@ -87,7 +87,7 @@ endif;
 
 <div id="footer-copyright" class="clearfix">
 	<div class="container">
-		<p id="copyright">&copy; 2011, <a href="#">levelupme.ru</a></p>
+		<p id="copyright">&copy; 2011, <a href="/">levelupme.ru</a></p>
 	</div> <!-- end .container -->	
 </div> <!-- end #footer-copyright -->
 </body>
