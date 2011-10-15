@@ -1,0 +1,1 @@
+php -f cron.php -- --run=/cron/send_mailings --show-output

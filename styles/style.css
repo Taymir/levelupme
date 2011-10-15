@@ -381,6 +381,8 @@ body#home #sidebar { padding-top: 65px; }
             #gradesBlock .studentsCol {
                 border-right: #bbb 1px solid;
             }
+            #gradesBlock .studentField:before{content: 'Row ';}
+            
 
             #gradesBlock .subjectsRow {
                 border-bottom: #bbb 1px solid;

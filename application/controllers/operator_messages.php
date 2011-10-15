@@ -81,7 +81,7 @@ class operator_messages extends MY_Controller {
             
             $data = array();
             $data['email_title'] = $title;
-            $data['email_text'] = $text;
+            $data['email_text'] = "<h2>$title</h2> $text";
             $data['sms_text'] = $text;//@TODO: В будущем дать возможность пользователю редактировать отдельно текст смс
             
             if($type == 'user')
@@ -93,13 +93,13 @@ class operator_messages extends MY_Controller {
                 
                 if(!$this->tariffs_model->rule_send_email($tariff) || empty($profile->email))
                 {
-                    unset($data['email_title']);
-                    unset($data['email_text']);
+                    $data['email_title'] = null;
+                    $data['email_text'] = null;
                 }
 
                 if(!$this->tariffs_model->rule_send_sms($tariff) || empty($profile->phone))
                 {
-                    unset($data['sms_text']);
+                    $data['sms_text'] = null;
                 }
                 
                 if( isset($data['email_text']) || isset($data['sms_text']) )
@@ -132,16 +132,16 @@ class operator_messages extends MY_Controller {
                     
                     if(!$this->tariffs_model->rule_send_email($user_row->tariff) || empty($user_row->email))
                     {
-                        unset($tmp_data['email_title']);
-                        unset($tmp_data['email_text']);
+                        $tmp_data['email_title'] = null;
+                        $tmp_data['email_text']= null;
                     }
                     
                     if(!$this->tariffs_model->rule_send_sms($user_row->tariff) || empty($user_row->phone))
                     {
-                        unset($tmp_data['sms_text']);
+                        $tmp_data['sms_text'] = null;
                     }
                     
-                    if( isset($data['email_text']) || isset($data['sms_text']) )
+                    if( isset($tmp_data['email_text']) || isset($tmp_data['sms_text']) )
                     {
                         $batch_data[] = $tmp_data;
                     }

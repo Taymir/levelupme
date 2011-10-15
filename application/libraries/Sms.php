@@ -56,7 +56,7 @@ class Sms {
     public function is_at_night_period()
     {
         $hour = (int)date('G');
-        if($hour >= $this->_begin_night_period && $hour < $this->_end_night_period)
+        if($hour >= $this->_begin_night_period || $hour < $this->_end_night_period)
             return true;
         return false;
     }

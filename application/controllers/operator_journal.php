@@ -191,7 +191,7 @@ class operator_journal extends MY_Controller {
                     {
                         $comment = $arr['comment'];
                         
-                        $email_text .= " ($comment)";
+                        $email_text .= "<br><i>$comment</i>";
                         $sms_text   .= "($comment)";
                     }
                     $email_text .= "</li>";

@@ -73,7 +73,7 @@ echo form_error('class_id');
         </label>
     </div>
 </div>
-<div id="passwordChange" <?= @$_POST['change_password'] == '1' ? '' : 'style="display:none"' ?>>
+<div id="passwordChange" <?= (@$_POST['change_password']) == '1' ? '' : 'style="display:none"' ?>>
 <?php else: ?>
 <div>
 <?php endif; ?>

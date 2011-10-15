@@ -71,7 +71,7 @@ var setNto = function(profile_id)
 <tbody>
 <?php foreach($students as $student): ?>
 <tr>
-    <th class="studentField"><nobr><a href="<?= base_url() . 'operator_messages/add/' . $student->profile_id ?>"><?= $student->name ?></a><?= form_hidden("students[{$student->profile_id}]", $student->name) ?></nobr></th>
+<th class="studentField"><nobr><a href="<?= base_url() . 'operator_messages/add/' . $student->profile_id ?>"><?= $student->name ?></a><?= form_hidden("students[{$student->profile_id}]", $student->name) ?></nobr></th>
 <td><a href="#" class="btn tiny" title="Неприсутствовал весь день" onclick="return setNto(<?=$student->profile_id?>)">Н</a></td>
 <?php for($num = 1; ($num - 1) < $this->config->item('max_lessons'); $num++): ?>
 <td><nobr>
