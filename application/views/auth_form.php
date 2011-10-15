@@ -12,7 +12,7 @@
     </div>
     <div class="bottom-auth-form">
         
-    <?= anchor('/auth/logout/', 'Выход', 'class="btn primary"'); ?>
+    <?= anchor('/auth/logout/', 'Выход', 'class="btn success"'); ?>
 <?php else: ?>
 <?php
 $login = array(
@@ -83,7 +83,7 @@ $captcha = array(
 </div>
 <div class="bottom-auth-form">
 <label class="remember-me"><?= form_checkbox($remember); ?>Запомнить меня</label>
-<?php echo form_submit('submit', 'Войти', 'class="btn primary"'); ?>
+<?php echo form_submit('submit', 'Войти', 'class="btn success"'); ?>
 <?php echo form_close(); ?>
 <?php endif; ?>
 </div>

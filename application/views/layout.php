@@ -23,8 +23,7 @@
 <div class="container">
 <a href="<?= base_url(); ?>"><img src="<?= base_url(); ?>styles/images/logo.png" alt="Logo" id="logo"/></a>
 <div id="top-box">
-    <h2>Сервис электронных дневников</h2>
-    <p>Креативная концепция изоморфна времени. Узнавание бренда экономит рекламный клаттер, повышая конкуренцию. Сегментация рынка интегрирована. Партисипативное планирование вполне выполнимо. </p>
+    <p>Успеваемость <strong>ваших детей</strong><br/>&ndash; наша главная цель</p>
     <a href="#" class="featured-button"><span>Подключиться</span></a>
 </div> <!-- end #top-box -->
 </div> <!-- end .container -->
@@ -59,7 +58,7 @@ $ie6 = $ci->agent->is_browser('Internet Explorer') && (int)$ci->agent->version()
 
 if(!$ie6):
 ?>
-<img src="<?= base_url(); ?>styles/images/iphone.png" style="margin-top: -470px; margin-left: -90px; margin-bottom: -80px;" />
+<img src="<?= base_url(); ?>styles/images/iphone.png" style="width: 202px; height: 450px; margin-top: -400px; margin-left: 20px; margin-bottom: -35px;" />
 <?php endif; ?>
 
         <?php if($AUTH_FORM) $this->load->view('auth_form.php'); ?>

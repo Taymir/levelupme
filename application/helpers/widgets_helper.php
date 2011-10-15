@@ -10,7 +10,7 @@ function tariff_widget($target, $tariffs, $default_tariff = NULL)
     $out .= "<label>Тариф:&nbsp;";
     $out .= form_dropdown('tariff', $tariffs, $default_tariff);
     $out .= "</label>\n";
-    $out .= form_submit('updatetariff', 'OK', 'class="btn primary"');
+    $out .= form_submit('updatetariff', 'OK', 'class="btn success"');
     $out .= form_close();
     
     return $out; 
@@ -40,7 +40,7 @@ window.addEvent('domready', function()
     
     $out .= "<label>Дата:&nbsp;<input type=\"text\" name=\"date\" id=\"datepicker\" value=\"$default_date\" size=\"10\" /></label>\n";
     $out .= "<a id=\"datepicklink\" class=\"datepickerlink\" onclick=\"return false;\" href=\"#\">&nbsp;</a>\n";
-    $out .= form_submit('updatedate', 'OK', 'class="btn primary"');
+    $out .= form_submit('updatedate', 'OK', 'class="btn success"');
     $out .= form_close();
     
     return $out; 
@@ -95,7 +95,7 @@ function school_class_widget($schoolClassData, $target, $default_school = NULL, 
     
     $out .= form_dropdown('school', $schools, $default_school, 'id="schoolselector" onchange="updateClassListEx()"');
     $out .= form_dropdown('class', $default_school_classes, $default_class, 'id="classselector"');//@TODO cookies
-    $out .= form_submit('submit', "OK", 'class="btn primary"');
+    $out .= form_submit('submit', "OK", 'class="btn success"');
     $out .= form_close();
     
     return $out;
