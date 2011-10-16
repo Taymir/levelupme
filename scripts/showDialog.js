@@ -3,7 +3,7 @@ var showDialog = function(title, content, onsubmit, onclose)
     new MUX.Dialog({
         loader: 'none',
         title: title,
-        content: new Element('div', {styles: {maxWidth: 400, maxHeight: 600, overflow: 'auto'}}).adopt(content),
+        content: new Element('div', {styles: {maxWidth: 400, maxHeight: 400, overflow: 'auto'}}).adopt(content),
         buttons: [{
             title: 'Отмена',
             style: 'link',
