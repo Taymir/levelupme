@@ -276,6 +276,7 @@ class MY_Controller extends CI_Controller {
     {
         //@TODO: Здесь потенциальная проблема с безопасностью - можно загрузить класс к которому
         // не должно быть доступа у оператора
+        
         $this->load->model('classes_model');
         
         // Если известен наиболее подходящий класс
@@ -296,13 +297,13 @@ class MY_Controller extends CI_Controller {
         } elseif ($this->input->cookie('operator_class')) {
             // Если получен из куки, то
             // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе
-            $class = $this->classes_model->get_class_info($this->input->cookie('operator_class'));
+            $class = $this->classes_model->get_class_info($this->input->cookie('operator_class'));//@BUGs
         } else {
             // иначе:
             // Загружаем информацию о дефолтном классе из БД, в т.ч. информацию о школе
             $class = $this->classes_model->get_default_class_info($this->user_profile_model->get_operators_school_list());
         }
-        
+        ////////////////var_dump($this->user_profile_model->can_operator_access_class($class->id));//////////////////////@TODO: БАГИИИИИИИИ!!!
         // Передаем найденную информацию о классе и школе в view
         $data = array('school' => NULL, 'school_id' => NULL, 'class' => NULL, 'class_id' => NULL);
         if(is_object($class))
@@ -316,4 +317,17 @@ class MY_Controller extends CI_Controller {
         // Возвращаем class_id
         return $data['class_id'];
     }
+    
+    /*private function get_class($class_id = null)
+    {
+        $this->load->model('classes_model');
+        
+        if($class_id !== null)
+        {
+            // проверка на то, имеет ли право  оператор на доступ к данному классу
+            return $class;
+        } else {
+            return $this->classes_model->get_default_class_info($this->user_profile_model->get_operators_school_list());
+        }
+    }*/
 }

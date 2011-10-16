@@ -90,8 +90,7 @@ function school_class_widget($schoolClassData, $target, $default_school = NULL, 
         $school_ids = array_keys($schools);
         $default_school = $school_ids[0];
     }
-    
-    $default_school_classes = $classes[$default_school];//@BUG: как-то словился тут баг: не определенны классы дефолтной школы Оо
+    $default_school_classes = $classes[$default_school];
     
     $out .= form_dropdown('school', $schools, $default_school, 'id="schoolselector" onchange="updateClassListEx()"');
     $out .= form_dropdown('class', $default_school_classes, $default_class, 'id="classselector"');

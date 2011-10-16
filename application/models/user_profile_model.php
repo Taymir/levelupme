@@ -13,6 +13,7 @@ class user_profile_model extends MY_Model {
     private $table_name	= 'user_profiles';               // user profiles
     private $users_table_name = 'users';                 // users
     private $operators_table_name = 'operators_schools'; //Таблица разрешений для операторов
+    private $classes_table_name = 'classes';               // Таблица классов
     
     const unloaded = -1;
     
@@ -139,10 +140,34 @@ class user_profile_model extends MY_Model {
         $this->db->select('school_id');
         $this->db->from($this->operators_table_name);
         $this->db->where('user_id', $operator);
-        $this->db->group_by('school_id');
+        $this->db->group_by('school_id');//@TODO: убрать? не нужно вроде... избыточная проверка
         $query = $this->db->get();
 
         return $this->Arr2List($query->result_array(), 'school_id');
+    }
+    
+    public function can_operator_access_class($class, $operator = null)
+    {
+        if(is_null($operator))
+        {
+            if ($this->getRole() == 'admin')
+                return true;
+            elseif ($this->getRole() != 'operator')
+                return null;
+            else
+                $operator = $this->getId();
+        }
+        
+        $this->db->select('COUNT(*) as count', FALSE);
+        $this->db->from($this->operators_table_name);
+        $this->db->join($this->classes_table_name, $this->classes_table_name . '.school_id = ' . $this->operators_table_name . '.school_id');
+        $this->db->where($this->operators_table_name . '.user_id', $operator);
+        $this->db->where($this->classes_table_name . '.id', $class);
+        $query = $this->db->get();
+        
+        $res = $query->row();
+        return ($res->count > 0);
+        
     }
     
     public function save_operators_school_list($operator, $schools)
