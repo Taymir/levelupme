@@ -96,7 +96,7 @@ class Sms {
             'to' => $this->_to,
             'text' => $this->_text,
             'status' => $result[0]['status'],
-            'tmp_id' => $result[0]['server_id']
+            'tmp_id' => $result[0]['id']
         ));
         return TRUE;
     }

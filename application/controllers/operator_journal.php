@@ -85,8 +85,8 @@ class operator_journal extends MY_Controller {
             if($this->grades_model->has_grades($db_date, array_keys($data['students'])))
                 return $this->show_message ("Расписание на эту дату уже было заполнено. Вы не можете повторно рассылать оценки на одну дату");
             
-            $this->grades_model->save_grades($db_date, $data);//@TOTEST!!!!!!!!!!!!!
-            $mailed = $this->send_grades($data, $human_date); //@TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            $this->grades_model->save_grades($db_date, $data);
+            $mailed = $this->send_grades($data, $human_date);
 
             if($mailed)
                 return $this->show_message("Оценки сохранены и отправлены. $mailed получателей.");
@@ -146,6 +146,7 @@ class operator_journal extends MY_Controller {
         foreach($students as $user_profile_id => $student)
         {
             $pre_data = array();
+            
             for($num = 1; ($num - 1) < $max_lessons; ++$num)
             {
                 $subject = $subjects[$num];
@@ -164,62 +165,64 @@ class operator_journal extends MY_Controller {
             
             if(sizeof($pre_data) > 0)
             {
-                if($mailed == 0)
+                if(!$studentsData[$user_profile_id]->banned)
                 {
-                    //@HACK: создаем mailing_pack только когда готово первое письмо
-                    $mailing_pack = $this->mailings_model->create_mailing_pack('grades');
-                }
-                
-                $tariff = $studentsData[$user_profile_id]->tariff;
-                
-                // Композиция письма
-                $email_title = "$student. Оценки $date";
-                $email_text = "<h2>$student<br><b>$date</b></h2><br>";//@TMP
-                $sms_text = "$date $student\n";
-                
-                $email_text .= "<ul>";
-                foreach($pre_data as $num => $arr)
-                {
-                    //@REFACTOR: это все должно быть во VIEW!!!!!!!
-                    $subject = $pre_data[$num]['subject'];
-                    $grade = isset($arr['grades']) ? $arr['grades'] : '';
-                    
-                    $email_text .= "<li><b>$subject</b>: $grade";
-                    $sms_text   .= "$subject: $grade";
-                    
-                    if(isset($arr['comment']))
+                    if($mailed == 0)
                     {
-                        $comment = $arr['comment'];
-                        
-                        $email_text .= "<br><i>$comment</i>";
-                        $sms_text   .= "($comment)";
+                        //@HACK: создаем mailing_pack только когда готово первое письмо
+                        $mailing_pack = $this->mailings_model->create_mailing_pack('grades');
                     }
-                    $email_text .= "</li>";
-                    $sms_text   .= "\n";
+
+                    $tariff = $studentsData[$user_profile_id]->tariff;
+
+                    // Композиция письма
+                    $email_title = "$student. Оценки $date";
+                    $email_text = "<h2>$student<br><b>$date</b></h2><br>";//@TMP
+                    $sms_text = "$date $student\n";
+
+                    $email_text .= "<ul>";
+                    foreach($pre_data as $num => $arr)
+                    {
+                        //@REFACTOR: это все должно быть во VIEW!!!!!!!
+                        $subject = $pre_data[$num]['subject'];
+                        $grade = isset($arr['grades']) ? $arr['grades'] : '';
+
+                        $email_text .= "<li><b>$subject</b>: $grade";
+                        $sms_text   .= "$subject: $grade";
+
+                        if(isset($arr['comment']))
+                        {
+                            $comment = $arr['comment'];
+
+                            $email_text .= "<br><i>$comment</i>";
+                            $sms_text   .= "($comment)";
+                        }
+                        $email_text .= "</li>";
+                        $sms_text   .= "\n";
+                    }
+
+                    if(!$this->tariffs_model->rule_send_email($tariff) || empty($studentsData[$user_profile_id]->email))
+                    {
+                        $email_title = ''; $email_text = '';
+                    }
+                    if(!$this->tariffs_model->rule_send_sms($tariff) || empty($studentsData[$user_profile_id]->phone))
+                    {
+                        $sms_text = '';
+                    }
+
+                    $data = array(
+                        'email_title' => $email_title,
+                        'email_text'  => $email_text,
+                        'sms_text'    => $sms_text,
+                        'user_profile_id' => $user_profile_id,
+                        'pack_id'     => $mailing_pack
+                    );
+
+                    if(! (empty($email_text) && empty($sms_text)) )
+                    {
+                        $mailed += $this->mailings_model->add_single_mailing($data);
+                    }
                 }
-                
-                if(!$this->tariffs_model->rule_send_email($tariff) || empty($studentsData[$user_profile_id]->email))
-                {
-                    $email_title = ''; $email_text = '';
-                }
-                if(!$this->tariffs_model->rule_send_sms($tariff) || empty($studentsData[$user_profile_id]->phone))
-                {
-                    $sms_text = '';
-                }
-                
-                $data = array(
-                    'email_title' => $email_title,
-                    'email_text'  => $email_text,
-                    'sms_text'    => $sms_text,
-                    'user_profile_id' => $user_profile_id,
-                    'pack_id'     => $mailing_pack
-                );
-                
-                if(! (empty($email_text) && empty($sms_text)) )
-                {
-                    $mailed += $this->mailings_model->add_single_mailing($data);
-                }
-                
             }
         }
         

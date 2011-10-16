@@ -45,7 +45,7 @@ class admin_users extends MY_Controller {
             $data['class_id'] = (int)$data['class_id'];
             
             $this->user_profile_model->add_user_profile($data);
-            return $this->redirect_message(array('admin_users', '?class=' . $data['class_id']), "Пользователь добавлен");
+            return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь добавлен");//@TODO: заменить на /admin_users/class_id
         }
         $this->load->model('classes_model');
         $this->load->model('tariffs_model');
@@ -84,7 +84,7 @@ class admin_users extends MY_Controller {
             
             $this->user_profile_model->save_user_profile($profile_id, $data);
 
-            return $this->redirect_message(array('admin_users', '?class=' . $data['class_id']), "Пользователь обновлен");
+            return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь обновлен");
         }
         
         $this->load->model('classes_model');
