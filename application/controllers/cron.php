@@ -36,7 +36,7 @@ class cron extends CI_Controller {
             {
                 // для каждого сообщения:
                 $recipient = $this->user_profile_model->get_user_profile($mailing->user_profile_id);
-                if($recipient->email != '')
+                if(isset($recipient) && $recipient->email != '')
                 {
                     $this->email->set_wordwrap(false);
                     $this->email->from($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('website_name', 'tank_auth'));
@@ -76,7 +76,7 @@ class cron extends CI_Controller {
                 {
                     // для каждого сообщения:
                     $recipient = $this->user_profile_model->get_user_profile($mailing->user_profile_id);
-                    if($recipient->phone != '')
+                    if(isset($recipient) && $recipient->phone != '')
                     {
                         $this->sms->to($recipient->phone);
                         $this->sms->text($mailing->sms_text);
