@@ -59,8 +59,8 @@
         if($title == '')
         {
             $this->load->helper('text');
-            $text = $mailing->email_text;
-            if($mailing->email_text == '')
+            $text = strip_tags($mailing->email_text);
+            if(trim($text) == '')
                 $text = $mailing->sms_text;
             $title = ellipsize(strip_tags($text), 50, 1);
         }

@@ -46,6 +46,8 @@ class operator_messages extends MY_Controller {
         $tariffs = $this->tariffs_model->get_tariffs_for_widget();
         
         $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget');
+$this->load_scripts('Locale/Locale.ru-RU.MooEditable', 'MooEditable/MooEditable', 'MooEditable/MooEditable.UI.MenuList', 'MooEditable/MooEditable.Extras');
+            $this->load_styles('MooEditable/MooEditable', 'MooEditable/MooEditable.Extras', 'MooEditable/MooEditable.SilkTheme');
         $this->load_var('class', $class_data);
         $this->load_var('students', $students);
         $this->load_var('selected_student', $selected_student);
@@ -65,24 +67,25 @@ class operator_messages extends MY_Controller {
         if($this->input->post('submit'))
         {
             $mailed = 0;
-            $title = trim($this->input->post('title'));
-            $text = trim($this->input->post('text'));
+            $email_title = trim($this->input->post('email_title'));
+            $email_text = trim($this->input->post('email_text'));
+            $sms_text = trim($this->input->post('sms_text'));
             $type = $this->input->post('recipient_type');
             $profile_id = (int)$this->input->post('user');
             $tariff = $this->input->post('tariff');
             $class_id = $this->input->post('class_id');
             $school_id = $this->input->post('school_id');
             
-            if($text == '')
+            if(empty($email_text) && empty($sms_text))
                 return $this->show_message ("Ошибка: Не введено сообщение");
             
             if(!in_array($type, array('school','class','user')))
                 return $this->show_message ("Ошибка: Не указан получатель");
             
             $data = array();
-            $data['email_title'] = $title;
-            $data['email_text'] = "<h2>$title</h2> $text";
-            $data['sms_text'] = $text;//@TODO: В будущем дать возможность пользователю редактировать отдельно текст смс
+            $data['email_title'] = $email_title == '' ? NULL : $email_title;
+            $data['email_text'] = (strip_tags($email_text) == '' ? NULL : "<h2>$email_title</h2> $email_text");
+            $data['sms_text'] = $sms_text == '' ? NULL : $sms_text;
             
             if($type == 'user')
             {
@@ -215,9 +218,6 @@ class operator_messages extends MY_Controller {
     public function view($mailing_id)
     {
         $data = $this->mailings_model->get_mailing($mailing_id);
-        $data->text = $data->email_text;
-        if(empty($data->text))
-             $data->text = '<pre>' . $data->sms_text . '</pre>';
         
         return $this->load_view('operator_messages/view_view', "Просмотр рассылки", $data);
     }

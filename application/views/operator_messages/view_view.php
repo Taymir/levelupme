@@ -1,6 +1,5 @@
 <h2>Просмотр рассылки</h2>
-<p>
-<strong><? if( $recipient) echo "Получатель: $recipient" ?></strong>
-</p>
-<h3><?= $email_title?></h3>
-<p><?= $text ?></p>
+<h3>E-mail: <?= $email_title?></h3>
+<p><?= $email_text ?></p>
+<hr />
+<pre><?= $sms_text ?></pre>

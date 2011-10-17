@@ -4,23 +4,16 @@
 
 <h2>Рассылки</h2>
 <?php $this->load->helper('form'); ?>
+<script type="text/javascript"> 
+    window.addEvent('domready', function(){
+        $('email_text').mooEditable({
+                actions: 'bold italic underline strikethrough | formatBlock justifyleft justifyright justifycenter justifyfull | insertunorderedlist insertorderedlist indent outdent | undo redo | createlink unlink | urlimage | toggleview'
+        });
+    });
+</script> 
 <?= form_open('operator_messages/send', 'id="messagesForm" class="niceform journal-form"', array('class_id' => $class_id, 'school_id' => $school_id, 'tariff' => $tariff_id)); ?>
 
-<div class="clearfix">
-    <?= form_label("Заголовок:", 'title') ?>
-    <div class="input">
-        <?= form_input('title', set_value('title')); ?> <em>(только для email)</em>
-    </div>
-</div>
-
-
-<div class="clearfix">
-    <?= form_label("Сообщение:", 'text') ?>
-</div>
-
-<div class="clearfix">
-    <?= form_textarea('text', set_value('text')) ?>
-</div>
+<?= form_fieldset("Адресат"); ?>
 <div class="clearfix">
     <label>Тариф:</label>
     <div class="input">
@@ -39,6 +32,26 @@
         </ul>
     </div>
 </div>
+<?= form_fieldset_close(); ?>
+
+<?= form_fieldset("SMS"); ?>
+<div class="clearfix">
+    <?= form_textarea('sms_text', set_value('sms_text'), 'id="sms_text"') ?>
+</div>
+<?= form_fieldset_close(); ?>
+
+<?= form_fieldset("E-mail"); ?>
+<div class="clearfix">
+    <?= form_label("Тема письма:", 'email_title') ?>
+    <div class="input">
+        <?= form_input('email_title', set_value('email_title')); ?>
+    </div>
+</div>
+
+<div class="clearfix">
+    <?= form_textarea('email_text', set_value('email_text'), 'id="email_text"') ?>
+</div>
+<?= form_fieldset_close(); ?>
 
 <div class="actions">
     <?= form_submit('submit', 'Отправить', 'class="btn primary" id="submit"') ?>
