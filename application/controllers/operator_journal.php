@@ -201,11 +201,11 @@ class operator_journal extends MY_Controller {
                         $sms_text   .= "\n";
                     }
 
-                    if(!$this->tariffs_model->rule_send_email($tariff) || empty($studentsData[$user_profile_id]->email))
+                    if(!$this->tariffs_model->rule_send_grades_to_email($tariff) || empty($studentsData[$user_profile_id]->email))
                     {
                         $email_title = ''; $email_text = '';
                     }
-                    if(!$this->tariffs_model->rule_send_sms($tariff) || empty($studentsData[$user_profile_id]->phone))
+                    if(!$this->tariffs_model->rule_send_grades_to_sms($tariff) || empty($studentsData[$user_profile_id]->phone))
                     {
                         $sms_text = '';
                     }

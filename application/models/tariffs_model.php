@@ -43,24 +43,50 @@ class tariffs_model {
         return $result;
     }
     
-    public function rule_send_email($tariff)
+    public /*OBSOLETE*/ function rule_send_email($tariff)
     {
+        log_message('info', 'USING OBSOLETE METHOD rule_send_email');
+        
         if($tariff >= 4)
             return true;
         return false;
     }
     
-    public function rule_send_sms($tariff)
+    public /*OBSOLETE*/ function rule_send_sms($tariff)
+    {
+        log_message('info', 'USING OBSOLETE METHOD rule_send_sms');
+        
+        if($tariff >= 1)
+            return true;
+        return false;
+    }
+    
+    public function rule_send_grades_to_email($tariff)
+    {
+        // На данный момент не отсылаем данные об оценках на e-mail!
+        //if($tariff >= 4)
+        //    return true;
+        return false;
+    }
+    
+    public function rule_send_grades_to_sms($tariff)
     {
         if($tariff >= 1)
             return true;
         return false;
     }
     
-    public function rule_send_any($tariff)
+    public function rule_send_msg_to_email($tariff)
     {
-        return $this->rule_send_sms($tariff) || $this->rule_send_email($tariff);
+        if($tariff >= 4)
+            return true;
+        return false;
+    }
+    
+    public function rule_send_msg_to_sms($tariff)
+    {
+        if($tariff >= 1)
+            return true;
+        return false;
     }
 }
-
-?>

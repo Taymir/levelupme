@@ -94,13 +94,13 @@ class operator_messages extends MY_Controller {
                     $tariff = $profile->tariff;
                     $data['user_profile_id'] = $profile->id;
 
-                    if(!$this->tariffs_model->rule_send_email($tariff) || empty($profile->email))
+                    if(!$this->tariffs_model->rule_send_msg_to_email($tariff) || empty($profile->email))
                     {
                         $data['email_title'] = null;
                         $data['email_text'] = null;
                     }
 
-                    if(!$this->tariffs_model->rule_send_sms($tariff) || empty($profile->phone))
+                    if(!$this->tariffs_model->rule_send_msg_to_sms($tariff) || empty($profile->phone))
                     {
                         $data['sms_text'] = null;
                     }
@@ -136,13 +136,13 @@ class operator_messages extends MY_Controller {
                         $tmp_data = $data;
                         $tmp_data['user_profile_id'] = $user_profile_id;
 
-                        if(!$this->tariffs_model->rule_send_email($user_row->tariff) || empty($user_row->email))
+                        if(!$this->tariffs_model->rule_send_msg_to_email($user_row->tariff) || empty($user_row->email))
                         {
                             $tmp_data['email_title'] = null;
                             $tmp_data['email_text']= null;
                         }
 
-                        if(!$this->tariffs_model->rule_send_sms($user_row->tariff) || empty($user_row->phone))
+                        if(!$this->tariffs_model->rule_send_msg_to_sms($user_row->tariff) || empty($user_row->phone))
                         {
                             $tmp_data['sms_text'] = null;
                         }
