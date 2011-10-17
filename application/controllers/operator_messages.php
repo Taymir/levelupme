@@ -27,8 +27,8 @@ class operator_messages extends MY_Controller {
         if($selected_student != NULL)
         {
             $tariff = 1;
-            $selected_studennt_profile = $this->user_profile_model->get_user_profile($selected_student);
-            $class = $this->operator_class($selected_studennt_profile->class_id);
+            $selected_student_profile = $this->user_profile_model->get_user_profile($selected_student);
+            $class = $this->operator_class($selected_student_profile->class_id);
         } elseif($this->input->post('updatetariff'))
         {
             $tariff = $this->input->post('tariff');

@@ -33,7 +33,10 @@ class timetables_model extends MY_Model {
         $this->db->where('class_id', $class_id);
         $query = $this->db->get();
         $data = $query->row();
-         
+        
+        if(!$data)
+            return NULL;
+        
         // Запрос на список предметов
         $this->db->select('num, day, subject');
         $this->db->from($this->subjects_table_name);
