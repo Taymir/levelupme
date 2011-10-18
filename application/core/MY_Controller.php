@@ -272,40 +272,34 @@ class MY_Controller extends CI_Controller {
         $this->load_var('styles', $styles);
     }
     
-    protected function operator_class($prefered_class = null)
-    {
-        //@TODO: Здесь потенциальная проблема с безопасностью - можно загрузить класс к которому
-        // не должно быть доступа у оператора
-        
-        $this->load->model('classes_model');
-        
-        // Если известен наиболее подходящий класс
-        if($prefered_class !== null) {
-            $class = $this->classes_model->get_class_info($prefered_class);
-        // Если получен post-ом class (class_id),
+    protected function operator_class($prefered_class = null)//@TOTEST!!!!!!!!!!
+    {   
+        $class_id = NULL;
+        $source   = NULL;
+        if(isset($prefered_class)) {
+            // Если известен наиболее подходящий класс
+            $class_id = $prefered_class;
         } elseif($this->input->post('class') !== false) {
-            // то:
+            // Если получен post-ом class (class_id),
             // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе
-            $class = $this->classes_model->get_class_info($this->input->post('class'));
-            // И сохраняем в куки выбранный класс
-            if(isset($class->class_id))
-                $this->input->set_cookie('operator_class', $class->class_id, 3 * 30 * 24 * 60 * 60);
+            $class_id = $this->input->post('class');
+            $source = 'post';
         } elseif ($this->input->get('class')) {
             // Если получен из GET, то
             // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе
-            $class = $this->classes_model->get_class_info($this->input->get('class'));
+            $class_id = $this->input->get('class');
+            $source = 'get';
         } elseif ($this->input->cookie('operator_class')) {
             // Если получен из куки, то
             // Загружаем информацию о выбранном классе из БД, в т.ч. информацию о школе
-            $class = $this->classes_model->get_class_info($this->input->cookie('operator_class'));//@BUGs
-        } else {
-            // иначе:
-            // Загружаем информацию о дефолтном классе из БД, в т.ч. информацию о школе
-            $class = $this->classes_model->get_default_class_info($this->user_profile_model->get_operators_school_list());
+            $class_id = $this->input->cookie('operator_class');
+            $source = 'cookie';
         }
-        ////////////////var_dump($this->user_profile_model->can_operator_access_class($class->id));//////////////////////@TODO: БАГИИИИИИИИ!!!
+        
+        $class = $this->get_class($class_id, $source);
+        
         // Передаем найденную информацию о классе и школе в view
-        $data = array('school' => NULL, 'school_id' => NULL, 'class' => NULL, 'class_id' => NULL);
+        $data = $this->get_empty_arr('school', 'school_id', 'class', 'class_id');
         if(is_object($class))
         {
             $data = array('school' => $class->school, 'school_id' => $class->school_id,
@@ -315,19 +309,40 @@ class MY_Controller extends CI_Controller {
         $this->load->vars($data);
 
         // Возвращаем class_id
-        return $data['class_id'];
+        return $data['class_id'];//@TODO: Имеет смысл возвращать не class_id, а class, чтобы не делать лишних запросов!
     }
     
-    /*private function get_class($class_id = null)
+    private function get_class($class_id = null, $source = null)
     {
         $this->load->model('classes_model');
         
-        if($class_id !== null)
+        if(isset($class_id))
         {
-            // проверка на то, имеет ли право  оператор на доступ к данному классу
-            return $class;
-        } else {
-            return $this->classes_model->get_default_class_info($this->user_profile_model->get_operators_school_list());
+            if($this->user_profile_model->can_operator_access_class($class_id))//@TOTEST: Вроде как совсем не работает;
+            {
+                // проверка на то, имеет ли право  оператор на доступ к данному классу
+                $class = $this->class_model->get_class_info($class_id);
+                if($source == 'post')
+                    $this->input->set_cookie('operator_class', $class->class_id, 3 * 30 * 24 * 60 * 60);
+                return $class;
+            }
         }
-    }*/
+        
+        $class = $this->classes_model->get_default_class_info($this->user_profile_model->get_operators_school_list());//@TOTEST: Широкое тестирование устновки дефолтного класса!
+        // Поскольку выбран класс, на доступ к которому данный оператор не имеет права, 
+        // пробуем инвалидировать исходные данные
+        switch($source)
+        {
+            case 'cookie':
+                // Удаляем куки
+                $this->input->set_cookie('operator_class', '', '');//@TOTEST
+                break;
+            case 'post':
+            case 'get' :
+            default    :
+                break;
+        }
+        
+        return $class;
+    }
 }

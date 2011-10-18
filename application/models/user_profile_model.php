@@ -146,8 +146,9 @@ class user_profile_model extends MY_Model {
         return $this->Arr2List($query->result_array(), 'school_id');
     }
     
-    public function can_operator_access_class($class, $operator = null)
+    public function can_operator_access_class($class_id, $operator = null)
     {
+        // Если оператор не указан, пытаемся выявить его самостоятельно
         if(is_null($operator))
         {
             if ($this->getRole() == 'admin')
@@ -158,16 +159,16 @@ class user_profile_model extends MY_Model {
                 $operator = $this->getId();
         }
         
+        // Делаем запрос на право доступа оператором к данному классу
         $this->db->select('COUNT(*) as count', FALSE);
         $this->db->from($this->operators_table_name);
         $this->db->join($this->classes_table_name, $this->classes_table_name . '.school_id = ' . $this->operators_table_name . '.school_id');
         $this->db->where($this->operators_table_name . '.user_id', $operator);
-        $this->db->where($this->classes_table_name . '.id', $class);
+        $this->db->where($this->classes_table_name . '.id', $class_id);
         $query = $this->db->get();
         
         $res = $query->row();
         return ($res->count > 0);
-        
     }
     
     public function save_operators_school_list($operator, $schools)
