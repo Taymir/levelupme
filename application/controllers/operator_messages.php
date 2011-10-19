@@ -182,19 +182,13 @@ class operator_messages extends MY_Controller {
         $this->load->library('pagination');
         $this->load->model('classes_model');
         
-        $mailings_type = '*';
+        $mailings_type = array('analytic', 'grades', 'class', 'school', 'user');
         if($this->input->post('filters'))
         {
             $mailings_type = $this->input->post('filters');
-            if(in_array('other', $mailings_type))
-            {
-                $mailings_type[] = 'analytic';
-                $mailings_type[] = 'grades';
-            }
             $this->input->set_cookie('filters', serialize($mailings_type), 60 * 60 * 24 * 3);
         } elseif ($this->input->cookie('filters')) {
             $mailings_type = unserialize($this->input->cookie('filters'));
-            $_POST['filters'] = $mailings_type; // for view
         }
         
         $paginator['base_url'] = base_url() . 'operator_messages/archive';
@@ -212,6 +206,7 @@ class operator_messages extends MY_Controller {
             $paginator['total_rows'] = $this->mailings_model->total_mailings_found;
             $this->pagination->initialize($paginator);
 
+            $this->load_var('filters', $mailings_type);
             $this->load_var('mailings', $mailings);
             $this->load_var('class', $class_data);
         }

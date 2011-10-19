@@ -83,10 +83,11 @@
     <?= form_fieldset('Выводить только:') ?>
     <div class="input">
     <ul class="inputs-list">
-        <li><label><?= form_checkbox('filters[]', 'school', set_checkbox('filters', 'school', TRUE)) ?> <span>Рассылки по школе</span></label></li>
-        <li><label><?= form_checkbox('filters[]', 'class', set_checkbox('filters', 'class', TRUE)) ?> <span>Рассылки по классу</span></label></li>
-        <li><label><?= form_checkbox('filters[]', 'user', set_checkbox('filters', 'user', TRUE)) ?> <span>Рассылки индвидульно родителям</span></label></li>
-        <li><label><?= form_checkbox('filters[]', 'other', set_checkbox('filters', 'other', TRUE)) ?> <span>Рассылки прочие</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'school', in_array('school', $filters)) ?> <span>Рассылки по школе</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'class', in_array('class', $filters)) ?> <span>Рассылки по классу</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'user', in_array('user', $filters)) ?> <span>Рассылки индвидульно родителям</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'analytic', in_array('analytic', $filters)) ?> <span>Рассылки оценок</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'grades', in_array('grades', $filters)) ?> <span>Рассылки аналитики</span></label></li>
     </ul>
     </div>
 <?= form_submit('submit', 'Обновить', 'class="btn primary"') ?><br />
