@@ -1,5 +1,7 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '/operator_messages/add', $school_id, $class_id) ?>
+<?php if($class): ?>
+
 <?= tariff_widget('/operator_messages/add', $tariffs, $tariff_id) ?>
 
 <h2>Рассылки</h2>
@@ -58,3 +60,4 @@
     <em>Cообщение будет разослано по e-mail и sms</em>
 </div>
 <?= form_close() ?>
+<?php endif; ?>

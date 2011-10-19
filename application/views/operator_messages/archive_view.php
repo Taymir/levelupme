@@ -1,6 +1,7 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
 
+<?php if($class): ?>
 <h2>Архив рассылок</h2>
 
 <p>
@@ -74,7 +75,10 @@
 
 <div class="pagination"><?= $this->pagination->create_links(); ?></div>
 
+<?php endif; ?>
+
 <div class="actions">
+<?php if($class): ?>
     <?= form_open('') ?>
     <?= form_fieldset('Выводить только:') ?>
     <div class="input">
@@ -88,5 +92,6 @@
 <?= form_submit('submit', 'Обновить', 'class="btn primary"') ?><br />
 <?= form_fieldset_close(); ?>
 <?= form_close() ?>
+<?php endif; ?>
 <?= anchor('operator_messages/add', '<img src="' . base_url() . 'styles/icons/add.png" />Новая рассылка', array('class' => "btn success")) ?>
 </div>

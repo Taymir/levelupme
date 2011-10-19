@@ -395,7 +395,6 @@ class user_profile_model extends MY_Model {
     
     public function get_operators($with_school_lists = false)
     {
-        //@TODO: добавить настройки школ
         $this->db->select(
                 $this->users_table_name . '.id,'.
                 $this->users_table_name . '.username,'.

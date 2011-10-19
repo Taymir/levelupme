@@ -22,14 +22,16 @@ class operator_timetable extends MY_Controller {
     {
         $class = $this->operator_class();
         $class_data = $this->classes_model->get_class($class);
-        $data = $this->timetables_model->get_timetable_by_class($class);
         $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
+        if(isset($class)) {
+        $data = $this->timetables_model->get_timetable_by_class($class);
         
-        $this->load_scripts('mootools-core', 'mootools-more', 'Meio.Autocomplete', 'addAutocompletion', 'schoolClassWidget');
         $this->load_style('autocomplete');
         $this->load_var('timetable', $data);
         $this->load_var('class', $class_data);
+        }
         $this->load_var('schools_classes', $schools_classes);
+        $this->load_scripts('mootools-core', 'mootools-more', 'Meio.Autocomplete', 'addAutocompletion', 'schoolClassWidget');
         
         return $this->load_view('operator_timetable/index_view', "Расписание"); 
     }

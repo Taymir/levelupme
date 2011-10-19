@@ -299,7 +299,7 @@ class MY_Controller extends CI_Controller {
         $class = $this->get_class($class_id, $source);
         
         // Передаем найденную информацию о классе и школе в view
-        $data = $this->get_empty_arr('school', 'school_id', 'class', 'class_id');
+        $data = array('school' => null, 'school_id' => null, 'class' => null, 'class_id' => null);
         if(is_object($class))
         {
             $data = array('school' => $class->school, 'school_id' => $class->school_id,
@@ -332,6 +332,7 @@ class MY_Controller extends CI_Controller {
         }
         
         $class = $this->classes_model->get_default_class_info($operators_school_list);//@TOTEST: Широкое тестирование устновки дефолтного класса!
+        
         // Поскольку выбран класс, на доступ к которому данный оператор не имеет права, 
         // пробуем инвалидировать исходные данные
         switch($source)

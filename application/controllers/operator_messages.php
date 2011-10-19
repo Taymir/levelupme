@@ -42,18 +42,21 @@ class operator_messages extends MY_Controller {
         
         $class_data = $this->classes_model->get_class_info($class);//@TODO: ЗАЧЕМ ПОВТОРНО ПОЛУЧАЕМ ДАННЫЙ О КЛАССЕ??
         $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
-        $students = $this->user_profile_model->get_userlist_by_class($class, $tariff);
-        $tariffs = $this->tariffs_model->get_tariffs_for_widget();
-        
-        $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget');
-$this->load_scripts('Locale/Locale.ru-RU.MooEditable', 'MooEditable/MooEditable', 'MooEditable/MooEditable.UI.MenuList', 'MooEditable/MooEditable.Extras');
-            $this->load_styles('MooEditable/MooEditable', 'MooEditable/MooEditable.Extras', 'MooEditable/MooEditable.SilkTheme');
-        $this->load_var('class', $class_data);
-        $this->load_var('students', $students);
-        $this->load_var('selected_student', $selected_student);
+        if(isset($class)) {
+            $students = $this->user_profile_model->get_userlist_by_class($class, $tariff);
+            $tariffs = $this->tariffs_model->get_tariffs_for_widget();
+
+            $this->load_var('class', $class_data);
+            $this->load_var('students', $students);
+            $this->load_var('selected_student', $selected_student);
+
+            $this->load_var('tariff_id',  $tariff);
+            $this->load_var('tariffs',  $tariffs);
+        }
         $this->load_var('schools_classes', $schools_classes);
-        $this->load_var('tariff_id',  $tariff);
-        $this->load_var('tariffs',  $tariffs);
+        $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget');
+        $this->load_scripts('Locale/Locale.ru-RU.MooEditable', 'MooEditable/MooEditable', 'MooEditable/MooEditable.UI.MenuList', 'MooEditable/MooEditable.Extras');
+        $this->load_styles('MooEditable/MooEditable', 'MooEditable/MooEditable.Extras', 'MooEditable/MooEditable.SilkTheme');
         
         return $this->load_view('operator_messages/add_view', "Рассылки");
     }
@@ -203,22 +206,27 @@ $this->load_scripts('Locale/Locale.ru-RU.MooEditable', 'MooEditable/MooEditable'
         $class = $this->operator_class();
         $class_data = $this->classes_model->get_class_info($class);
         $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
-        $mailings = $this->mailings_model->get_all_mailings($class_data->school_id, $class_data->class_id, $mailings_type, $paginator['per_page'], $offset);
-        
-        $paginator['total_rows'] = $this->mailings_model->total_mailings_found;
-        $this->pagination->initialize($paginator);
-        
-        $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget');
-        $this->load_var('mailings', $mailings);
-        $this->load_var('class', $class_data);
+        if(isset($class)) {
+            $mailings = $this->mailings_model->get_all_mailings($class_data->school_id, $class_data->class_id, $mailings_type, $paginator['per_page'], $offset);
+
+            $paginator['total_rows'] = $this->mailings_model->total_mailings_found;
+            $this->pagination->initialize($paginator);
+
+            $this->load_var('mailings', $mailings);
+            $this->load_var('class', $class_data);
+        }
         $this->load_var('schools_classes', $schools_classes);
+        $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget');
+        
         return $this->load_view('operator_messages/archive_view', "Архив рассылок");
     }
     
     public function view($mailing_id)
     {
         $data = $this->mailings_model->get_mailing($mailing_id);
-        
+        if(!isset($data))
+            show_404();
+            
         return $this->load_view('operator_messages/view_view', "Просмотр рассылки", $data);
     }
 }

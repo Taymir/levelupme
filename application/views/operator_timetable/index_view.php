@@ -1,6 +1,7 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
 
+<?php if($class): ?>
 <script type="text/javascript">
 window.addEvent('domready', function()
 {
@@ -55,4 +56,4 @@ $value = isset($timetable->timetable[$num][$day]) ? $timetable->timetable[$num][
 <?= form_submit('submit', "Сохранить", 'class="btn primary" id="submit"'); ?>
 </div>
 <?= form_close(); ?>
-
+<?php endif; ?>

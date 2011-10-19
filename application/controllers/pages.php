@@ -27,7 +27,7 @@ class pages extends MY_Controller {
     {
         $data = $this->pages_model->get_page($id);
         
-        if($data == null)
+        if(!isset($data))
             return show_404 ();
         
         return $this->load_view('pages/display_view', $data->title, array('page' => $data, 'page_name' => $url));

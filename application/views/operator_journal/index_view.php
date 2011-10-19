@@ -1,6 +1,9 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
+<?php if(isset($class)): ?>
+
 <?= date_widget('', $date) ?>
+
 
 <h2>Журнал</h2>
 <!-- //@REFACTOR -->
@@ -110,4 +113,5 @@ var setNto = function(profile_id)
         <strong>В выбранном классе не зарегистрировано ни одного ученика</strong>
     </div>
 </div>
+<?php endif; ?>
 <?php endif; ?>
