@@ -40,7 +40,9 @@ class admin_users extends MY_Controller {
         
         if($this->form_validation->run('admin_users/add_user'))
         {
-            $data = $this->get_post_params('username', 'password', 'name', 'class_id', 'tariff', 'phone', 'email');
+            $data = $this->get_post_params('name', 'class_id', 'tariff', 'phone', 'email');
+            $data['username'] = $this->input->post('new_username');
+            $data['password'] = $this->input->post('new_password');
             $data['phone'] = $this->clean_phone_number($data['phone']);
             $data['class_id'] = (int)$data['class_id'];
             
@@ -72,14 +74,14 @@ class admin_users extends MY_Controller {
             $data['phone'] = $this->clean_phone_number($data['phone']);
             $data['class_id'] = (int)$data['class_id'];
             
-            if($this->input->post('username')) {
+            if($this->input->post('new_username')) {
                 // Зарегистрировать пользователя
-                $data['username'] = $this->input->post('username');
-                $data['password'] = $this->input->post('password');
+                $data['username'] = $this->input->post('new_username');
+                $data['password'] = $this->input->post('new_password');
                 
             } elseif ($this->input->post('change_password') == '1') {
                 // Сменить пароль пользователя
-                $data['password'] = $this->input->post('password');
+                $data['password'] = $this->input->post('new_password');
             }
             
             $this->user_profile_model->save_user_profile($profile_id, $data);

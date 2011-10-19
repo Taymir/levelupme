@@ -37,7 +37,9 @@ class admin_operators extends MY_Controller {
         
         if($this->form_validation->run())
         {
-            $data = $this->get_post_params('username', 'password', 'name', 'email', 'admin', 'schools');
+            $data = $this->get_post_params('name', 'email', 'admin', 'schools');
+            $data['username'] = $this->input->post('new_username');
+            $data['password'] = $this->input->post('new_password');
             if(
                 (is_array($data['schools']) && in_array('*', $data['schools'])) ||
                 (is_string($data['schools']) && '*' == $data['schools'])

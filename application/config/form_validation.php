@@ -52,19 +52,19 @@ $config = array(
     ),
     'admin_users/add_user' => array(
         array(
-            'field' => 'username',
+            'field' => 'new_username',
             'label' => 'логин',
             'rules' => 'alpha_numeric|callback_username_available'
         ),
         array(
-            'field' => 'password',
+            'field' => 'new_password',
             'label' => 'пароль',
             'rules' => 'callback_password_required|alpha_numeric'
         ),
         array(
             'field' => 'confirm',
             'label' => 'подтверждение пароля',
-            'rules' => 'callback_password_required|matches[password]'
+            'rules' => 'callback_password_required|matches[new_password]'
         ),
         array(
             'field' => 'name',
@@ -94,19 +94,19 @@ $config = array(
     ),
     'admin_users/edit_user' => array(
         array(
-            'field' => 'username',
+            'field' => 'new_username',
             'label' => 'логин',
             'rules' => 'callback_username_available|alpha_numeric'
         ),
         array(
-            'field' => 'password',
+            'field' => 'new_password',
             'label' => 'пароль',
             'rules' => 'callback_password_required|alpha_numeric'
         ),
         array(
             'field' => 'confirm',
             'label' => 'подтверждение пароля',
-            'rules' => 'callback_password_required|matches[password]'
+            'rules' => 'callback_password_required|matches[new_password]'
         ),
         array(
             'field' => 'name',
@@ -143,19 +143,19 @@ $config = array(
     /* ADMIN_OPERATORS */
     'admin_operators/add_operator' => array(
         array(
-            'field' => 'username',
+            'field' => 'new_username',
             'label' => 'логин',
             'rules' => 'required|alpha_numeric|callback_username_available'
         ),
         array(
-            'field' => 'password',
+            'field' => 'new_password',
             'label' => 'пароль',
             'rules' => 'required|alpha_numeric'
         ),
         array(
             'field' => 'confirm',
             'label' => 'подтверждение пароля',
-            'rules' => 'required|matches[password]'
+            'rules' => 'required|matches[new_password]'
         ),
         array(
             'field' => 'name',

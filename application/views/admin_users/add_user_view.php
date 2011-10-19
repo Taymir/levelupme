@@ -53,13 +53,13 @@ echo form_error('class_id');
 
 <?= form_fieldset("Данные для входа на сайт"); ?>
 <div class="clearfix">
-<?= form_label("Логин" , 'username') ?>
+<?= form_label("Логин" , 'new_username') ?>
     <div class="input">
     <?php if(isset($user)): ?>
     <strong><?= $user->username ?></strong><br/>
     <?php else: ?>
-    <?= form_input('username', set_value('username')) ?>
-    <?= form_error('username') ?>
+    <?= form_input('new_username', set_value('new_username')) ?>
+    <?= form_error('new_username') ?>
     <?php endif; ?>
     </div>
 </div>
@@ -79,10 +79,10 @@ echo form_error('class_id');
 <?php endif; ?>
 
 <div class="clearfix">
-<?= form_label("Новый пароль", 'password') ?>
+<?= form_label("Новый пароль", 'new_password') ?>
     <div class="input">
-    <?= form_password('password', set_value('password')) ?>
-    <?= form_error('password') ?>
+    <?= form_password('new_password', set_value('new_password')) ?>
+    <?= form_error('new_password') ?>
     </div>
 </div>
 

@@ -4,18 +4,18 @@
 <?= form_open('admin_operators/add_operator"', 'class="niceform"');?>
 
 <div class="clearfix">
-<?= form_label("Логин" , 'username') ?>
+<?= form_label("Логин" , 'new_username') ?>
     <div class="input">
-    <?= form_input('username', set_value('username')) ?>
-    <?= form_error('username') ?>
+    <?= form_input('new_username', set_value('new_username')) ?>
+    <?= form_error('new_username') ?>
     </div>
 </div>
 
 <div class="clearfix">
-<?= form_label("Пароль", 'password') ?>
+<?= form_label("Пароль", 'new_password') ?>
     <div class="input">
-    <?= form_password('password', set_value('password')) ?>
-    <?= form_error('password') ?>
+    <?= form_password('new_password', set_value('new_password')) ?>
+    <?= form_error('new_password') ?>
     </div>
 </div>
 
