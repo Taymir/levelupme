@@ -19,7 +19,7 @@
 </tr>
 <?php foreach( $school->classes as $class): ?>
 <tr>
-    <td><?= html_escape($class->class) ?></td>
+    <td><?= anchor(array('admin_users', "?class={$class->id}"), html_escape($class->class)) ?></td>
     <td>
 <nobr>
 <?php echo anchor(array('admin_schools', 'remove_class', $class->id),
