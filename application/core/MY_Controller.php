@@ -321,7 +321,7 @@ class MY_Controller extends CI_Controller {
             if($this->user_profile_model->can_operator_access_class($class_id))//@TOTEST: Вроде как совсем не работает;
             {
                 // проверка на то, имеет ли право  оператор на доступ к данному классу
-                $class = $this->class_model->get_class_info($class_id);
+                $class = $this->classes_model->get_class_info($class_id);
                 if($source == 'post')
                     $this->input->set_cookie('operator_class', $class->class_id, 3 * 30 * 24 * 60 * 60);
                 return $class;

@@ -134,19 +134,59 @@ class admin_users extends MY_Controller {
     public function mass_add_user($class_id = null)
     {
         $this->load->library('form_validation');
+        $this->load->model('tariffs_model');
         if($class_id == null)
             $class_id = $this->input->post('class_id');
         
         if($this->form_validation->run())
         {
-            $names = $this->input->post('names');
-            $names = str_replace("\r", "", $names);
-            $names = explode("\n", $names);
-            $names = array_map('trim', $names);
+            $data = $this->input->post('users');
+            // 1. Чистка данных
+            $data = str_replace(array("\t", ',', ';'), ' ', $data);
+            $data = str_replace(array("\r"), '', $data);
+            $data = preg_replace('/ +/', ' ', $data);
             
-            $this->user_profile_model->batch_add_users($names, $class_id);
+            // 2. Выделение строк
+            $rows = explode("\n", $data);
             
-            return $this->redirect_message(array('admin_users', '?class=' . $class_id), "Ученики добавлены");
+            // 3. Выделение полей
+            $batch_data = array();
+            foreach($rows as $row)
+            {
+                $row = trim($row);
+                if($row == '')
+                    continue;
+                
+                $batch_row = $this->get_empty_arr('name', 'tariff', 'phone', 'email', 'class_id');
+                $fields = explode(' ', $row);
+                for($i = sizeof($fields) - 1; $i >= 0; $i--)
+                {
+                    $val = $fields[$i];
+                    if($this->valid_phone($val)) {
+                        $batch_row['phone'] = $this->clean_phone_number($val);
+                        unset($fields[$i]);
+                    } elseif($this->form_validation->valid_email($val)) {
+                        $batch_row['email'] = $val;
+                        unset($fields[$i]);
+                    } elseif($this->tariffs_model->is_valid_tariff_shortname($val)) {
+                        $batch_row['tariff'] = $this->tariffs_model->get_tariff_by_shortname($val);
+                        unset($fields[$i]);
+                    } elseif(in_array($val, array('руб', 'руб.', 'р', 'р.'))) {
+                        unset($fields[$i]);
+                    }
+                }
+                $batch_row['name'] = trim(implode(' ', $fields));
+                $batch_row['class_id'] = $class_id;
+                
+                if($batch_row['name'] == '')
+                    continue;
+                
+                $batch_data[] = $batch_row;
+            }
+            
+            $this->user_profile_model->batch_add_users($batch_data);
+            
+            return $this->redirect_message(array('admin_users', '?class=' . $class_id), "Ученики добавлены");//@TODO: заменить на /admin_users/class_id
         }
         $this->load->model('classes_model');
         $schools_classes = $this->classes_model->get_schools_and_classes();

@@ -40,8 +40,8 @@ $config = array(
     /* ADMIN_USERS */
     'admin_users/mass_add_user' => array(
         array(
-            'field' => 'names',
-            'label' => 'Имена',
+            'field' => 'users',
+            'label' => 'Список пользователей',
             'rules' => 'required'
         ),
         array(

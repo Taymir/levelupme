@@ -355,6 +355,11 @@ body#home #sidebar { padding-top: 65px; }
                 width: 580px;
                 height: 100px;
             }
+            
+            textarea.mass-add {
+                font-family: 'Courier New',Courier,monospace;
+                white-space: pre;
+            }
 
             .datepickerlink {
                 background: url(icons/calendar.png) no-repeat right center;

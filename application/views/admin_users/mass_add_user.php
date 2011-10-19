@@ -14,10 +14,30 @@
 </div>
 </div>
 
+<script type="text/javascript"> 
+    window.addEvent('domready', function(){
+        $('users').addEvent('keydown', function(e) {
+            if(e.code == 9)
+            {
+                e.stop();
+                $(this).insertAtCursor(String.fromCharCode(9), false);
+            }
+        });
+    });
+</script> 
+
 <div class="clearfix">
-<em>Введите имена учеников построчно (каждая строка - новый ученик)</em><br />
-<?= form_textarea('names', set_value('names')) ?>
-<?= form_error('names'); ?>
+<p>
+<strong>Введите данные учеников через пробел: ФИО Тариф Телефон Email. Например:</strong>
+</p>
+<p>
+<em>Иванов Иван Иванович 250 8-909-123-45-67 test@mail.com<br />
+    Сидоров Анатолий Степанович<br/>
+    Петров Петр Петрович 150 8-926-124-17-89<br />
+</em>
+</p>
+<?= form_textarea('users', set_value('users'), 'id="users" class="mass-add"') ?>
+<?= form_error('users'); ?>
 </div>
 
 <div class="actions">

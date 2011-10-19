@@ -13,11 +13,20 @@
 class tariffs_model {
     private $tariffs = array(
         // СПИСОК ТАРИФНЫХ ПЛАНОВ
-        0 => 'Без тарифа, 0 руб.',
-        1 => 'Оценки, 100 руб.',
-        2 => 'Оценки + инф-я, 150 руб.',
-        3 => 'Оценки + инф-я + аналитика, 200 руб.',
-        4 => 'Оценки + инф-я + граф.аналитика, 250 руб.',
+        0 => '0р, Без тарифа',
+        1 => '100р, Оценки',
+        2 => '150р, Оценки + инф-я',
+        3 => '200р, Оценки + инф-я + аналитика',
+        4 => '250р, Оценки + инф-я + граф.аналитика',
+    );
+    
+    private $tariff_shortnames = array(
+        // Короткие названия тарифов (Используется в массовой регистрации пользователей)
+        0 => '0',
+        1 => '100',
+        2 => '150',
+        3 => '200',
+        4 => '250',
     );
     
     public function get_tariffs_for_widget()
@@ -88,5 +97,20 @@ class tariffs_model {
         if($tariff >= 1)
             return true;
         return false;
+    }
+    
+    public function is_valid_tariff_shortname($shortname)
+    {
+        return in_array($this->clean_tariff_shortname($shortname), $this->tariff_shortnames);
+    }
+    
+    public function get_tariff_by_shortname($shortname)
+    {
+        return array_search($this->clean_tariff_shortname($shortname), $this->tariff_shortnames);
+    }
+    
+    public function clean_tariff_shortname($shortname)
+    {
+        return str_replace(array('руб.', 'руб', 'р.', 'р'), '', $shortname); 
     }
 }

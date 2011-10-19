@@ -301,15 +301,8 @@ class user_profile_model extends MY_Model {
         return $query->result();
     }
     
-    public function batch_add_users($names, $class_id)
+    public function batch_add_users($batch_data)
     {
-        $batch_data = array();
-        foreach($names as $name)
-        {
-            if($name != '')
-                $batch_data[] = array('name' => $name, 'class_id' => $class_id);
-        }
-        
         if(sizeof($batch_data) > 0)
             $this->db->insert_batch ($this->table_name, $batch_data);
         
