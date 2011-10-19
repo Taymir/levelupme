@@ -140,31 +140,23 @@ class user_profile_model extends MY_Model {
         $this->db->select('school_id');
         $this->db->from($this->operators_table_name);
         $this->db->where('user_id', $operator);
-        $this->db->group_by('school_id');//@TODO: убрать? не нужно вроде... избыточная проверка
         $query = $this->db->get();
 
         return $this->Arr2List($query->result_array(), 'school_id');
     }
     
-    public function can_operator_access_class($class_id, $operator = null)
+    public function check_class_against_schoollist($class_id, $schoollist)
     {
-        // Если оператор не указан, пытаемся выявить его самостоятельно
-        if(is_null($operator))
-        {
-            if ($this->getRole() == 'admin')
-                return true;
-            elseif ($this->getRole() != 'operator')
-                return null;
-            else
-                $operator = $this->getId();
-        }
+        if($schoollist == '*')
+            return true;
+        elseif($schoolist == null)
+            return false;
         
         // Делаем запрос на право доступа оператором к данному классу
         $this->db->select('COUNT(*) as count', FALSE);
-        $this->db->from($this->operators_table_name);
-        $this->db->join($this->classes_table_name, $this->classes_table_name . '.school_id = ' . $this->operators_table_name . '.school_id');
-        $this->db->where($this->operators_table_name . '.user_id', $operator);
+        $this->db->from($this->classes_table_name);
         $this->db->where($this->classes_table_name . '.id', $class_id);
+        $this->db->where_in($this->classes_table_name . '.school_id', $schoollist);
         $query = $this->db->get();
         
         $res = $query->row();
@@ -174,15 +166,17 @@ class user_profile_model extends MY_Model {
     public function save_operators_school_list($operator, $schools)
     {
         $batch_data = array();
-        
-        foreach($schools as $school)
-        {
-            $batch_data[] = array('user_id' => (int)$operator,  'school_id' => (int)$school);
+        if(is_array($schools)){
+            foreach($schools as $school)
+            {
+                $batch_data[] = array('user_id' => (int)$operator,  'school_id' => (int)$school);
+            }
         }
         
         $this->db->trans_start();
-        $this->clear_operators_school_list($operator);
-        $result = $this->db->insert_batch($this->operators_table_name, $batch_data);
+        $result = $this->clear_operators_school_list($operator);
+        if(sizeof($batch_data) > 0)
+            $result = $this->db->insert_batch($this->operators_table_name, $batch_data);
         $this->db->trans_complete();
         
         return $result;
@@ -191,9 +185,7 @@ class user_profile_model extends MY_Model {
     public function clear_operators_school_list($operator)
     {
         $this->db->where('user_id', $operator);
-        $this->db->delete($this->operators_table_name);
-        
-        return TRUE;
+        return $this->db->delete($this->operators_table_name);
     }
     
     public function get_users_by_class($class_id)

@@ -272,7 +272,7 @@ class MY_Controller extends CI_Controller {
         $this->load_var('styles', $styles);
     }
     
-    protected function operator_class($prefered_class = null)//@TOTEST!!!!!!!!!!
+    protected function operator_class($prefered_class = null)
     {   
         $class_id = NULL;
         $source   = NULL;
@@ -315,10 +315,13 @@ class MY_Controller extends CI_Controller {
     private function get_class($class_id = null, $source = null)
     {
         $this->load->model('classes_model');
+        $operators_school_list = $this->user_profile_model->get_operators_school_list();
+        if(empty($operators_school_list))
+            show_error ("Ошибка: Вы не имеете прав доступа к данному разделу. Обратитесь к администратору.");
         
         if(isset($class_id))
         {
-            if($this->user_profile_model->can_operator_access_class($class_id))//@TOTEST: Вроде как совсем не работает;
+            if($this->user_profile_model->check_class_against_schoollist($class_id, $operators_school_list))
             {
                 // проверка на то, имеет ли право  оператор на доступ к данному классу
                 $class = $this->classes_model->get_class_info($class_id);
@@ -328,14 +331,14 @@ class MY_Controller extends CI_Controller {
             }
         }
         
-        $class = $this->classes_model->get_default_class_info($this->user_profile_model->get_operators_school_list());//@TOTEST: Широкое тестирование устновки дефолтного класса!
+        $class = $this->classes_model->get_default_class_info($operators_school_list);//@TOTEST: Широкое тестирование устновки дефолтного класса!
         // Поскольку выбран класс, на доступ к которому данный оператор не имеет права, 
         // пробуем инвалидировать исходные данные
         switch($source)
         {
             case 'cookie':
                 // Удаляем куки
-                $this->input->set_cookie('operator_class', '', '');//@TOTEST
+                $this->input->set_cookie('operator_class', '', '');
                 break;
             case 'post':
             case 'get' :
