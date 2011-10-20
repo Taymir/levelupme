@@ -195,7 +195,7 @@ class operator_messages extends MY_Controller {
         $class = $this->operator_class();
         $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
         if(isset($class)) {
-            $mailings = $this->mailings_model->get_all_mailings($class->school_id, $class->id, $mailings_type, $paginator['per_page'], $offset);
+            $mailings = $this->mailings_model->get_all_mailings($class->id, $mailings_type, $paginator['per_page'], $offset);
 
             $paginator['total_rows'] = $this->mailings_model->total_mailings_found;
             $this->pagination->initialize($paginator);

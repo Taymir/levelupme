@@ -146,7 +146,7 @@ class mailings_model extends MY_Model {
         return $query->row();
     }
     
-    public function get_all_mailings($school_id = '*', $class_id = '*', $type = '*', $limit = 0, $offset = 0)
+    public function get_all_mailings($class_id = '*', $type = '*', $limit = 0, $offset = 0)
     {
         $prefix = '';
         if($limit > 0)
@@ -173,21 +173,20 @@ class mailings_model extends MY_Model {
         $this->db->join($this->schools_table_name,
                 $this->schools_table_name . '.id = ' . $this->classes_table_name . '.school_id');
         
-        if($school_id != '*')
-        {
-            $this->db->where($this->schools_table_name . '.id', $school_id);
-        }
-        
         if($class_id != '*')
         {
             $this->db->where($this->classes_table_name . '.id', $class_id);
         }
         
-        if($type != '*')
+        if($type != '*' && sizeof($type) > 0)
         {
-            $this->db->where_in($this->packs_table_name . '.type', $type);
+            $where_clause = '(`type` = \'';
+            $where_clause .= implode('\' OR `type`=\'', $type);
+            $where_clause .= '\'';
             if(in_array('user', $type))
-                $this->db->or_where ($this->packs_table_name . '.type', NULL);
+                $where_clause .= ' OR `type` IS NULL ';
+            $where_clause .= ')';
+            $this->db->where($where_clause, NULL, FALSE);
         }
         
         if($limit >0)
