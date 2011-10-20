@@ -17,7 +17,7 @@ $config['max_lessons'] = 8; // Максимальное количество у�
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://dnevnikam.net/';
+$config['base_url']	= 'http://levelupme.local/';
 
 /*
 |--------------------------------------------------------------------------

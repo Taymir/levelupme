@@ -76,7 +76,7 @@ endif;
         </div> <!-- end .sidebar-block -->
         <div class="sidebar-block">
                 <h3>Контакты</h3>
-                <p class="mail-text"><a href="mailto:levelupme@gmail.com">levelupme@gmail.com</a></p>
+                <p class="mail-text"><a href="mailto:mail@levelupme.ru">mail@levelupme.ru</a></p>
                 <!--<nobr class="phone-text"><a href="callto:+79091234567">+7 (909) 123-45-67</a></nobr>-->
         </div> <!-- end .sidebar-block -->
 </div> <!-- end .sidebar -->

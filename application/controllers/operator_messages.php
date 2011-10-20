@@ -36,6 +36,8 @@ class operator_messages extends MY_Controller {
         } elseif ($this->input->cookie('tariff')) {
             $tariff = $this->input->cookie('tariff');
             $class = $this->operator_class();
+        } else {
+            $class = $this->operator_class();
         }
         
         $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());

@@ -8,7 +8,7 @@
 |--------------------------------------------------------------------------
 */
 $config['website_name'] = 'levelupme.ru';
-$config['webmaster_email'] = 'levelupme@gmail.com';
+$config['webmaster_email'] = 'mail@levelupme.ru';
 
 /*
 |--------------------------------------------------------------------------
