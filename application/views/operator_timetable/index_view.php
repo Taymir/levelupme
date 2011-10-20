@@ -17,7 +17,8 @@ window.addEvent('domready', function()
 <?php $this->load->helper('form'); ?>
 <?= form_open('operator_timetable/save', 'id="scheduleForm" class="timetable-form"', array('class_id' => $class->id, 'id' => $timetable->id)); ?>
 <div class="clearfix">
-<?= form_label("Информация о классе:", 'class_description') ?>
+<?= form_label("Информация о классе", 'class_description') ?> 
+<strong><?= $class->school . ', ' . $class->class ?></strong>
     <div class="input">
     <?= form_textarea('class_description', set_value('class_description', $class->description)) ?>
     </div>

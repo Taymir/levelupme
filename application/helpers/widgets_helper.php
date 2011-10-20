@@ -1,11 +1,33 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+function js_invalidator($widget_block, $target_block)
+{
+    $out = "
+<script type=\"text/javascript\">
+var invalidator = function(e)
+{
+    var ch = 0;
+    var fields = $('$widget_block').getElements('input, select');
+    fields.each(function(el){if(el.value != el.origValue)ch++;});
+    if(ch) $('$target_block').addClass('invalid');
+    else   $('$target_block').removeClass('invalid');
+}
+window.addEvent('domready', function()
+{
+    var fields = $('$widget_block').getElements('input, select');
+    fields.each(function(el){el.origValue = el.value;el.addEvent('change',invalidator);});
+});
+</script>\n";
+    
+    return $out;
+}
+
 function tariff_widget($target, $tariffs, $default_tariff = NULL)
 {
     $ci = & get_instance();
     $ci->load->helper('form');
     
-    $out = form_open($target, 'class="tariff-widget"');
+    $out = form_open($target, 'id="tariff-widget" class="tariff-widget"');
     
     $out .= "<label>Тариф:&nbsp;";
     $out .= form_dropdown('tariff', $tariffs, $default_tariff);
