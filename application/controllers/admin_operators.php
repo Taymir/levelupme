@@ -16,13 +16,14 @@ class admin_operators extends MY_Controller {
         parent::__construct('admin');
         
         $this->load->model('user_profile_model');
+        $this->load->model('operator_model');
     }
     
     public function index()
     {
         $this->load->model('schools_model');
         $schools = $this->schools_model->get_schools();
-        $data = $this->user_profile_model->get_operators(true);
+        $data = $this->operator_model->get_operators(true);
         
         $this->load_scripts('mootools-core', 'mootools-more', 'MUX.Dialog', 'showDialog');
         $this->load_style('MUX.Dialog');
@@ -52,7 +53,7 @@ class admin_operators extends MY_Controller {
                 $data['role'] = 'operator';
             }
             
-            $this->user_profile_model->add_operator_profile($data);
+            $this->operator_model->add_operator_profile($data);
             return $this->redirect_message('admin_operators', "Оператор добавлен");
         }
         $this->load->model('schools_model');

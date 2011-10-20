@@ -15,6 +15,7 @@ class operator_journal extends MY_Controller {
     {
         parent::__construct(array('operator', 'admin'));
         $this->load->model('grades_model');
+        $this->load->model('operator_model');
     }
     
     public function index()
@@ -30,7 +31,7 @@ class operator_journal extends MY_Controller {
         $this->load->model('user_profile_model');
         
         $class = $this->operator_class();
-        $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
+        $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());
         if(isset($class)) {
             $students = $this->user_profile_model->get_users_by_class($class->id);
             $grades = $this->grades_model->load_grades($db_date, $this->extract_ids_from_students($students));

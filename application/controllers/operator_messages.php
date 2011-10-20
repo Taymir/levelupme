@@ -15,6 +15,7 @@ class operator_messages extends MY_Controller {
     {
         parent::__construct(array('operator', 'admin'));
         $this->load->model('mailings_model');
+        $this->load->model('operator_model');
     }
     
     public function add($selected_student = NULL)
@@ -37,7 +38,7 @@ class operator_messages extends MY_Controller {
             $class = $this->operator_class();
         }
         
-        $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
+        $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());
         if(isset($class)) {
             $students = $this->user_profile_model->get_userlist_by_class($class->id, $tariff);
             $tariffs = $this->tariffs_model->get_tariffs_for_widget();
@@ -193,7 +194,7 @@ class operator_messages extends MY_Controller {
         $paginator['last_link'] = "Последняя";
         
         $class = $this->operator_class();
-        $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
+        $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());
         if(isset($class)) {
             $mailings = $this->mailings_model->get_all_mailings($class->id, $mailings_type, $paginator['per_page'], $offset);
 

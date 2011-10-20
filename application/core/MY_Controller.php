@@ -308,13 +308,14 @@ class MY_Controller extends CI_Controller {
     private function get_class($class_id = null, $source = null)
     {
         $this->load->model('classes_model');
-        $operators_school_list = $this->user_profile_model->get_operators_school_list();
+        $this->load->model('operator_model');
+        $operators_school_list = $this->operator_model->get_operators_school_list();
         if(empty($operators_school_list))
             show_error ("Ошибка: Вы не имеете прав доступа к данному разделу. Обратитесь к администратору.");
         
         if(isset($class_id))
         {
-            if($this->user_profile_model->check_class_against_schoollist($class_id, $operators_school_list))
+            if($this->operator_model->check_class_against_schoollist($class_id, $operators_school_list))
             {
                 // проверка на то, имеет ли право  оператор на доступ к данному классу
                 $class = $this->classes_model->get_class_info($class_id);

@@ -16,12 +16,13 @@ class operator_timetable extends MY_Controller {
         parent::__construct(array('operator', 'admin'));
         $this->load->model('timetables_model');
         $this->load->model('classes_model');
+        $this->load->model('operator_model');
     }
     
     public function index()
     {
         $class = $this->operator_class();
-        $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
+        $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());
         if(isset($class)) {
             $data = $this->timetables_model->get_timetable_by_class($class->id);
 

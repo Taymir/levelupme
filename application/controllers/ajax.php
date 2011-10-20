@@ -64,13 +64,13 @@ class ajax extends MY_Controller {
         if($this->allowAccessFor('admin'))
         {
             // Подгрузить модель
-            $this->load->model('user_profile_model');
+            $this->load->model('operator_model');
             // Получить user_id (оператора)
             $operator = $this->input->post('operator');
             // Получить schools[] (список школ)
             $schools = $this->input->post('schools');
             // Сохранить в модель список школ
-            $result = $this->user_profile_model->save_operators_school_list($operator, $schools);
+            $result = $this->operator_model->save_operators_school_list($operator, $schools);
             
             header('Content-type: application/json; charset=utf-8');
             echo json_encode($result);
