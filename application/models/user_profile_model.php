@@ -14,9 +14,9 @@ class user_profile_model extends MY_Model {
     protected $users_table_name = 'users';                 // users
     protected $classes_table_name = 'classes';               // Таблица классов
     
-    const unloaded = -1;
+    const unloaded = NULL;
     protected $userData = self::unloaded;
-    protected $profileData = null;//@TODO: unloaded
+    protected $profileData = self::unloaded;
     
     public function getId()
     {
@@ -65,8 +65,9 @@ class user_profile_model extends MY_Model {
     
     public function getProperty($propertyName)
     {
-        if($this->profileData != null && isset($this->profileData->$propertyName))
-                return $this->profileData->$propertyName;
+        $profileData = $this->loadProfileData();
+        if(isset($profileData->$propertyName))
+                return $profileData->$propertyName;
         return null;
     }
     
@@ -79,11 +80,17 @@ class user_profile_model extends MY_Model {
     
     public function loadProfileData()
     {
-        $ci = & get_instance();
-        $ci->load->library('tank_auth');
-        
-        if($ci->tank_auth->is_logged_in())
-            $this->profileData = $this->get_user_profile_by_user_id($ci->tank_auth->get_user_id());//@TMP
+        if($this->profileData == self::unloaded) {
+            $ci = & get_instance();
+            $ci->load->library('tank_auth');
+
+            if($ci->tank_auth->is_logged_in())
+                return $this->profileData = $this->get_user_profile_by_user_id($ci->tank_auth->get_user_id());   
+            else
+                return $this->profileData = null;
+        } else {
+            return $this->profileData;
+        }
     }
     
     public function loadUserData($id)

@@ -13,7 +13,7 @@
 class operator_model extends user_profile_model {
     protected $operators_table_name = 'operators_schools'; //Таблица разрешений для операторов
     
-    const unloaded = -1;
+    const unloaded = NULL;
     protected $schoolList = self::unloaded;
     
     public function get_operators_school_list($operator = null)
