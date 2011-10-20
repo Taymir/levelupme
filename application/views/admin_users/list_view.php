@@ -1,12 +1,13 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
 
+<?php if($class): ?>
 <h2>Пользователи</h2>
 
 <p>
 <em>Здесь перечислены счет родителей и имена детей, подключенных к системе в выбранном классе:</em><br />
-<strong>Школа: <?= $school ?></strong><br />
-<strong>Класс: <?= $class ?></strong><br />
+<strong>Школа: <?= $class->school ?></strong><br />
+<strong>Класс: <?= $class->class ?></strong><br />
 </p>
 
 <table class="nicetable">
@@ -62,3 +63,4 @@
 <?php echo anchor('admin_users/mass_add_user/'. $class_id, '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить много учеников', array('class' => "btn success")) ?>&nbsp;
 <?php echo anchor('admin_users/add_user/' . $class_id, '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить ученика', array('class' => "btn success")) ?>
 </div>
+<?php endif; ?>

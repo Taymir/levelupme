@@ -5,7 +5,7 @@
 <h2>Архив рассылок</h2>
 
 <p>
-<strong>Школа: <?= $school ?></strong><br />
+<strong>Школа: <?= $class->school ?></strong><br />
 <strong>Класс: <?= $class->class ?></strong><br />
 </p>
 

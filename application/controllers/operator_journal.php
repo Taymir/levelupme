@@ -30,10 +30,9 @@ class operator_journal extends MY_Controller {
         $this->load->model('user_profile_model');
         
         $class = $this->operator_class();
-        $class_data = $this->classes_model->get_class_info($class);
         $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
         if(isset($class)) {
-            $students = $this->user_profile_model->get_users_by_class($class);
+            $students = $this->user_profile_model->get_users_by_class($class->id);
             $grades = $this->grades_model->load_grades($db_date, $this->extract_ids_from_students($students));
             if($grades !== null)
             {
@@ -43,11 +42,10 @@ class operator_journal extends MY_Controller {
             }
             else
             {
-                $subjects = $this->timetables_model->get_subjects_by_class_and_date($class, $human_date);
+                $subjects = $this->timetables_model->get_subjects_by_class_and_date($class->id, $human_date);
                 $this->load_var('subjects', $subjects);
             }
 
-            $this->load_var('class', $class_data);
             $this->load_var('students', $students);
             $this->load_var('date', $human_date);
         }
@@ -231,5 +229,3 @@ class operator_journal extends MY_Controller {
         return $mailed;
     }
 }
-
-?>

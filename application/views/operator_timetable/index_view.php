@@ -1,7 +1,7 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '', $school_id, $class_id) ?>
 
-<?php if($class): ?>
+<?php if(isset($class)):?>
 <script type="text/javascript">
 window.addEvent('domready', function()
 {

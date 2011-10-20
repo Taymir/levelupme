@@ -22,13 +22,16 @@ class admin_users extends MY_Controller {
     {
         $this->load->model('classes_model');
         $class = $this->operator_class();
-        
-        $data = $this->user_profile_model->get_users_by_class($class);
         $schools_classes = $this->classes_model->get_schools_and_classes();
         
-        $this->load_scripts('mootools-core', 'schoolClassWidget');
-        $this->load_var('users', $data);
+        if(isset($class)) {
+            $data = $this->user_profile_model->get_users_by_class($class->id);
+            $this->load_var('users', $data);
+        }
+        
         $this->load_var('schools_classes', $schools_classes);
+        $this->load_scripts('mootools-core', 'schoolClassWidget');
+        
         return $this->load_view('admin_users/list_view', "Пользователи");
     }
     

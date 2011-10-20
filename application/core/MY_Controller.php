@@ -298,18 +298,11 @@ class MY_Controller extends CI_Controller {
         
         $class = $this->get_class($class_id, $source);
         
-        // Передаем найденную информацию о классе и школе в view
-        $data = array('school' => null, 'school_id' => null, 'class' => null, 'class_id' => null);
-        if(is_object($class))
-        {
-            $data = array('school' => $class->school, 'school_id' => $class->school_id,
-                          'class' => $class->class, 'class_id' => $class->class_id);
-       
-        }
-        $this->load->vars($data);
+        // Передаем class во view
+        $this->load->vars(array('class' => $class, 'class_id' => isset($class) ? $class->id:NULL, 'school_id' => isset($class) ? $class->school_id:NULL));
 
-        // Возвращаем class_id
-        return $data['class_id'];//@TODO: Имеет смысл возвращать не class_id, а class, чтобы не делать лишних запросов!
+        // Возвращаем class
+        return $class;
     }
     
     private function get_class($class_id = null, $source = null)
@@ -326,7 +319,7 @@ class MY_Controller extends CI_Controller {
                 // проверка на то, имеет ли право  оператор на доступ к данному классу
                 $class = $this->classes_model->get_class_info($class_id);
                 if($source == 'post')
-                    $this->input->set_cookie('operator_class', $class->class_id, 3 * 30 * 24 * 60 * 60);
+                    $this->input->set_cookie('operator_class', $class->id, 3 * 30 * 24 * 60 * 60);
                 return $class;
             }
         }

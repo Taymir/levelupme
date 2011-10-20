@@ -24,29 +24,24 @@ class operator_messages extends MY_Controller {
         $this->load->model('tariffs_model');
         
         $tariff = 1;
-        if($selected_student != NULL)
-        {
+        if($selected_student != NULL) {
             $tariff = 1;
             $selected_student_profile = $this->user_profile_model->get_user_profile($selected_student);
             $class = $this->operator_class($selected_student_profile->class_id);
-        } elseif($this->input->post('updatetariff'))
-        {
+        } elseif($this->input->post('updatetariff')) {
             $tariff = $this->input->post('tariff');
             $this->input->set_cookie('tariff', $tariff, 3 * 30 * 24 * 60 * 60);
             $class = $this->operator_class();
-        } elseif ($this->input->cookie('tariff'))
-        {
+        } elseif ($this->input->cookie('tariff')) {
             $tariff = $this->input->cookie('tariff');
             $class = $this->operator_class();
         }
         
-        $class_data = $this->classes_model->get_class_info($class);//@TODO: ЗАЧЕМ ПОВТОРНО ПОЛУЧАЕМ ДАННЫЙ О КЛАССЕ??
         $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
         if(isset($class)) {
-            $students = $this->user_profile_model->get_userlist_by_class($class, $tariff);
+            $students = $this->user_profile_model->get_userlist_by_class($class->id, $tariff);
             $tariffs = $this->tariffs_model->get_tariffs_for_widget();
 
-            $this->load_var('class', $class_data);
             $this->load_var('students', $students);
             $this->load_var('selected_student', $selected_student);
 
@@ -198,17 +193,15 @@ class operator_messages extends MY_Controller {
         $paginator['last_link'] = "Последняя";
         
         $class = $this->operator_class();
-        $class_data = $this->classes_model->get_class_info($class);
         $schools_classes = $this->classes_model->get_schools_and_classes($this->user_profile_model->get_operators_school_list());
         if(isset($class)) {
-            $mailings = $this->mailings_model->get_all_mailings($class_data->school_id, $class_data->class_id, $mailings_type, $paginator['per_page'], $offset);
+            $mailings = $this->mailings_model->get_all_mailings($class->school_id, $class->id, $mailings_type, $paginator['per_page'], $offset);
 
             $paginator['total_rows'] = $this->mailings_model->total_mailings_found;
             $this->pagination->initialize($paginator);
 
             $this->load_var('filters', $mailings_type);
             $this->load_var('mailings', $mailings);
-            $this->load_var('class', $class_data);
         }
         $this->load_var('schools_classes', $schools_classes);
         $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget');
