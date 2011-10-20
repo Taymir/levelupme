@@ -315,7 +315,7 @@ class MY_Controller extends CI_Controller {
         
         if(isset($class_id))
         {
-            if($this->operator_model->check_class_against_schoollist($class_id, $operators_school_list))
+            if($this->operator_model->check_class_against_school_list($class_id, $operators_school_list))
             {
                 // проверка на то, имеет ли право  оператор на доступ к данному классу
                 $class = $this->classes_model->get_class_info($class_id);
@@ -325,7 +325,7 @@ class MY_Controller extends CI_Controller {
             }
         }
         
-        $class = $this->classes_model->get_default_class_info($operators_school_list);//@TOTEST: Широкое тестирование устновки дефолтного класса!
+        $class = $this->classes_model->get_default_class_info($operators_school_list);
         
         // Поскольку выбран класс, на доступ к которому данный оператор не имеет права, 
         // пробуем инвалидировать исходные данные

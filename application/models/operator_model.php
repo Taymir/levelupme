@@ -18,6 +18,18 @@ class operator_model extends user_profile_model {
     
     public function get_operators_school_list($operator = null)
     {
+       if(isset($operator)) {
+           return $this->load_operators_school_list($operator);
+       } else {
+           if($this->schoolList == self::unloaded)
+               $this->schoolList = $this->load_operators_school_list($operator);
+           
+           return $this->schoolList;
+       }
+    }
+    
+    private function load_operators_school_list($operator = null)
+    {
         if(is_null($operator))
         {
             if ($this->getRole() == 'admin')
@@ -27,17 +39,20 @@ class operator_model extends user_profile_model {
             else
                 $operator = $this->getId();
         }
-        
+            
         $this->db->select('school_id');
         $this->db->from($this->operators_table_name);
         $this->db->where('user_id', $operator);
         $query = $this->db->get();
-
+        
         return $this->Arr2List($query->result_array(), 'school_id');
     }
     
-    public function check_class_against_schoollist($class_id, $schoolList)
+    public function check_class_against_school_list($class_id, $schoolList = null)
     {
+        if(!isset($schoolList))
+            $schoolList = $this->get_operators_school_list();
+        
         if($schoolList == '*')
             return true;
         elseif($schoolList == null)
