@@ -123,10 +123,12 @@ class operator_journal extends MY_Controller {
             $class_id = $this->input->post('class_id');
             $date = date('Y-m-d', $this->strdate_2_timestamp($this->input->post('date')));
             $data = $_POST;
+            
             $this->grades_sessions_model->store_session($user_id, $class_id, $date, $data);
         } else {
             show_error("Not Implemented yet");
         }
+        $this->redirect_message('/operator_journal/grades', 'saved'); //@TMP
     }
     
     public function save()

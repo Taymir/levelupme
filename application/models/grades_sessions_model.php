@@ -17,6 +17,7 @@ class grades_sessions_model extends MY_Model {
     {
         $data_str = base64_encode(serialize($data));
         
+        $this->clear_session($user_id, $class_id, $date);
         return $this->typical_insert($this->table_name, 
                 array('user_id' => $user_id, 'class_id' => $class_id, 'date' => $date, 'data' => $data_str));
     }

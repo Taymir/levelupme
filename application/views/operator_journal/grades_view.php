@@ -15,16 +15,21 @@ var Nhandler = function(e)
 var subjectClick = function(num)
 {
     if($('subjects' + num).value != '') {
-        $$('.gradesBlock').each(function(el, i){
-            if(el.getStyle('display') != 'none')
-            {
-                checkIfFilled(i+1);
-                el.setStyle('display', 'none');
-            }
-        });
-        
-        $('gradesBlock' + num).setStyle('display', 'block');
-        return true;
+        if($('gradesBlock' + num).getStyle('display') == 'none'){
+            $$('.gradesBlock').each(function(el, i){
+                if(el.getStyle('display') != 'none')
+                {
+                    checkIfFilled(i+1);
+                    el.setStyle('display', 'none');
+                }
+            });
+            
+            $('gradesBlock' + num).setStyle('display', 'block');
+            return true;
+        } else {
+           $('gradesBlock' + num).setStyle('display', 'none');
+           return false; 
+        }  
     } else {
         alert("Для того, чтобы перейти к заполнению журнала по предмету, вы должны ввести название предмета.")
         return false;
