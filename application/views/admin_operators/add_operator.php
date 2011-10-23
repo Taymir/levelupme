@@ -6,7 +6,7 @@
 <div class="clearfix">
 <?= form_label("Логин" , 'new_username') ?>
     <div class="input">
-    <?= form_input('new_username', set_value('new_username')) ?>
+    <?= form_input('new_username', set_value('new_username'), 'autocomplete="off"') ?>
     <?= form_error('new_username') ?>
     </div>
 </div>
@@ -14,7 +14,7 @@
 <div class="clearfix">
 <?= form_label("Пароль", 'new_password') ?>
     <div class="input">
-    <?= form_password('new_password', set_value('new_password')) ?>
+    <?= form_password('new_password', set_value('new_password'), 'autocomplete="off"') ?>
     <?= form_error('new_password') ?>
     </div>
 </div>

@@ -58,7 +58,7 @@ echo form_error('class_id');
     <?php if(isset($user)): ?>
     <strong><?= $user->username ?></strong><br/>
     <?php else: ?>
-    <?= form_input('new_username', set_value('new_username')) ?>
+    <?= form_input('new_usernamew', set_value('new_username'), 'autocomplete="off"') ?>
     <?= form_error('new_username') ?>
     <?php endif; ?>
     </div>
@@ -81,7 +81,7 @@ echo form_error('class_id');
 <div class="clearfix">
 <?= form_label("Новый пароль", 'new_password') ?>
     <div class="input">
-    <?= form_password('new_password', set_value('new_password')) ?>
+    <?= form_password('new_password', set_value('new_password'), 'autocomplete="off"') ?>
     <?= form_error('new_password') ?>
     </div>
 </div>
@@ -89,7 +89,7 @@ echo form_error('class_id');
 <div class="clearfix">
 <?= form_label('Подтверждение пароля', 'confirm') ?>
     <div class="input">
-    <?= form_password('confirm', set_value('confirm')) ?>
+    <?= form_password('confirm', set_value('confirm'), 'autocomplete="off"') ?>
     <?= form_error('confirm') ?>
     </div>
 </div>
