@@ -104,6 +104,7 @@ window.addEvent('domready', function()
             }
         })
     });
+    
     commentFields.each(function(field, i)
     {
         field.addEvent('keypress', function(e)
@@ -116,11 +117,14 @@ window.addEvent('domready', function()
             } 
         })
     });
+    
+    for(var i = 1; (i-1) < <?= $this->config->item('max_lessons') ?>; i++)
+        checkIfFilled(i);
 });
 </script>
 
 <?php $this->load->helper('form'); ?>
-<?= form_open('http://form-data.appspot.com/', 'id="journalForm" class="niceform journal-form"', array('class_id' => $class->id, 'date' => $date)); ?>
+<?= form_open('/operator_journal/save_and_send', 'id="journalForm" class="niceform journal-form"', array('class_id' => $class->id, 'date' => $date)); ?>
 
 <?= form_fieldset() ?>
 <div class="clearfix">
@@ -176,9 +180,9 @@ foreach($students as $student) {
     <th>Имя</th>
     <th>Н</th>
     <th>Отв</th>
-    <th><?= form_input("g_type[$num][2]", 'К/р', 'class="gradeTypeField"') ?></th>
-    <th><?= form_input("g_type[$num][3]", 'С/р', 'class="gradeTypeField"') ?></th>
-    <th><?= form_input("g_type[$num][4]", 'Д/з', 'class="gradeTypeField"') ?></th>
+    <th><?= form_input("g_type[$num][2]", isset($g_type[$num][2]) ? $g_type[$num][2] : 'К/р', 'class="gradeTypeField"') ?></th>
+    <th><?= form_input("g_type[$num][3]", isset($g_type[$num][3]) ? $g_type[$num][3] : 'С/р', 'class="gradeTypeField"') ?></th>
+    <th><?= form_input("g_type[$num][4]", isset($g_type[$num][4]) ? $g_type[$num][4] : 'Д/з', 'class="gradeTypeField"') ?></th>
     <th>Комментарий 
     <a href="#" class="btn tiny" onclick="commentAllDialog(<?= $num ?>);return false;"><img src="<?= base_url() ?>styles/icons/comment.png" /></a>
     </th> 
@@ -190,11 +194,16 @@ foreach($students as $student): $student_num++;?>
 <tr class="<?= $student_num % 2 == 0 ? '' : 'odd' ?>">
 <td class="studentNum"><?= $student_num . '. ' ?></td>
 <td><?= colorify_name($student->name) ?></td>
-<td><?= form_input("g[$student->profile_id][$num][0]", "", "class=\"N gradeField g1-$num\"") ?></td>
-<td><?= form_input("g[$student->profile_id][$num][1]", "", "class=\"gradeField g1-$num\"") ?></td>
-<td><?= form_input("g[$student->profile_id][$num][2]", "", "class=\"gradeField g2-$num\"") ?></td>
-<td><?= form_input("g[$student->profile_id][$num][3]", "", "class=\"gradeField g3-$num\"") ?></td>
-<td><?= form_input("g[$student->profile_id][$num][4]", "", "class=\"gradeField g4-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][0]", 
+        isset($g[$student->profile_id][$num][0]) ? $g[$student->profile_id][$num][0] : '', "class=\"N gradeField g1-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][1]", 
+        isset($g[$student->profile_id][$num][1]) ? $g[$student->profile_id][$num][1] : '', "class=\"gradeField g1-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][2]", 
+        isset($g[$student->profile_id][$num][2]) ? $g[$student->profile_id][$num][2] : '', "class=\"gradeField g2-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][3]", 
+        isset($g[$student->profile_id][$num][3]) ? $g[$student->profile_id][$num][3] : '', "class=\"gradeField g3-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][4]", 
+        isset($g[$student->profile_id][$num][4]) ? $g[$student->profile_id][$num][4] : '', "class=\"gradeField g4-$num\"") ?></td>
 <td><?= form_input("comments[{$student->profile_id}][$num]", 
         isset($comments[$student->profile_id][$num]) ? $comments[$student->profile_id][$num] : '',
         "class=\"commentField commentField$num\"") ?></td>
@@ -205,7 +214,8 @@ foreach($students as $student): $student_num++;?>
 
 <div class="clearfix">
     <div class="input">
-        <a href="#" class="btn success" onclick="checkIfFilled(<?= $num ?>)">Временно сохранить</a>
+        
+        <?= form_submit('tmp_save', 'Временно сохранить', "class=\"btn success\" onclick=\"checkIfFilled($num)\"") ?>
     </div>
 </div>
 </div>

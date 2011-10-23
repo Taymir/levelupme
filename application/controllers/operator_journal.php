@@ -35,24 +35,22 @@ class operator_journal extends MY_Controller {
         $this->load->model('timetables_model');
         $this->load->model('classes_model');
         $this->load->model('user_profile_model');
+        $this->load->model('grades_sessions_model');
         
         $class = $this->operator_class();
         $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());
         if(isset($class)) {
-            $students = $this->user_profile_model->get_users_by_class($class->id);
-            $grades = $this->grades_model->load_grades($db_date, $this->extract_ids_from_students($students));
+            $grades = $this->grades_sessions_model->load_session($this->user_profile_model->getId(), $class->id, $db_date);
             if($grades !== null)
             {
-                $this->load_var('grades', $grades['grades']);
-                $this->load_var('comments', $grades['comments']);
-                $this->load_var('subjects', $grades['subjects']);
+                $this->load->vars($grades);
             }
             else
             {
                 $subjects = $this->timetables_model->get_subjects_by_class_and_date($class->id, $human_date);
                 $this->load_var('subjects', $subjects);
             }
-
+            $students = $this->user_profile_model->get_users_by_class($class->id);// Переопределяет список учеников, загруженный из сессии
             $this->load_var('students', $students);
             $this->load_var('date', $human_date);
         }
@@ -113,6 +111,22 @@ class operator_journal extends MY_Controller {
             $ids[] = $student->profile_id;
         
         return $ids;
+    }
+    
+    public function save_and_send()
+    {
+        if($this->input->post('tmp_save'))
+        {
+            $this->load->model('grades_sessions_model');
+            
+            $user_id = $this->user_profile_model->getId();
+            $class_id = $this->input->post('class_id');
+            $date = date('Y-m-d', $this->strdate_2_timestamp($this->input->post('date')));
+            $data = $_POST;
+            $this->grades_sessions_model->store_session($user_id, $class_id, $date, $data);
+        } else {
+            show_error("Not Implemented yet");
+        }
     }
     
     public function save()
