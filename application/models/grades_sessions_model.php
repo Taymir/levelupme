@@ -15,6 +15,8 @@ class grades_sessions_model extends MY_Model {
  
     public function store_session($user_id, $class_id, $date, $data)
     {
+        //@TODO: можно добавить gzip-сжатие 
+        //@TODO: можно вычищать пустые поля 
         $data_str = base64_encode(serialize($data));
         
         $this->clear_session($user_id, $class_id, $date);
@@ -46,6 +48,10 @@ class grades_sessions_model extends MY_Model {
         $this->db->where('class_id', $class_id);
         $this->db->where('date', $date);
         $this->db->delete($this->table_name);
+        
+        // Периодически вычищаем старые сессии
+        if(mt_rand(0, 10) > 9)
+                $this->clear_old_sessions ();
         
         return TRUE;
     }

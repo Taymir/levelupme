@@ -201,13 +201,13 @@ class operator_journal extends MY_Controller {
                 foreach($subj_array as $num => $grades_array)
                 {
                     // Добавляем заранее фиксированные типы оценок
-                    $data['g_type'][$num][0] = 'н';
+                    $data['g_type'][$num][0] = '';
                     $data['g_type'][$num][1] = '';
                     
                     $grade_txt = '';
                     foreach($grades_array as $g_type_key => $grade)
                     {
-                        if(isset($data['g_type'][$num][$g_type_key]))
+                        if(isset($data['g_type'][$num][$g_type_key]) && trim($grade) != '')
                         {
                             if($grade_txt != '')
                                $grade_txt .=  ' ';
