@@ -119,26 +119,47 @@ class operator_journal extends MY_Controller {
     
     public function save_and_send()
     {
-        if($this->input->post('tmp_save'))
-        {
-            $this->load->model('grades_sessions_model');
+        $this->load->model('grades_sessions_model');
+        $user_id = $this->user_profile_model->getId();
+        $class_id = $this->input->post('class_id');
+        $time = $this->strdate_2_timestamp($this->input->post('date'));
+        $db_date = date('Y-m-d', $time);
+        $human_date = date('d.m.Y', $time);
             
-            $user_id = $this->user_profile_model->getId();
-            $class_id = $this->input->post('class_id');
-            $time = $this->strdate_2_timestamp($this->input->post('date'));
-            $date = date('Y-m-d', $time);
+        if($this->input->post('tmp_save'))
+        {    
             $data = $_POST;
             
-            $this->grades_sessions_model->store_session($user_id, $class_id, $date, $data);
+            $this->grades_sessions_model->store_session($user_id, $class_id, $db_date, $data);
             
             $cur_date = date('d.m.Y');
             $sav_date = date('d.m.Y', $time);
+            
             if($cur_date != $sav_date)
                 $this->redirect_message('/operator_journal/grades/?date=' . $sav_date, 'saved');
             else
                 $this->redirect_message('/operator_journal/grades', 'saved');
         } else {
-            show_error("Not Implemented yet");
+            $data = array();
+            $data['students'] = $this->input->post('students');
+            $data['subjects'] = $this->input->post('subjects');
+            $data['g'] = $this->input->post('g');
+            $data['g_type'] = $this->input->post('g_type');
+            $data['comments'] = $this->input->post('comments');
+            $data = $this->filter_grades($data);
+
+            $this->grades_sessions_model->clear_session($user_id, $class_id, $db_date);
+            
+            if($this->grades_model->has_grades($db_date, array_keys($data['students'])))
+                return $this->show_message ("Расписание на эту дату уже было заполнено. Вы не можете повторно рассылать оценки на одну дату");
+            
+            $this->grades_model->save_grades($db_date, $data);
+            $mailed = $this->send_grades($data, $human_date);
+
+            if($mailed)
+                return $this->show_message("Оценки сохранены и отправлены. $mailed получателей.");
+            else
+                return $this->show_message ("Оценки сохранены, но не отправлены, т.к. отсутствуют ученики с подходящими тарифами (или не заполнены их контактные данные).");
         }
     }
     
@@ -173,6 +194,33 @@ class operator_journal extends MY_Controller {
     private function filter_grades($data)
     {
         //@TODO: Вообще-то сюда можно было переместить всю очистку от ненужной шелухи (от пустых значений)
+        if(!isset($data['grades']))
+        {
+            foreach($data['g'] as $user_profile_id => $subj_array)
+            {
+                foreach($subj_array as $num => $grades_array)
+                {
+                    // Добавляем заранее фиксированные типы оценок
+                    $data['g_type'][$num][0] = 'н';
+                    $data['g_type'][$num][1] = '';
+                    
+                    $grade_txt = '';
+                    foreach($grades_array as $g_type_key => $grade)
+                    {
+                        if(isset($data['g_type'][$num][$g_type_key]))
+                        {
+                            if($grade_txt != '')
+                               $grade_txt .=  ' ';
+                            $grade_txt .= $grade . $data['g_type'][$num][$g_type_key];
+                        }
+                    }
+                    $data['grades'][$user_profile_id][$num] = $grade_txt;
+                }
+            }
+            unset($data['g_type']);
+            unset($data['g']);
+        }
+        
         foreach($data['grades'] as $user_profile_id => $student_value)
         {
             if(!isset($data['students'][$user_profile_id]) || trim($data['students'][$user_profile_id]) == '')
@@ -226,12 +274,12 @@ class operator_journal extends MY_Controller {
             {
                 $subject = $subjects[$num];
 
-                if(isset($grades[$user_profile_id][$num]) && trim($grades[$user_profile_id][$num]) != '')
+                if(isset($grades[$user_profile_id][$num]) && trim($grades[$user_profile_id][$num]) != '')//@TODO: можно очищать в filter_grades (правда, надо будет тут поменять for на foreach)
                 {
                     $pre_data[$num]['grades'] = $grades[$user_profile_id][$num];
                     $pre_data[$num]['subject'] = $subject;
                 }
-                if(isset($comments[$user_profile_id][$num]) && trim($comments[$user_profile_id][$num]) != '')
+                if(isset($comments[$user_profile_id][$num]) && trim($comments[$user_profile_id][$num]) != '')//@TODO: можно очищать в filter_grades (правда, надо будет тут поменять for на foreach)
                 {
                     $pre_data[$num]['comment'] = $comments[$user_profile_id][$num];
                     $pre_data[$num]['subject'] = $subject;

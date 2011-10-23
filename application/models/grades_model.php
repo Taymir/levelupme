@@ -52,9 +52,9 @@ class grades_model extends MY_Model {
                 $batch_row['grade'] = '';
                 $batch_row['comment'] = '';
                 
-                if(isset($grades[$user_profile_id][$num]) && trim($grades[$user_profile_id][$num]) != '')
+                if(isset($grades[$user_profile_id][$num]) && trim($grades[$user_profile_id][$num]) != '')//@TODO: можно очищать в filter_grades
                     $batch_row['grade'] = $grades[$user_profile_id][$num];
-                if(isset($comments[$user_profile_id][$num]) && trim($comments[$user_profile_id][$num]) != '')
+                if(isset($comments[$user_profile_id][$num]) && trim($comments[$user_profile_id][$num]) != '')//@TODO: можно очищать в filter_grades
                     $batch_row['comment'] = $comments[$user_profile_id][$num];
                 
                 if(trim($batch_row['grade']) != '' || trim($batch_row['comment']) != '')
@@ -64,7 +64,7 @@ class grades_model extends MY_Model {
         
         // сохранение информации
         $this->db->trans_start();
-        $this->clear_grades($date, array_keys($students));//@TOTHINK: Оставить или стереть?
+        $this->clear_grades($date, array_keys($students));
         if(sizeof($batch_data) > 0)
             $this->db->insert_batch ($this->table_name, $batch_data);
         $this->db->trans_complete();
