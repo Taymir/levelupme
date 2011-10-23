@@ -28,7 +28,9 @@ class operator_journal extends MY_Controller {
         //@TMP
         $time = time();
         if($this->input->post('updatedate'))
-            $time = $this->strdate_2_timestamp ($this->input->post('date'));
+            $time = $this->strdate_2_timestamp($this->input->post('date'));
+        elseif($this->input->get('date'))
+            $time = $this->strdate_2_timestamp($this->input->get('date'));
         $human_date = date('d.m.Y', $time);
         $db_date = date('Y-m-d', $time);
             
@@ -68,6 +70,8 @@ class operator_journal extends MY_Controller {
         $time = time();
         if($this->input->post('updatedate'))
             $time = $this->strdate_2_timestamp ($this->input->post('date'));
+        elseif($this->input->get('date'))
+            $time = $this->strdate_2_timestamp ($this->input->get('date'));
         $human_date = date('d.m.Y', $time);
         $db_date = date('Y-m-d', $time);
             
@@ -121,14 +125,21 @@ class operator_journal extends MY_Controller {
             
             $user_id = $this->user_profile_model->getId();
             $class_id = $this->input->post('class_id');
-            $date = date('Y-m-d', $this->strdate_2_timestamp($this->input->post('date')));
+            $time = $this->strdate_2_timestamp($this->input->post('date'));
+            $date = date('Y-m-d', $time);
             $data = $_POST;
             
             $this->grades_sessions_model->store_session($user_id, $class_id, $date, $data);
+            
+            $cur_date = date('d.m.Y');
+            $sav_date = date('d.m.Y', $time);
+            if($cur_date != $sav_date)
+                $this->redirect_message('/operator_journal/grades/?date=' . $sav_date, 'saved');
+            else
+                $this->redirect_message('/operator_journal/grades', 'saved');
         } else {
             show_error("Not Implemented yet");
         }
-        $this->redirect_message('/operator_journal/grades', 'saved'); //@TMP
     }
     
     public function save()
