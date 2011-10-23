@@ -54,6 +54,15 @@ var setNto = function(profile_id)
     </div>
 </div>
 
+<?php if(!isset($grades)): ?>
+<div class="clearfix">
+<label></label>
+    <div class="input">
+        <strong>Журнал на эту дату не заполнялся. Для вашего удобства, рекоммендуем воспользоваться <a href="<?= base_url()?>operator_journal/grades/?date=<?= $date ?>">формой для заполнения журнала</a>.</strong>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php if(sizeof($students)): ?>
 <div id="gradesBlock" class="clearfix">
 <table>
@@ -95,10 +104,11 @@ var setNto = function(profile_id)
 </div>
 
 <div class="actions">
-    <?php if(isset($grades)): ?>
-    <strong>Журнал на эту дату уже заполнен и сохранен. Вы не можете сохранить его повторно</strong>
-    <?php else: ?>
     <?= form_submit('submit', 'Сохранить', 'class="btn primary" id="submit"') ?>
+    <?php if(isset($grades)): ?>
+    <br/>
+    <strong>Оценки уже были разосланы, однако вы можете сохранить изменения в системе (при этом оценки не будут рассылаться повторно).</strong>
+    <?php else: ?>
     <em>При сохранении, оценки будут разосланы родителям!</em>
     <?php endif; ?>
 </div>

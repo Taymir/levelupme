@@ -185,15 +185,18 @@ class operator_journal extends MY_Controller {
             $data = $this->filter_grades($data);
             
             if($this->grades_model->has_grades($db_date, array_keys($data['students'])))
-                return $this->show_message ("Расписание на эту дату уже было заполнено. Вы не можете повторно рассылать оценки на одну дату");
-            
-            $this->grades_model->save_grades($db_date, $data);
-            $mailed = $this->send_grades($data, $human_date);
-
-            if($mailed)
-                return $this->show_message("Оценки сохранены и отправлены. $mailed получателей.");
-            else
-                return $this->show_message ("Оценки сохранены, но не отправлены, т.к. отсутствуют ученики с подходящими тарифами (или не заполнены их контактные данные).");
+            {
+                $this->grades_model->save_grades($db_date, $data);
+                return $this->show_message("Оценки сохранены в системе.");
+            } else {
+                $this->grades_model->save_grades($db_date, $data);
+                $mailed = $this->send_grades($data, $human_date);
+                
+                if($mailed)
+                    return $this->show_message("Оценки сохранены и отправлены. $mailed получателей.");
+                else
+                    return $this->show_message ("Оценки сохранены, но не отправлены, т.к. отсутствуют ученики с подходящими тарифами (или не заполнены их контактные данные).");
+            }
         }
     }
     
