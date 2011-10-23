@@ -23,6 +23,11 @@ var subjectClick = function(num)
         return false;
     }
 }
+var changeSubjectName = function(num)
+{
+    $('subjectName' + num).innerText = $('subjects' + num).value;
+    $('hiddenSubjectName' + num).value = $('subjects' + num).value;
+}
 var gradeFields;
 var commentFields;
 window.addEvent('domready', function()
@@ -94,7 +99,7 @@ window.addEvent('domready', function()
 <ul>
 <?php for($num = 1; ($num - 1) < $this->config->item('max_lessons'); $num++): ?>
 <li><?= $num ?>. 
-<?= form_input("subjects[$num]", isset($subjects[$num]) ? $subjects[$num] : '', "class=\"subjectField\" id=\"subjects$num\"") ?> 
+<?= form_input("subjects[$num]", isset($subjects[$num]) ? $subjects[$num] : '', "class=\"subjectField\" id=\"subjects$num\" onchange=\"changeSubjectName($num)\"") ?> 
 <a href="#subject<?= $num ?>" class="btn tiny" onclick="return subjectClick(<?= $num ?>)"><img src="<?= base_url() ?>styles/icons/journal_edit.png" /></a>
 </li>
 <?php endfor; ?>
@@ -105,7 +110,8 @@ window.addEvent('domready', function()
 <?php for($num = 1; ($num - 1) < $this->config->item('max_lessons'); $num++): ?>
 <a name="subject<?= $num ?>" id="subject<?= $num ?>"></a>
 <div class="gradesBlock" id="gradesBlock<?= $num ?>">
-<h3><?= $num ?>. <?= isset($subjects[$num]) ? $subjects[$num] : '' ?></h3>
+<h3><?= $num ?>. <span id="subjectName<?= $num ?>"><?= isset($subjects[$num]) ? $subjects[$num] : '' ?></span></h3>
+<input type="hidden" value="<?= isset($subjects[$num]) ? $subjects[$num] : '' ?>" id="hiddenSubjectName<?= $num ?>" />
 <table>
     <col />
     <col class="studentNameCol" />
