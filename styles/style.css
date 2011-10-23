@@ -368,6 +368,15 @@ body#home #sidebar { padding-top: 65px; }
             }
             
             /* operator_journal/grades */
+
+            .gradesBlock {
+                background-color: white;
+                padding: 10px;
+                font-family: "Times New Roman", times, serif;
+                font-size:12pt;
+                color: black;
+                display:none;
+            }
             .studentNum {
                 text-align: right;
                 vertical-align: top;
@@ -393,13 +402,6 @@ body#home #sidebar { padding-top: 65px; }
             }
             .gradesBlock .dateField {
                 text-align: center;
-            }
-            .gradesBlock {
-                background-color: white;
-                padding: 10px;
-                font-family: "Times New Roman", times, serif;
-                font-size:12pt;
-                color: black;
             }
             .gradesBlock input.gradeTypeField {
                 width: 25px;
