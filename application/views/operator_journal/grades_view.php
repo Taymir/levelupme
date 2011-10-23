@@ -15,7 +15,14 @@ var Nhandler = function(e)
 var subjectClick = function(num)
 {
     if($('subjects' + num).value != '') {
-        $$('.gradesBlock').setStyle('display', 'none');
+        $$('.gradesBlock').each(function(el, i){
+            if(el.getStyle('display') != 'none')
+            {
+                checkIfFilled(i+1);
+                el.setStyle('display', 'none');
+            }
+        });
+        
         $('gradesBlock' + num).setStyle('display', 'block');
         return true;
     } else {
@@ -37,6 +44,33 @@ var commentAllDialog = function(num)
         $$('.commentField' + num).each(function(el){el.value = content.value});
         this.close(1);
     });
+}
+var isFilled = function(num)
+{
+    // Проверка комментариев
+    // Проверка Н
+    // Проверка ответов
+    // Проверка к/р
+    // Проверка с/р
+    // Проверка д/з
+    // Если найдено хоть что-то - сделать кнопку предметов зеленой
+    // Если не найдено ничего - сделать кнопку предметов обычной
+    
+    if(! $$('.commentField' + num).every(function(el) {return el.value == '';}) ) return true;
+    if(! $$('.g0-' + num).every(function(el) {return el.value == '';}) ) return true;
+    if(! $$('.g1-' + num).every(function(el) {return el.value == '';}) ) return true;
+    if(! $$('.g2-' + num).every(function(el) {return el.value == '';}) ) return true;
+    if(! $$('.g3-' + num).every(function(el) {return el.value == '';}) ) return true;
+    if(! $$('.g4-' + num).every(function(el) {return el.value == '';}) ) return true;
+    
+    return false;
+}
+var checkIfFilled = function(num)
+{
+    if(isFilled(num))
+        $('subjectsBtn' + num).addClass('success');
+    else
+        $('subjectsBtn' + num).removeClass('success');
 }
 var gradeFields;
 var commentFields;
@@ -110,7 +144,7 @@ window.addEvent('domready', function()
 <?php for($num = 1; ($num - 1) < $this->config->item('max_lessons'); $num++): ?>
 <li><?= $num ?>. 
 <?= form_input("subjects[$num]", isset($subjects[$num]) ? $subjects[$num] : '', "class=\"subjectField\" id=\"subjects$num\" onchange=\"changeSubjectName($num)\"") ?> 
-<a href="#subject<?= $num ?>" class="btn tiny" onclick="return subjectClick(<?= $num ?>)"><img src="<?= base_url() ?>styles/icons/journal_edit.png" /></a>
+<a href="#subject<?= $num ?>" class="btn tiny" id="subjectsBtn<?= $num ?>" onclick="return subjectClick(<?= $num ?>)"><img src="<?= base_url() ?>styles/icons/journal_edit.png" /></a>
 </li>
 <?php endfor; ?>
 </ul>
@@ -156,11 +190,11 @@ foreach($students as $student): $student_num++;?>
 <tr class="<?= $student_num % 2 == 0 ? '' : 'odd' ?>">
 <td class="studentNum"><?= $student_num . '. ' ?></td>
 <td><?= colorify_name($student->name) ?></td>
-<td><?= form_input("g[$student->profile_id][$num][0]", "", 'class="N gradeField"') ?></td>
-<td><?= form_input("g[$student->profile_id][$num][1]", "", 'class="gradeField"') ?></td>
-<td><?= form_input("g[$student->profile_id][$num][2]", "", 'class="gradeField"') ?></td>
-<td><?= form_input("g[$student->profile_id][$num][3]", "", 'class="gradeField"') ?></td>
-<td><?= form_input("g[$student->profile_id][$num][4]", "", 'class="gradeField"') ?></td>
+<td><?= form_input("g[$student->profile_id][$num][0]", "", "class=\"N gradeField g1-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][1]", "", "class=\"gradeField g1-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][2]", "", "class=\"gradeField g2-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][3]", "", "class=\"gradeField g3-$num\"") ?></td>
+<td><?= form_input("g[$student->profile_id][$num][4]", "", "class=\"gradeField g4-$num\"") ?></td>
 <td><?= form_input("comments[{$student->profile_id}][$num]", 
         isset($comments[$student->profile_id][$num]) ? $comments[$student->profile_id][$num] : '',
         "class=\"commentField commentField$num\"") ?></td>
@@ -171,7 +205,7 @@ foreach($students as $student): $student_num++;?>
 
 <div class="clearfix">
     <div class="input">
-        <a href="#" class="btn success">Временно сохранить</a>
+        <a href="#" class="btn success" onclick="checkIfFilled(<?= $num ?>)">Временно сохранить</a>
     </div>
 </div>
 </div>
