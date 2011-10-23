@@ -25,7 +25,11 @@ class operator_journal extends MY_Controller {
     
     public function grades()
     {
-        //@TMP
+        $this->load->model('timetables_model');
+        $this->load->model('classes_model');
+        $this->load->model('user_profile_model');
+        $this->load->model('grades_sessions_model');
+        
         $time = time();
         if($this->input->post('updatedate'))
             $time = $this->strdate_2_timestamp($this->input->post('date'));
@@ -33,11 +37,6 @@ class operator_journal extends MY_Controller {
             $time = $this->strdate_2_timestamp($this->input->get('date'));
         $human_date = date('d.m.Y', $time);
         $db_date = date('Y-m-d', $time);
-            
-        $this->load->model('timetables_model');
-        $this->load->model('classes_model');
-        $this->load->model('user_profile_model');
-        $this->load->model('grades_sessions_model');
         
         $class = $this->operator_class();
         $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());
@@ -53,8 +52,15 @@ class operator_journal extends MY_Controller {
                 $this->load_var('subjects', $subjects);
             }
             $students = $this->user_profile_model->get_users_by_class($class->id);// Переопределяет список учеников, загруженный из сессии
+            $student_ids = $this->extract_ids_from_students($students);
+            
             $this->load_var('students', $students);
             $this->load_var('date', $human_date);
+        }
+        if($this->grades_model->has_grades($db_date, $student_ids))
+        {
+            $this->load_var('error', 
+            "Оценки на данную дату уже были отправлены. Чтобы просмотреть или изменить их, воспользуйтесь <a href=\"" . base_url() . "operator_journal/archive/?date=$human_date\">архивом</a>");
         }
         $this->load_var('schools_classes', $schools_classes);
         $this->load_style('datepicker_vista/datepicker_vista');

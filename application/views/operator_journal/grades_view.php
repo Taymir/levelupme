@@ -147,6 +147,8 @@ window.addEvent('domready', function()
 </div>
 <?= form_fieldset_close() ?>
 
+<?php if(sizeof($students) && !isset($error)): ?>
+
 <!-- Список предметов -->
 <?= form_fieldset('Предметы') ?>
 <ul>
@@ -226,10 +228,27 @@ foreach($students as $student): $student_num++;?>
 </div>
 <?php endfor; ?>
 <!-- Сохранение и отправка -->
+<br/><br/><br/>
 <div class="actions">
     <?= form_submit('submit', 'Разослать', 'class="btn error" id="submit"') ?>
     <em>Убедитесь, что заполнили <strong>все предметы</strong>!</em>
 </div>
 
 <?= form_close(); ?>
+<?php elseif(isset($error)): ?>
+<div class="clearfix">
+<label></label>
+    <div class="input">
+        <strong><?= $error ?></strong>
+    </div>
+</div>
+<?php else: ?>
+<div class="clearfix">
+<label></label>
+    <div class="input">
+        <strong>В выбранном классе не зарегистрировано ни одного ученика</strong>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php endif; ?>
