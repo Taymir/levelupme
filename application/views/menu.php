@@ -10,9 +10,19 @@
 <?php if(in_array($role, array('admin', 'operator'))): ?>
 <strong>Раздел оператора:</strong>
 <ul>
-    <li><a href="/operator_journal">Журнал</a></li>
+    <li><a href="/operator_journal">Журнал</a>
+        <ul>
+            <li><a href="/operator_journal/archive">Архив оценок</a></li>
+            <li><a href="/operator_journal/grades">Заполнение оценок</a></li>
+        </ul>
+    </li>
     <li><a href="/operator_timetable">Расписание</a></li>
-    <li><a href="/operator_messages">Рассылки</a></li>
+    <li><a href="/operator_messages">Рассылки</a>
+        <ul>
+            <li><a href="/operator_messages/archive">Архив рассылок</a></li>
+            <li><a href="/operator_messages/add">Новая рассылка</a></li>
+        </ul>
+    </li>
     <!--<li><a href="/operator_settings">Настройки</a></li>-->
 </ul>
 <?php endif; ?>

@@ -5,10 +5,23 @@
 <script type="text/javascript">
 window.addEvent('domready', function()
 {
+    var inputs = $$('#scheduleForm input.subjectField');
     addAutocompletion(
-        $$('#scheduleForm input.subjectField'),
+        inputs,
         $('submit'),
         '<?php echo base_url(); ?>index.php/ajax/autocomplete');
+    inputs.each(function(field, i){
+        field.addEvent('keypress', function(e)
+        {
+            var addEls = 7;
+            if(e.key == 'enter') {
+                e.stop();
+                if(inputs[i + addEls] != undefined)
+                    inputs[i + addEls].focus();
+            }
+        });
+    });
+    
 });
 </script>
 
@@ -42,7 +55,7 @@ window.addEvent('domready', function()
 <?php for($day = 1; $day -1 < 7; $day++): 
 $value = isset($timetable->timetable[$num][$day]) ? $timetable->timetable[$num][$day] : '';
 ?>
-<td><?= form_input("subject[$num][$day]", $value, 'size="12" tabindex="' . ($num + $day * $this->config->item('max_lessons')) . '" class="subjectField"'); ?></td>
+<td><?= form_input("subject[$num][$day]", $value, 'size="12" class="subjectField"'); ?></td>
 <?php endfor; ?>
 </tr>
 <?php endfor; ?>

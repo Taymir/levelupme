@@ -24,15 +24,5 @@ var addAutocompletion = function (subjectFields, submitEl, ajaxTarget)
                 max:20
             }
         }, meioList );
-        field.addEvent('keypress', function(e)
-        {
-            if(e.key == 'enter') {
-                e.stop();
-                if(subjectFields[i+1])
-                    subjectFields[i+1].focus();
-                if(i == subjectFields.length - 1)
-                    submitEl.focus();
-            }
-        })
     });
 }

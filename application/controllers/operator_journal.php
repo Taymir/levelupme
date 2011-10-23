@@ -20,6 +20,12 @@ class operator_journal extends MY_Controller {
     
     public function index()
     {
+        return $this->grades();
+    }
+    
+    public function grades()
+    {
+        //@TMP
         $time = time();
         if($this->input->post('updatedate'))
             $time = $this->strdate_2_timestamp ($this->input->post('date'));
@@ -56,7 +62,48 @@ class operator_journal extends MY_Controller {
         'datepicker/Picker', 'datepicker/Picker.Attach', 'datepicker/Picker.Date', 'showDialog', 'MUX.Dialog');
         $this->load_style('MUX.Dialog');
         
-        return $this->load_view('operator_journal/index_view', "Журнал"); 
+        return $this->load_view('operator_journal/grades_view', "Заполнение оценок");
+    }
+    
+    public function archive()
+    {
+        $time = time();
+        if($this->input->post('updatedate'))
+            $time = $this->strdate_2_timestamp ($this->input->post('date'));
+        $human_date = date('d.m.Y', $time);
+        $db_date = date('Y-m-d', $time);
+            
+        $this->load->model('timetables_model');
+        $this->load->model('classes_model');
+        $this->load->model('user_profile_model');
+        
+        $class = $this->operator_class();
+        $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());
+        if(isset($class)) {
+            $students = $this->user_profile_model->get_users_by_class($class->id);
+            $grades = $this->grades_model->load_grades($db_date, $this->extract_ids_from_students($students));
+            if($grades !== null)
+            {
+                $this->load_var('grades', $grades['grades']);
+                $this->load_var('comments', $grades['comments']);
+                $this->load_var('subjects', $grades['subjects']);
+            }
+            else
+            {
+                $subjects = $this->timetables_model->get_subjects_by_class_and_date($class->id, $human_date);
+                $this->load_var('subjects', $subjects);
+            }
+
+            $this->load_var('students', $students);
+            $this->load_var('date', $human_date);
+        }
+        $this->load_var('schools_classes', $schools_classes);
+        $this->load_style('datepicker_vista/datepicker_vista');
+        $this->load_scripts('mootools-core', 'mootools-more', 'schoolClassWidget', 'datepicker/Locale.ru-RU.DatePicker',
+        'datepicker/Picker', 'datepicker/Picker.Attach', 'datepicker/Picker.Date', 'showDialog', 'MUX.Dialog');
+        $this->load_style('MUX.Dialog');
+        
+        return $this->load_view('operator_journal/archive_view', "Журнал"); 
     }
     
     private function extract_ids_from_students($students)

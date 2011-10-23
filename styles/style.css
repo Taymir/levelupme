@@ -366,7 +366,65 @@ body#home #sidebar { padding-top: 65px; }
                 padding: 0px 6px;
                 text-decoration: none;
             }
-
+            
+            /* operator_journal/grades */
+            .studentNum {
+                text-align: right;
+                vertical-align: top;
+            }
+            .gradesBlock .studentNameCol {
+                /*width: 200px;*/
+            }
+            .nameColored {
+                color: #68a231;
+                display: block;
+            }
+            .gradesBlock table {
+               width: 580px;
+            }
+            .gradesBlock h3 {
+                font-size: 24pt;
+                color: #68a231;
+                text-align: center;
+            }
+            .gradesBlock .className {
+                float: right;
+                text-align:right
+            }
+            .gradesBlock .dateField {
+                text-align: center;
+            }
+            .gradesBlock {
+                background-color: white;
+                padding: 10px;
+                font-family: "Times New Roman", times, serif;
+                font-size:12pt;
+                color: black;
+            }
+            .gradesBlock input.gradeTypeField {
+                width: 25px;
+                text-align:center;
+                color: #68a231;
+            }
+            .gradesBlock input.gradeField {
+                width: 25px;
+                text-align: center;
+                font-weight: bold;
+            }
+            tr.odd {
+                background-color: #f0f6e8;
+            }
+            .gradesBlock th {
+                font-weight:normal;
+                text-align:center;
+                color: #68a231;
+            }
+            .gradesBlock td {
+                padding: 0px 2px;
+            }
+            
+            /* end: operator_journal/grades */
+            
             #gradesBlock {
                 overflow:auto;
             }
