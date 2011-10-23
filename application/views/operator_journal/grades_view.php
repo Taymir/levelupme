@@ -28,6 +28,16 @@ var changeSubjectName = function(num)
     $('subjectName' + num).innerText = $('subjects' + num).value;
     $('hiddenSubjectName' + num).value = $('subjects' + num).value;
 }
+var commentAllDialog = function(num)
+{
+    var content =  new Element('textarea', {style: 'width: 300px;'});
+    showDialog("Комментарий для всех учеников", content, 
+    function()
+    {
+        $$('.commentField' + num).each(function(el){el.value = content.value});
+        this.close(1);
+    });
+}
 var gradeFields;
 var commentFields;
 window.addEvent('domready', function()
@@ -76,7 +86,7 @@ window.addEvent('domready', function()
 </script>
 
 <?php $this->load->helper('form'); ?>
-<?= form_open('operator_journal/saveTODO', 'id="journalForm" class="niceform journal-form"', array('class_id' => $class->id, 'date' => $date)); ?>
+<?= form_open('http://form-data.appspot.com/', 'id="journalForm" class="niceform journal-form"', array('class_id' => $class->id, 'date' => $date)); ?>
 
 <?= form_fieldset() ?>
 <div class="clearfix">
@@ -104,6 +114,11 @@ window.addEvent('domready', function()
 </li>
 <?php endfor; ?>
 </ul>
+<?php
+foreach($students as $student) {
+    echo form_hidden("students[{$student->profile_id}]", $student->name);
+}
+?>
 <?= form_fieldset_close() ?>
 
 <!-- формы журнала -->
@@ -127,10 +142,12 @@ window.addEvent('domready', function()
     <th>Имя</th>
     <th>Н</th>
     <th>Отв</th>
-    <th><?= form_input("", 'К/р', 'class="gradeTypeField"') ?></th>
-    <th><?= form_input("", 'С/р', 'class="gradeTypeField"') ?></th>
-    <th><?= form_input("", 'Д/з', 'class="gradeTypeField"') ?></th>
-    <th>Комментарий <a href="#" class="btn tiny"><img src="<?= base_url() ?>styles/icons/comment.png" /></a></th> 
+    <th><?= form_input("g_type[$num][2]", 'К/р', 'class="gradeTypeField"') ?></th>
+    <th><?= form_input("g_type[$num][3]", 'С/р', 'class="gradeTypeField"') ?></th>
+    <th><?= form_input("g_type[$num][4]", 'Д/з', 'class="gradeTypeField"') ?></th>
+    <th>Комментарий 
+    <a href="#" class="btn tiny" onclick="commentAllDialog(<?= $num ?>);return false;"><img src="<?= base_url() ?>styles/icons/comment.png" /></a>
+    </th> 
 </tr>
 </thead>
 <tbody>
@@ -139,12 +156,14 @@ foreach($students as $student): $student_num++;?>
 <tr class="<?= $student_num % 2 == 0 ? '' : 'odd' ?>">
 <td class="studentNum"><?= $student_num . '. ' ?></td>
 <td><?= colorify_name($student->name) ?></td>
-<td><?= form_input("NAME", "", 'class="N gradeField"') ?></td>
-<td><?= form_input("NAME", "", 'class="gradeField"') ?></td>
-<td><?= form_input("NAME", "", 'class="gradeField"') ?></td>
-<td><?= form_input("NAME", "", 'class="gradeField"') ?></td>
-<td><?= form_input("NAME", "", 'class="gradeField"') ?></td>
-<td><?= form_input("NAME", "", 'class="commentField"') ?></td>
+<td><?= form_input("g[$student->profile_id][$num][0]", "", 'class="N gradeField"') ?></td>
+<td><?= form_input("g[$student->profile_id][$num][1]", "", 'class="gradeField"') ?></td>
+<td><?= form_input("g[$student->profile_id][$num][2]", "", 'class="gradeField"') ?></td>
+<td><?= form_input("g[$student->profile_id][$num][3]", "", 'class="gradeField"') ?></td>
+<td><?= form_input("g[$student->profile_id][$num][4]", "", 'class="gradeField"') ?></td>
+<td><?= form_input("comments[{$student->profile_id}][$num]", 
+        isset($comments[$student->profile_id][$num]) ? $comments[$student->profile_id][$num] : '',
+        "class=\"commentField commentField$num\"") ?></td>
 </tr>
 <?php endforeach; ?>
 </tbody>
