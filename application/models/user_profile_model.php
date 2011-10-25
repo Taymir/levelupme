@@ -141,14 +141,16 @@ class user_profile_model extends MY_Model {
                 $this->table_name . '.name,'.
                 $this->table_name . '.phone,'.
                 $this->table_name . '.tariff,'.
-                $this->table_name . '.banned'
+                $this->table_name . '.banned,'.
+                $this->table_name . '.order_num'
                 );
         
         $this->db->from($this->table_name);
         $this->db->join($this->users_table_name, $this->table_name  . '.user_id = ' . $this->users_table_name . '.id', 'left');
         
         $this->db->where($this->table_name . '.class_id', $class_id);
-        $this->db->order_by($this->table_name . '.name');
+        $this->db->order_by($this->table_name . '.order_num');
+        //$this->db->order_by($this->table_name . '.name');
         
         $query = $this->db->get();
         return $query->result();
@@ -177,7 +179,8 @@ class user_profile_model extends MY_Model {
         if($min_tariff != NULL)
             $this->db->where('tariff >=', $min_tariff);
         
-        $this->db->order_by('name');
+        $this->db->order_by($this->table_name . '.order_num');
+        //$this->db->order_by('name');
         
         $query = $this->db->get();
         return $this->Arr2List($query->result_array(), 'user_profile_id', 'name');
@@ -191,7 +194,8 @@ class user_profile_model extends MY_Model {
         if($min_tariff != NULL)
             $this->db->where('tariff >=', $min_tariff);
         
-        $this->db->order_by('name');
+        $this->db->order_by($this->table_name . '.order_num');
+        //$this->db->order_by('name');
         
         $query = $this->db->get();
         return $query->result();
@@ -210,7 +214,8 @@ class user_profile_model extends MY_Model {
         if($min_tariff != NULL)
             $this->db->where('tariff >=', $min_tariff);
         
-        $this->db->order_by('name');
+        $this->db->order_by($this->table_name . '.order_num');
+        //$this->db->order_by('name');
         
         $query = $this->db->get();
         return $this->Arr2List($query->result_array(), 'user_profile_id', 'name');
@@ -229,7 +234,8 @@ class user_profile_model extends MY_Model {
         if($min_tariff != NULL)
             $this->db->where('tariff >=', $min_tariff);
         
-        $this->db->order_by('name');
+        $this->db->order_by($this->table_name . '.order_num');
+        //$this->db->order_by('name');
         
         $query = $this->db->get();
         return $query->result();
@@ -338,6 +344,59 @@ class user_profile_model extends MY_Model {
             return $this->typical_delete ($this->table_name, $user_profile_id);
         else 
             return $this->users->delete_user($user_profile->user_id);
+    }
+    
+    public function resort_users($class_id)
+    {
+        // начало транзакции
+        $this->db->trans_start();
+        // запрос на список юзеров в классе
+        $this->db->select('id, name');
+        $this->db->from($this->table_name);
+        $this->db->where('class_id', $class_id);
+        $users = $this->db->get()->result();
+        
+        // сортировка списка юзеров
+        usort($users, array($this, 'name_cmp'));
+        
+        // сохранение ордер_нум-ов
+        foreach($users as $key => $user)
+        {
+            $this->typical_update($this->table_name, array('order_num' => $key + 1), $user->id);
+        }
+        // конец транзакции
+        $this->db->trans_complete();
+    }
+    
+    public function name_cmp($a, $b)
+    {
+        return strcasecmp($a->name, $b->name);
+    }
+    
+    public function update_user_order($user_profile_id, $order_num)
+    {
+        // начало транзакции
+        $this->db->trans_start();
+        // Получение информации о юзере
+        $user_profile = $this->typical_find_obj($this->table_name, $user_profile_id);
+        // Проверка на то, есть ли в данном классе юзер с таким ордер_нум-ом
+        $this->db->select('id,order_num');
+        $this->db->from($this->table_name);
+        $this->db->where('class_id', $user_profile->class_id);
+        $this->db->where('order_num', $order_num);
+        $query = $this->db->get();
+        
+        if($query->num_rows() > 0)
+        {
+            // если есть, то два запроса на замену ордер-нумов между юзерами
+            $other_user_profile = $query->row();
+            
+            $this->typical_update($this->table_name, array('order_num' => $user_profile->order_num), $other_user_profile->id);
+        }
+            // иначе один запрос на обновление ордер-нума
+        $this->typical_update($this->table_name, array('order_num' => $order_num), $user_profile->id);
+        // конец транзакции
+        $this->db->trans_complete();
     }
 
 }

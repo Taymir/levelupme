@@ -190,6 +190,8 @@ class admin_users extends MY_Controller {
             }
             
             $this->user_profile_model->batch_add_users($batch_data);
+            $this->user_profile_model->resort_users($class_id);
+            
             
             return $this->redirect_message(array('admin_users', '?class=' . $class_id), "Ученики добавлены");//@TODO: заменить на /admin_users/class_id
         }
@@ -222,6 +224,20 @@ class admin_users extends MY_Controller {
         $this->user_profile_model->delete_user($profile_id);
         
         return $this->redirect_message('admin_users', "Пользователь удален");
+    }
+    
+    public function reorder_user($profile_id, $order_num)
+    {
+        $this->user_profile_model->update_user_order($profile_id, $order_num);
+        
+        return $this->redirect_message('admin_users', "Пользователь перемещен");
+    }
+    
+    public function resort_users($class_id)
+    {
+        $this->user_profile_model->resort_users($class_id);
+        
+        return $this->redirect_message('admin_users', "Сортировка завершена");
     }
     
     private function clean_phone_number($phone)

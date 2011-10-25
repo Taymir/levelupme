@@ -19,7 +19,7 @@
 </tr>
 </thead>
 <tbody>
- <?php foreach($users as $user): ?>
+ <?php $usernum = 0; foreach($users as $user): ?>
 <tr>
     <td>
     <?php if($user->banned) echo "<strike>" ?>
@@ -28,7 +28,7 @@
     </td>
     <td>
     <?php if($user->banned) echo "<strike>" ?>
-    <?= $user->name ?>
+    <?= ++$usernum . '. ' .$user->name ?>
     <?php if($user->banned) echo "</strike>" ?>
     </td>
     <td>
@@ -52,6 +52,20 @@
             '<img src="' . base_url() . 'styles/icons/user_edit.png" />',
             array('class' => "btn tiny", 'title'=>"Изменение пользователя"));
     ?>
+    <?php if($usernum > 1): ?>
+    <?php echo anchor(array('admin_users', 'reorder_user', $user->profile_id, $user->order_num - 1),
+            '<img src="' . base_url() . 'styles/icons/arrow_up.png" />',
+            array('class' => "btn tiny", 'title'=>"Переместить пользователя по списку вверх"));
+    ?>
+    <?php else: ?>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <?php endif; ?>
+    <?php if($usernum < sizeof($users)) : ?>
+    <?php echo anchor(array('admin_users', 'reorder_user', $user->profile_id, $user->order_num + 1),
+            '<img src="' . base_url() . 'styles/icons/arrow_down.png" />',
+            array('class' => "btn tiny", 'title'=>"Переместить пользователя по списку вниз"));
+    ?>
+    <?php endif; ?>
     </nobr>
     </td>
 </tr>
@@ -60,7 +74,8 @@
 </table>
 
 <div class="actions">
-<?php echo anchor('admin_users/mass_add_user/'. $class_id, '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить много учеников', array('class' => "btn success")) ?>&nbsp;
-<?php echo anchor('admin_users/add_user/' . $class_id, '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить ученика', array('class' => "btn success")) ?>
+<?php echo anchor('admin_users/mass_add_user/'. $class_id, '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить много учеников', array('class' => "btn success", 'title' => "Добавление списка учеников")) ?>&nbsp;
+<?php echo anchor('admin_users/add_user/' . $class_id, '<img src="' . base_url() . 'styles/icons/user_add.png" />Добавить ученика', array('class' => "btn success", 'title' => "Добавление одного ученика")) ?>&nbsp;
+<?php echo anchor('admin_users/resort_users/' . $class_id, '<img src="' . base_url() . 'styles/icons/arrow_refresh.png" />&nbsp;', array('class' => "btn success", 'title' => "Пересортировать по именам")) ?>
 </div>
 <?php endif; ?>
