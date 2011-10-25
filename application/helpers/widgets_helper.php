@@ -43,7 +43,7 @@ function date_widget($target, $default_date = NULL)
     $ci = & get_instance();
     $ci->load->helper('form');
     
-    $out = form_open($target, 'class="date-widget"');
+    $out = form_open($target, 'id="date-widget" class="date-widget"');
     
     $out .= "
 <script type=\"text/javascript\">

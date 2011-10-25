@@ -3,7 +3,7 @@
 <?php if(isset($class)): ?>
 
 <?= date_widget('', $date) ?>
-
+<?= js_invalidator('date-widget', 'journalForm') ?>
 
 <h2>Архив оценок</h2>
 <!-- //@REFACTOR -->

@@ -3,6 +3,7 @@
 <?php if(isset($class)): ?>
 
 <?= date_widget('', $date) ?>
+<?= js_invalidator('date-widget', 'journalForm') ?>
 
 <script type="text/javascript">
 var Nhandler = function(e)

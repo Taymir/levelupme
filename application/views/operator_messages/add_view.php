@@ -1,9 +1,10 @@
 <?php $this->load->helper('widgets'); ?>
 <?= school_class_widget($schools_classes, '/operator_messages/add', $school_id, $class_id) ?>
+
 <?php if($class): ?>
 
 <?= tariff_widget('/operator_messages/add', $tariffs, $tariff_id) ?>
-
+<?= js_invalidator('tariff-widget', 'messagesForm') ?>
 <h2>Рассылки</h2>
 <?php $this->load->helper('form'); ?>
 <script type="text/javascript"> 
