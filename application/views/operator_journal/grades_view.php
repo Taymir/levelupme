@@ -29,6 +29,7 @@ var subjectClick = function(num)
             return true;
         } else {
            $('gradesBlock' + num).setStyle('display', 'none');
+           checkIfFilled(num);
            return false; 
         }  
     } else {
