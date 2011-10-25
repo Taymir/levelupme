@@ -384,6 +384,9 @@ body#home #sidebar { padding-top: 65px; }
             .gradesBlock .studentNameCol {
                 /*width: 200px;*/
             }
+            .surnameColored {
+                font-weight: bold;
+            }
             .nameColored {
                 color: #68a231;
                 display: block;
