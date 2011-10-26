@@ -74,7 +74,7 @@ img#about-image { float: left; margin: 3px 8px 8px 0px; }
 
 .container { text-align: left; width: 960px; margin: 0 auto; position: relative; }
 #header-wrapper { background: url(images/bg.png) repeat 0 1px; }
-#header { /*background: url(images/top-bg.jpg) no-repeat top center;*/ }
+#header { background: url(images/bg.png) no-repeat top center; }
 #header .container { padding-top: 20px; height: 150px; }
 body#home #header .container { height: 384px; }
 
