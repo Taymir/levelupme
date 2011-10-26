@@ -315,6 +315,7 @@ class MY_Controller extends CI_Controller {
         
         if(isset($class_id))
         {
+            $class_id = (int)$class_id;
             if($this->operator_model->check_class_against_school_list($class_id, $operators_school_list))
             {
                 // проверка на то, имеет ли право  оператор на доступ к данному классу

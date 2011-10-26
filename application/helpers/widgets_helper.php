@@ -96,7 +96,7 @@ function school_class_widget($schoolClassData, $target, $default_school = NULL, 
                 $class_id = (int)$class->id;
                 $classes[$school_id][$class_id] = $class->class;
 
-                $classesTmp[] = ' "' . $class->id . '":"' . addslashes($class->class) . '"';
+                $classesTmp[] = ' " ' . $class->id . '":"' . addslashes($class->class) . '"';//@HARDFIX: чтобы JS не пытался сортировать массив, приходится делать ключи строками явно
             }
             $out .= "classes[$school->id] = ";
             $out .= '{' . implode(',', $classesTmp) . "};\n";
