@@ -283,7 +283,7 @@ class user_profile_model extends MY_Model {
     }
     
     public function save_user_profile($profile_id, $data)
-    {
+    {//@TODO Замена РОЛИ!!!
         $result = true;
         if(isset($data['password']))
         {

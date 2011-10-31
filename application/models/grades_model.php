@@ -141,6 +141,20 @@ class grades_model extends MY_Model {
                 );
         return NULL;
     }
+    
+    public function get_grades($date_from, $date_to, $user_profile_ids)
+    {//@TODO: добавить название предмета
+        $this->db->select('grade, subject, num, date, user_profile_id');
+        $this->db->from($this->table_name);
+        $this->db->where('date >=', $date_from);
+        $this->db->where('date <=', $date_to);
+        $this->db->where_in('user_profile_id', $user_profile_ids);
+        $this->db->order_by('date');
+        $this->db->order_by('num');
+        
+        $query = $this->db->get();
+        return $query->result();
+    }
 }
 
 ?>

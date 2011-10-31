@@ -28,12 +28,12 @@ window.addEvent('domready', function()
 <h2>Расписание</h2>
 
 <?php $this->load->helper('form'); ?>
-<?= form_open('operator_timetable/save', 'id="scheduleForm" class="timetable-form"', array('class_id' => $class->id, 'id' => $timetable->id)); ?>
+<?= form_open('operator_timetable/save', 'id="scheduleForm" class="timetable-form"', array('class_id' => $class->id, 'id' => @$timetable->id)); ?>
 <div class="clearfix">
 <?= form_label("Информация о классе", 'class_description') ?> 
 <strong><?= $class->school . ', ' . $class->class ?></strong>
     <div class="input">
-    <?= form_textarea('class_description', set_value('class_description', $class->description)) ?>
+    <?= form_textarea('class_description', set_value('class_description', isset($class->description) ? $class->description : '')) ?>
     </div>
 </div>
 
@@ -63,7 +63,7 @@ $value = isset($timetable->timetable[$num][$day]) ? $timetable->timetable[$num][
 </table>
 <p>
 <?= form_label("Комментарий к расписанию:", 'description') ?>
-<?= form_textarea('description', set_value('description', $timetable->description)) ?>
+<?= form_textarea('description', set_value('description', isset($timetable->description) ? $timetable->description : '')) ?>
 </p>
 
 <div class="actions">
