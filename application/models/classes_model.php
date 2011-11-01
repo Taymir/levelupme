@@ -80,10 +80,12 @@ class classes_model extends MY_Model {
         return NULL;
     }
     
-    public function get_classes_by_school($school_id)
+    public function get_classes_by_school($school_id, $add_parallels = false)
     {
         $this->db->select('*');
-
+        if($add_parallels)
+            $this->db->select('CAST(class AS DECIMAL) as parallel', FALSE);
+        
         $this->db->from($this->table_name);
         $this->db->order_by('LENGTH(' . $this->table_name . '.class)');
         $this->db->order_by($this->table_name . '.class');
@@ -110,7 +112,7 @@ class classes_model extends MY_Model {
         return $this->Arr2List($query->result_array(), 'id', 'class');
     }
     
-    public function get_schools_and_classes($school_list = '*')
+    public function get_schools_and_classes($school_list = '*', $add_parallels = false)
     {
         $ci = & get_instance();
         $ci->load->model('schools_model');
@@ -118,7 +120,7 @@ class classes_model extends MY_Model {
         
         foreach($schools as $key=>$school)
         {
-            $schools[$key]->classes = $this->get_classes_by_school($school->id);
+            $schools[$key]->classes = $this->get_classes_by_school($school->id, $add_parallels);
         }
         
         return $schools;

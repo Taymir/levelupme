@@ -109,109 +109,151 @@ class cron extends CI_Controller {
             echo 'Удалено: ' . $old_mailings . " старых sms рассылок\n";
     }
     
-    public function generate_statistics()
+    private function is_required_subject($subject)
     {
-        //@TMP:
-        $required_subjects = array(
-            'математика',
-            'русский язык',
-            'английский язык',
-            'биология',
-            'география',
-            //'история'
-        );// Брать из конфига
-        $class_id = 26;
-        //@ENDTMP;
-        $date_end   = date('Y-m-d', time());
-        $date_start = date('Y-m-d', time() - 60*60*24*7*2);
+         $subject = mb_strtolower(trim($subject));
+         $required_subjects = $this->config->item('required_subjects');
+         
+         
+         foreach($required_subjects as $subject_name => $variations)
+         {
+             if($subject_name == $subject || in_array($subject, $variations))
+                     return $subject_name;
+         }
+         return FALSE;
+    }
+    
+    public function generate_statistics($schools = array(8), $last_days = 14)//@DEBUG /* '*' */
+    {
+        set_time_limit(0); //@DEBUG
         
         $this->load->model('user_profile_model');
+        $this->load->model('classes_model');
         $this->load->model('grades_model');
-        $users = $this->user_profile_model->get_userlist_by_class($class_id);
-        $user_profile_ids = array_keys($users);
-        $grades_raw = $this->grades_model->get_grades($date_start, $date_end, $user_profile_ids);
+        $this->config->load('statistics');
         
-        $subjects = array();
-        // Начальное заполнение матрицы оценок
-        foreach($grades_raw as $grade_row)
+        $max_subjects =      $this->config->item('max_subjects');
+
+        $date_end   = date('Y-m-d', time());
+        $date_start = date('Y-m-d', time() - 60*60*24*$last_days);
+        
+        $schools_classes = $this->classes_model->get_schools_and_classes($schools, true);
+        
+        foreach($schools_classes as $school)
         {
-            $subject = mb_strtolower(trim($grade_row->subject));
-            if(in_array($subject, $required_subjects))//@TODO: добавить список псевдонимов, добавить ограничения по количеству выводимых предметов
+            for($class_key = 0; $class_key < sizeof($school->classes); $class_key++)
             {
-                $grades[$grade_row->date][$subject][$grade_row->user_profile_id] =
-                    $grade_row->grade;
+                $class_id = $school->classes[$class_key]->id;
                 
-                if(!in_array($subject, $subjects))
-                    $subjects[] = $subject;
-            }
-        }
-        
-        $Ns = array();
-        $Bs = array();
-        $Ps = array();
-        $grades_out = array();
-        //@TODO Averages
-        
-        foreach($grades as $date=>$val)
-        {
-            foreach($subjects as $subject)
-            {
-                foreach($users as $user_profile_id => $name)
+                $users = $this->user_profile_model->get_userlist_by_class($class_id);
+                if(sizeof($users) < 1)continue; // Чтобы не стопориться на пустых классах
+                $user_profile_ids = array_keys($users);
+                $grades_raw = $this->grades_model->get_grades($date_start, $date_end, $user_profile_ids);
+                
+                $grades = array();
+                $subjects = array();
+                // Начальное заполнение матрицы оценок
+                foreach($grades_raw as $grade_row)
                 {
-                    if(isset($grades[$date][$subject][$user_profile_id])) {
-                        $grade = $grades[$date][$subject][$user_profile_id];
-                        
-                        // Распарсить grade на составляющие
-                        str_replace(array(',',';',':'), ' ', $grade);
-                        $sub_grades = explode(' ', $grade);
-                        $absent = false;
-                        $grades_num = 0;
-                        foreach($sub_grades as $sub_grade)
+                    $subject = $this->is_required_subject($grade_row->subject);
+                    
+                    if($subject !== FALSE)
+                    {
+                        $known_subject = in_array($subject, $subjects);
+                        if(!$known_subject && sizeof($subjects) <= $max_subjects)
                         {
-                            $sub_grade = mb_strtolower(trim($sub_grade));
-                            if($sub_grade == 'н')
-                            {
-                                // Ученик отсутствовал
-                                $absent = true;
-                                if(!isset($Ns[$subject][$user_profile_id]))
-                                    $Ns[$subject][$user_profile_id] = 0;
-                                $Ns[$subject][$user_profile_id]++;
-                            } elseif ($sub_grade == 'б')
-                            {
-                                // Ученик болел
-                                $absent = true;
-                                if(!isset($Bs[$subject][$user_profile_id]))
-                                    $Bs[$subject][$user_profile_id] = 0;
-                                $Bs[$subject][$user_profile_id]++;
-                            } elseif ((int)$sub_grade > 0) {
-                                // Ученик получил оценку (оценки)
-                                $grades_num++;
-                                if(!isset($grades_out[$date][$subject][$user_profile_id]))
-                                    $grades_out[$date][$subject][$user_profile_id] = 0;
-                                $grades_out[$date][$subject][$user_profile_id] += (int)$sub_grade;
-                            }
+                            $subjects[] = $subject;
+                            $grades[$grade_row->date][$subject][$grade_row->user_profile_id] =
+                                $grade_row->grade;
+                        } elseif($known_subject) {
+                            $grades[$grade_row->date][$subject][$grade_row->user_profile_id] =
+                                $grade_row->grade;
                         }
-                        // Усреднить оценки
-                        if($grades_num > 0)
-                            $grades_out[$date][$subject][$user_profile_id] /= $grades_num;
                         
-                        // Ученик присутствовал
-                        if(!isset($Ps[$subject][$user_profile_id]))
-                            $Ps[$subject][$user_profile_id] = 0;
-                        if(!$absent)
-                            $Ps[$subject][$user_profile_id]++;
-                    } else {
-                        $grade = '';
-                        
-                        // Оценки нет, ученик присутствовал
-                        if(!isset($Ps[$subject][$user_profile_id]))
-                            $Ps[$subject][$user_profile_id] = 0;
-                        $Ps[$subject][$user_profile_id]++;
                     }
                 }
+                
+                ////////////////////////
+                $Ns = array();
+                $Bs = array();
+                $Ps = array();
+                $grades_out = array();
+                $sum_class = array();
+                $num_class = array();
+                $avg_class = array();
+                
+                foreach($grades as $date=>$val)
+                {
+                    foreach($subjects as $subject)
+                    {
+                        foreach($users as $user_profile_id => $name)
+                        {
+                            if(isset($grades[$date][$subject][$user_profile_id])) {
+                                $grade = $grades[$date][$subject][$user_profile_id];
+
+                                // Распарсить grade на составляющие
+                                str_replace(array(',',';',':'), ' ', $grade);
+                                $sub_grades = explode(' ', $grade);
+                                $absent = false;
+                                $grades_num = 0;
+                                foreach($sub_grades as $sub_grade)
+                                {
+                                    $sub_grade = mb_strtolower(trim($sub_grade));
+                                    if($sub_grade == 'н')
+                                    {
+                                        // Ученик отсутствовал
+                                        $absent = true;
+                                        if(!isset($Ns[$subject][$user_profile_id]))
+                                            $Ns[$subject][$user_profile_id] = 0;
+                                        $Ns[$subject][$user_profile_id]++;
+                                    } elseif ($sub_grade == 'б')
+                                    {
+                                        // Ученик болел
+                                        $absent = true;
+                                        if(!isset($Bs[$subject][$user_profile_id]))
+                                            $Bs[$subject][$user_profile_id] = 0;
+                                        $Bs[$subject][$user_profile_id]++;
+                                    } elseif ((int)$sub_grade > 0) {
+                                        // Ученик получил оценку (оценки)
+                                        $grades_num++;
+                                        if(!isset($grades_out[$date][$subject][$user_profile_id]))
+                                            $grades_out[$date][$subject][$user_profile_id] = 0;
+                                        $grades_out[$date][$subject][$user_profile_id] += (int)$sub_grade;
+                                    }
+                                }
+                                // Усреднить оценки
+                                if($grades_num > 0)
+                                    $grades_out[$date][$subject][$user_profile_id] /= $grades_num;
+
+                                // Ученик присутствовал
+                                if(!isset($Ps[$subject][$user_profile_id]))
+                                    $Ps[$subject][$user_profile_id] = 0;
+                                if(!$absent)
+                                    $Ps[$subject][$user_profile_id]++;
+                            } else {
+                                $grade = '';
+                                $grades_out[$date][$subject][$user_profile_id] = '';
+                                    //@TODO: avg class, avg parallel //@TODO: export??? //@TODO:???????????
+                                // Оценки нет, ученик присутствовал
+                                if(!isset($Ps[$subject][$user_profile_id]))
+                                    $Ps[$subject][$user_profile_id] = 0;
+                                $Ps[$subject][$user_profile_id]++;
+                            }
+                            if(!isset($sum_class[$date][$subject]))$sum_class[$date][$subject] = 0;
+                            $sum_class[$date][$subject] += (int)isset($grades_out[$date][$subject][$user_profile_id]) ? $grades_out[$date][$subject][$user_profile_id] : 0;
+                            if(!isset($num_class[$date][$subject]))$num_class[$date][$subject] = 0;
+                            if(isset($grades_out[$date][$subject][$user_profile_id]) && $grades_out[$date][$subject][$user_profile_id] > 0)
+                                $num_class[$date][$subject]++;
+                            $avg_class[$date][$subject] = $sum_class[$date][$subject] / $num_class[$date][$subject];//@TMP
+                        }
+                    }
+                }
+                var_dump($avg_class);
             }
         }
         
+/////////////////////////////////////////////////
+        /*
         // Пример вывода пропусков
         $subject = "английский язык";
         $upid = 109;
@@ -224,7 +266,7 @@ class cron extends CI_Controller {
                 $grade = "&nbsp;";
             }
             echo $grade . ' ';
-        }
+        }*/
     }
 }
 
