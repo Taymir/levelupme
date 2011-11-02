@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 $config['required_subjects'] = array(
     'математика' => array('математика', 'матем', 'матем.', 'мат-ка', 'математека'),

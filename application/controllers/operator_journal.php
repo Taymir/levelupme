@@ -116,6 +116,7 @@ class operator_journal extends MY_Controller {
     
     private function extract_ids_from_students($students)
     {
+        //@TODO: заменить на одноименный метод user_profile_model и протестировать
         $ids = null;
         foreach($students as $student)
             $ids[] = $student->profile_id;

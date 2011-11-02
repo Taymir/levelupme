@@ -123,13 +123,14 @@ class cron extends CI_Controller {
          return FALSE;
     }
     
-    public function generate_statistics($schools = array(8), $last_days = 14)//@DEBUG /* '*' */
+    public function generate_statistics($schools = '*', $last_days = 14)//@DEBUG /* '*' */
     {
         set_time_limit(0); //@DEBUG
         
         $this->load->model('user_profile_model');
         $this->load->model('classes_model');
         $this->load->model('grades_model');
+        $this->load->model('statistics_model');
         $this->config->load('statistics');
         
         $max_subjects =      $this->config->item('max_subjects');
@@ -141,13 +142,19 @@ class cron extends CI_Controller {
         
         foreach($schools_classes as $school)
         {
+            // Для каждой школы
             for($class_key = 0; $class_key < sizeof($school->classes); $class_key++)
             {
-                $class_id = $school->classes[$class_key]->id;
+                // Для каждого класса
+                // Получение исходных данных из БД
+                $class    = $school->classes[$class_key];
+                $class_id = $class->id;
                 
-                $users = $this->user_profile_model->get_userlist_by_class($class_id);
-                if(sizeof($users) < 1)continue; // Чтобы не стопориться на пустых классах
-                $user_profile_ids = array_keys($users);
+                $users = $this->user_profile_model->get_users_by_class_without_school($class_id);//@TODO: min-tariff!!
+                if(sizeof($users) < 1)
+                    continue; // Пропускаем пустые классы
+                
+                $user_profile_ids = user_profile_model::extract_ids_from_students($users);
                 $grades_raw = $this->grades_model->get_grades($date_start, $date_end, $user_profile_ids);
                 
                 $grades = array();
@@ -173,100 +180,59 @@ class cron extends CI_Controller {
                     }
                 }
                 
-                ////////////////////////
-                $Ns = array();
-                $Bs = array();
-                $Ps = array();
-                $grades_out = array();
-                $sum_class = array();
-                $num_class = array();
-                $avg_class = array();
+                // Анализируем загруженные данные
+                $this->statistics_model->set_current_school($school);
+                $this->statistics_model->set_current_class($class);
                 
                 foreach($grades as $date=>$val)
                 {
+                    // Для каждой даты
                     foreach($subjects as $subject)
                     {
-                        foreach($users as $user_profile_id => $name)
+                        // Для каждого предмета
+                        foreach($users as $user)
                         {
+                            // Для каждого студента
+                            $user_profile_id = $user->profile_id;
+                            
                             if(isset($grades[$date][$subject][$user_profile_id])) {
+                                // Если поле с оценкой заполнено
                                 $grade = $grades[$date][$subject][$user_profile_id];
 
                                 // Распарсить grade на составляющие
                                 str_replace(array(',',';',':'), ' ', $grade);
                                 $sub_grades = explode(' ', $grade);
-                                $absent = false;
-                                $grades_num = 0;
+
                                 foreach($sub_grades as $sub_grade)
                                 {
+                                    // Для каждой части оценки
                                     $sub_grade = mb_strtolower(trim($sub_grade));
                                     if($sub_grade == 'н')
                                     {
                                         // Ученик отсутствовал
-                                        $absent = true;
-                                        if(!isset($Ns[$subject][$user_profile_id]))
-                                            $Ns[$subject][$user_profile_id] = 0;
-                                        $Ns[$subject][$user_profile_id]++;
+                                        $this->statistics_model->set_user_n($date, $subject, $user);
                                     } elseif ($sub_grade == 'б')
                                     {
                                         // Ученик болел
-                                        $absent = true;
-                                        if(!isset($Bs[$subject][$user_profile_id]))
-                                            $Bs[$subject][$user_profile_id] = 0;
-                                        $Bs[$subject][$user_profile_id]++;
+                                        $this->statistics_model->set_user_b($date, $subject, $user);
                                     } elseif ((int)$sub_grade > 0) {
                                         // Ученик получил оценку (оценки)
-                                        $grades_num++;
-                                        if(!isset($grades_out[$date][$subject][$user_profile_id]))
-                                            $grades_out[$date][$subject][$user_profile_id] = 0;
-                                        $grades_out[$date][$subject][$user_profile_id] += (int)$sub_grade;
+                                        $this->statistics_model->add_user_grade($date, $subject, $user, (int)$sub_grade);
                                     }
                                 }
-                                // Усреднить оценки
-                                if($grades_num > 0)
-                                    $grades_out[$date][$subject][$user_profile_id] /= $grades_num;
-
-                                // Ученик присутствовал
-                                if(!isset($Ps[$subject][$user_profile_id]))
-                                    $Ps[$subject][$user_profile_id] = 0;
-                                if(!$absent)
-                                    $Ps[$subject][$user_profile_id]++;
                             } else {
-                                $grade = '';
-                                $grades_out[$date][$subject][$user_profile_id] = '';
-                                    //@TODO: avg class, avg parallel //@TODO: export??? //@TODO:???????????
-                                // Оценки нет, ученик присутствовал
-                                if(!isset($Ps[$subject][$user_profile_id]))
-                                    $Ps[$subject][$user_profile_id] = 0;
-                                $Ps[$subject][$user_profile_id]++;
-                            }
-                            if(!isset($sum_class[$date][$subject]))$sum_class[$date][$subject] = 0;
-                            $sum_class[$date][$subject] += (int)isset($grades_out[$date][$subject][$user_profile_id]) ? $grades_out[$date][$subject][$user_profile_id] : 0;
-                            if(!isset($num_class[$date][$subject]))$num_class[$date][$subject] = 0;
-                            if(isset($grades_out[$date][$subject][$user_profile_id]) && $grades_out[$date][$subject][$user_profile_id] > 0)
-                                $num_class[$date][$subject]++;
-                            $avg_class[$date][$subject] = $sum_class[$date][$subject] / $num_class[$date][$subject];//@TMP
-                        }
-                    }
-                }
-                var_dump($avg_class);
-            }
-        }
+                                // Если поле с оценкой пусто
+                                $this->statistics_model->set_user_nograde($date, $subject, $user);
+                            } // Конец: Если поле с оценкой пусто
+                        } // Конец: Для каждого студента
+                    } //Конец: Для каждого предмета
+                } //Конец: Для каждой даты
+            } //Конец: Для каждого класса
+        } // Конец: Для каждой школы
         
-/////////////////////////////////////////////////
-        /*
-        // Пример вывода пропусков
-        $subject = "английский язык";
-        $upid = 109;
-        foreach($grades_out as $date=>$val)
-        {
-            if(isset($grades_out[$date][$subject][$upid]))
-            {
-                $grade = $grades_out[$date][$subject][$upid];
-            } else {
-                $grade = "&nbsp;";
-            }
-            echo $grade . ' ';
-        }*/
+        /////////////////////////////////////////////////
+        $this->statistics_model->serialize_data();
+
     }
 }
 

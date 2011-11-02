@@ -189,6 +189,7 @@ class user_profile_model extends MY_Model {
     public function get_users_by_class_without_school($class_id, $min_tariff = NULL)
     {
         $this->db->select('*');
+        $this->db->select('id AS profile_id');
         $this->db->from($this->table_name);
         $this->db->where('class_id', $class_id);
         if($min_tariff != NULL)
@@ -397,6 +398,15 @@ class user_profile_model extends MY_Model {
         $this->typical_update($this->table_name, array('order_num' => $order_num), $user_profile->id);
         // конец транзакции
         $this->db->trans_complete();
+    }
+    
+    public static function extract_ids_from_students($students)
+    {
+        $ids = null;
+        foreach($students as $student)
+            $ids[] = $student->profile_id;
+        
+        return $ids;
     }
 
 }
