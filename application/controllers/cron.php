@@ -181,57 +181,61 @@ class cron extends CI_Controller {
                 }
                 
                 // Анализируем загруженные данные
-                $this->statistics_model->set_current_school($school);
-                $this->statistics_model->set_current_class($class);
-                
-                foreach($grades as $date=>$val)
+                if(sizeof($grades) > 0)
                 {
-                    // Для каждой даты
-                    foreach($subjects as $subject)
+                    //Если есть оценки
+                    $this->statistics_model->set_current_school($school);
+                    $this->statistics_model->set_current_class($class);
+
+                    foreach($grades as $date=>$val)
                     {
-                        // Для каждого предмета
-                        foreach($users as $user)
+                        // Для каждой даты
+                        foreach($subjects as $subject)
                         {
-                            // Для каждого студента
-                            $user_profile_id = $user->profile_id;
-                            
-                            if(isset($grades[$date][$subject][$user_profile_id])) {
-                                // Если поле с оценкой заполнено
-                                $grade = $grades[$date][$subject][$user_profile_id];
+                            // Для каждого предмета
+                            foreach($users as $user)
+                            {
+                                // Для каждого студента
+                                $user_profile_id = $user->profile_id;
 
-                                // Распарсить grade на составляющие
-                                str_replace(array(',',';',':'), ' ', $grade);
-                                $sub_grades = explode(' ', $grade);
+                                if(isset($grades[$date][$subject][$user_profile_id])) {
+                                    // Если поле с оценкой заполнено
+                                    $grade = $grades[$date][$subject][$user_profile_id];
 
-                                $sum_grades = 0.0;
-                                $num_grades = 0;
-                                foreach($sub_grades as $sub_grade)
-                                {
-                                    // Для каждой части оценки
-                                    $sub_grade = mb_strtolower(trim($sub_grade));
-                                    if($sub_grade == 'н')
+                                    // Распарсить grade на составляющие
+                                    str_replace(array(',',';',':'), ' ', $grade);
+                                    $sub_grades = explode(' ', $grade);
+
+                                    $sum_grades = 0.0;
+                                    $num_grades = 0;
+                                    foreach($sub_grades as $sub_grade)
                                     {
-                                        // Ученик отсутствовал
-                                        $this->statistics_model->set_user_n($date, $subject, $user);
-                                    } elseif ($sub_grade == 'б')
-                                    {
-                                        // Ученик болел
-                                        $this->statistics_model->set_user_b($date, $subject, $user);
-                                    } elseif ((int)$sub_grade > 0) {
-                                        // Ученик получил оценку (оценки)
-                                        $sum_grades += (int)$sub_grade;
-                                        $num_grades ++;
+                                        // Для каждой части оценки
+                                        $sub_grade = mb_strtolower(trim($sub_grade));
+                                        if($sub_grade == 'н')
+                                        {
+                                            // Ученик отсутствовал
+                                            $this->statistics_model->set_user_n($date, $subject, $user);
+                                        } elseif ($sub_grade == 'б')
+                                        {
+                                            // Ученик болел
+                                            $this->statistics_model->set_user_b($date, $subject, $user);
+                                        } elseif ((int)$sub_grade > 0) {
+                                            // Ученик получил оценку (оценки)
+                                            $sum_grades += (int)$sub_grade;
+                                            $num_grades ++;
+                                        }
                                     }
-                                }
-                                if($num_grades)
-                                    $this->statistics_model->set_user_grade($date, $subject, $user, $sum_grades / $num_grades);
-                            } else {
-                                // Если поле с оценкой пусто
-                                $this->statistics_model->set_user_nograde($date, $subject, $user);
-                            } // Конец: Если поле с оценкой пусто
-                        } // Конец: Для каждого студента
-                    } //Конец: Для каждого предмета
-                } //Конец: Для каждой даты
+                                    if($num_grades)
+                                        $this->statistics_model->set_user_grade($date, $subject, $user, $sum_grades / $num_grades);
+                                } else {
+                                    // Если поле с оценкой пусто
+                                    $this->statistics_model->set_user_nograde($date, $subject, $user);
+                                } // Конец: Если поле с оценкой пусто
+                            } // Конец: Для каждого студента
+                        } //Конец: Для каждого предмета
+                    } //Конец: Для каждой даты
+                } // Конец: Если есть оценки
             } //Конец: Для каждого класса
         } // Конец: Для каждой школы
         

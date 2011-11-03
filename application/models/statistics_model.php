@@ -15,25 +15,43 @@ class statistics_model extends MY_Model {
     const B = 'B';    //1;
     const P = 'P';    //2;
     
-    const ATTENDANCE =     'ATTENDANCE';    //0;
-    const GRADES =         'GRADES';        //1;
-    const CLASSES =        'CLASSES';       //2;
-    const SCHOOLS =        'SCHOOLS';       //3;
-    const STUDENTS =       'STUDENTS';      //4;
-    const CLASS_SUMS =     'CLASS_SUMS';    //5;
-    const CLASS_NUMS =     'CLASS_NUMS';    //6;
-    const PARALLEL_SUMS =  'PARALLEL_SUMS'; //7;
-    const PARALLEL_NUMS =  'PARALLEL_NUMS'; //8;
-    const PARALLELS =      'PARALLELS';     //9;
-    const USERS_SUMS =     'USERS_SUMS';    //10;
-    const USERS_NUMS =     'USERS_NUMS';    //11;
-    const DATES =          'DATES';         //12;
-    const COUNTER_DATE =   'COUNTER_DATE';  //13;
+    const ATTENDANCE =       0;///'ATTENDANCE';        //0;///
+    const GRADES =           1;///'GRADES';            //1;///
+    const CLASS_INFO =       2;///'CLASS_INFO';        //2;///
+    const SCHOOL_INFO =      3;///'SCHOOL_INFO';       //3;///
+    const STUDENTS =         4;///'STUDENTS';          //4;///
+    const CLASS_SUMS =       5;///'CLASS_SUMS';        //5;///
+    const CLASS_NUMS =       6;///'CLASS_NUMS';        //6;///
+    const PARALLEL_SUMS =    7;///'PARALLEL_SUMS';     //7;///
+    const PARALLEL_NUMS =    8;///'PARALLEL_NUMS';     //8;///
+    const PARALLEL_INFO =    9;///'PARALLEL_INFO';     //9;///
+    const USERS_SUMS =       10;//'USERS_SUMS';        //10;//
+    const USERS_NUMS =       11;//'USERS_NUMS';        //11;//
+    const DATES =            12;//'DATES';             //12;//
+    const COUNTER_DATE =     13;//'COUNTER_DATE';      //13;//
+    const META =             14;//'META';              //14;//
+    const SUBJECTS =         15;//'SUBJECTS';          //15;//
+    const COUNTER_SUBJECTS = 16;//'COUNTER_SUBJECTS';  //16;//
+    
+    private $table_name = 'statistics_queue';
     
     private $data = null;
     private $class_id = null;
     private $school_id = null;
     private $parallel_id = null;
+    private $user_id = null;
+    
+    private function ifset(&$var, $default = null)
+    {
+        if(isset($var))
+            return $var;
+        return $default;
+    }
+    
+    private function issetand(&$var, $value = true)
+    {
+        return isset($var) && $var == $value;
+    }
     
     private function setifnotset(&$var, $value = 0)
     {
@@ -61,18 +79,26 @@ class statistics_model extends MY_Model {
     
     public function set_user_attendance($date, $subject, $student, $attendance = self::P)
     {
+        $school_id = $this->school_id;
+        $parallel_id = $this->parallel_id;
+        $class_id = $this->class_id;
         $student_id = $this->add_student($student);
-        $this->incvar($this->data[self::ATTENDANCE][$student_id][$subject][$attendance]);
+        $subject_id = $this->get_subject_id($subject);
+        $this->incvar($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::ATTENDANCE][$attendance]);
     }
     
     public function set_user_grade($date, $subject, $student, $grade)
     {
-        //Заменить на set_user_grade
+        $school_id = $this->school_id;
+        $parallel_id = $this->parallel_id;
+        $class_id = $this->class_id;
         $student_id = $this->add_student($student);
-        $this->data[self::GRADES][$subject][$student_id][$this->get_date_id($date)] = $grade;
+        $subject_id = $this->get_subject_id($subject);
+        $date_id = $this->get_date_id($date);
+        $this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::GRADES][$date_id] = $grade;
         
-        $this->incvar($this->data[self::USERS_SUMS][$subject][$student_id], $grade);
-        $this->incvar($this->data[self::USERS_NUMS][$subject][$student_id]);
+        $this->incvar($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::USERS_SUMS], $grade);
+        $this->incvar($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::USERS_NUMS]);
         
         $this->add_class_grade($subject, $grade);
         $this->add_parallel_grade($subject, $grade);
@@ -80,89 +106,358 @@ class statistics_model extends MY_Model {
     
     public function set_user_nograde($date, $subject, $student)
     {
+        $school_id = $this->school_id;
+        $parallel_id = $this->parallel_id;
+        $class_id = $this->class_id;
         $student_id = $this->add_student($student);
-        $this->data[self::GRADES][$subject][$student_id][$this->get_date_id($date)] = null;//@TODO: подумать над целесообразностью кучи пустых данных
+        $subject_id = $this->get_subject_id($subject);
+        $date_id = $this->get_date_id($date);
+        $this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::GRADES][$date_id] = null;//@TODO: подумать над целесообразностью кучи пустых данных
         $this->set_user_attendance($date, $subject, $student);
     }
     
     private function add_class_grade($subject, $grade)
     {
+        $school_id = $this->school_id;
+        $parallel_id = $this->parallel_id;
         $class_id = $this->class_id;
-        $this->incvar($this->data[self::CLASS_SUMS][$class_id][$subject], $grade);
-        $this->incvar($this->data[self::CLASS_NUMS][$class_id][$subject]);
+        $subject_id = $this->get_subject_id($subject);
+        $this->incvar($this->data[$school_id][$parallel_id][$class_id][self::META][self::CLASS_SUMS][$subject_id], $grade);
+        $this->incvar($this->data[$school_id][$parallel_id][$class_id][self::META][self::CLASS_NUMS][$subject_id]);
     }
     
     private function add_parallel_grade($subject, $grade)
     {
+        $school_id = $this->school_id;
         $parallel_id = $this->parallel_id;
-        $this->incvar($this->data[self::PARALLEL_SUMS][$parallel_id][$subject], $grade);
-        $this->incvar($this->data[self::PARALLEL_NUMS][$parallel_id][$subject]);
+        $subject_id = $this->get_subject_id($subject);
+        $this->incvar($this->data[$school_id][$parallel_id][self::META][self::PARALLEL_SUMS][$subject_id], $grade);
+        $this->incvar($this->data[$school_id][$parallel_id][self::META][self::PARALLEL_NUMS][$subject_id]);
     }
     
     public function add_student($student)
     {
-        $this->setifnotset($this->data[self::STUDENTS][$student->id], $student);
+        $school_id = $this->school_id;
+        $parallel_id = $this->parallel_id;
+        $class_id = $this->class_id;
+        $this->setifnotset($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student->id][self::META], $student);
         return $student->id;
     }
     
     public function set_current_class($class)
     {
-        $this->class_id = $class->id;
-        $this->setifnotset($this->data[self::CLASSES][$this->class_id], $class);
-
         $this->set_current_parallel($class->parallel);
+        
+        $school_id = $this->school_id;
+        $parallel_id = $this->parallel_id;
+        $this->class_id = $class->id;
+        $class_id = $this->class_id;
+        $this->setifnotset($this->data[$school_id][$parallel_id][$class_id][self::META][self::CLASS_INFO], $class);
+        
         return $this->class_id;
         
     }
     
     private function get_date_id($date, $add_dates = true)
     {
-        if(isset($this->data[self::DATES][$date]))
+        //return $date;//@DEBUG
+        if(isset($this->data[self::META][self::DATES][$date]))
         {
-            return $this->data[self::DATES][$date];
+            return $this->data[self::META][self::DATES][$date];
         }
         else
         {
             if($add_dates)
-                return $this->data[self::DATES][$date] = $this->incvar($this->data[self::COUNTER_DATE]);
+                return $this->data[self::META][self::DATES][$date] = $this->incvar($this->data[self::META][self::COUNTER_DATE]);
             else
                 return FALSE;
         }
     }
-   
-    private function get_current_class()
+    
+    private function get_date_from_id($date_id)
     {
-        return $this->data[self::CLASSES][$this->class_id];
+        return array_search($date_id, $this->data[self::META][self::DATES]);
     }
     
-    public function set_current_parallel($parallel)
+    private function get_subject_id($subject, $add_subjects = true)
     {
-        $this->parallel_id = $this->school_id. '-' .  $parallel;
-        $this->setifnotset($this->data[self::PARALLELS][$this->parallel_id], $parallel);
+        //return $subject;//@DEBUG
+        if(isset($this->data[self::META][self::SUBJECTS][$subject]))
+        {
+            return $this->data[self::META][self::SUBJECTS][$subject];
+        }
+        else
+        {
+            if($add_subjects)
+                return $this->data[self::META][self::SUBJECTS][$subject] = $this->incvar($this->data[self::META][self::COUNTER_SUBJECTS]);
+            else
+                return FALSE;
+        }
+    }
+    
+    private function get_subject_from_id($subject_id)
+    {
+        return array_search($subject_id, $this->data[self::META][self::SUBJECTS]);
+    }
+    
+    public function set_current_parallel($parallel_id)
+    {
+        $school_id = $this->school_id;
+        $this->parallel_id = $parallel_id;
+        $this->setifnotset($this->data[$school_id][$parallel_id][self::META][self::PARALLEL_INFO], $parallel_id);
         return $this->parallel_id;
     }
     
     public function set_current_school($school)
     {
         $this->school_id = $school->id;
-        $this->setifnotset($this->data[self::SCHOOLS][$this->school_id], $school);
+        $school_id = $this->school_id;
+        $this->setifnotset($this->data[$school_id][self::META][self::SCHOOL_INFO], $school);
         return $this->school_id;
-    }
-    
-    
-    private function get_current_school()
-    {
-        return $this->data[self::SCHOOLS][$this->school_id];
     }
     
     public function serialize_data()
     {
-        echo strlen(base64_encode(gzcompress(serialize($this->data))));
-        print_r($this->data);
+        //echo memory_get_peak_usage(true); echo "\n";
+        //$d1 = $this->data;
+        //$this->export_data();
+        //$this->data = null;
+        $this->import_data(2);
+        
+        //$d2 = $this->data;
+        /*echo strlen(base64_encode(gzcompress(serialize($this->data))));echo "\n";
+        echo strlen(base64_encode(serialize($this->data)));echo "\n";
+        print_r($this->data);*/
     }
     
     public function unserialize_data()
     {
         
+    }
+    
+    public function export_data()
+    {
+        $batch_data = array();
+        
+        for(reset($this->data); list($school_id) = each($this->data);)
+        {
+            if($school_id == self::META)
+                continue;
+            for(reset($this->data[$school_id]); list($parallel_id) = each($this->data[$school_id]);)
+            {
+                if($parallel_id == self::META)
+                    continue;
+                for(reset($this->data[$school_id][$parallel_id]); list($class_id) = each($this->data[$school_id][$parallel_id]);)
+                {
+                    if($class_id == self::META)
+                        continue;
+                    
+                    if($this->issetand($this->data[$school_id][$parallel_id][$class_id][self::META][self::CLASS_NUMS]))
+                    {
+                        $class_data = array();
+                        $class_data[self::META] = $this->data[self::META];
+                        $class_data[$school_id][self::META] = $this->data[$school_id][self::META];
+                        $class_data[$school_id][$parallel_id][self::META] = $this->data[$school_id][$parallel_id][self::META];
+                        $class_data[$school_id][$parallel_id][$class_id] = $this->data[$school_id][$parallel_id][$class_id];
+
+                        $package = base64_encode(gzcompress(serialize($class_data)));
+                        //$package = $class_data;//@DEBUG
+
+                        $batch_data[] = array(
+                            'class_id' => $class_id,
+                            'data' => $package
+                        );
+                    }
+                }
+            }
+        }
+        
+        $this->db->insert_batch($this->table_name, $batch_data);
+    }
+    
+    public function import_data($limit = 1)
+    {
+        $ci = &get_instance();
+        $ci->load->helper('common_helper');
+        
+        $this->db->select('*');
+        $this->db->from($this->table_name);
+        $this->db->limit($limit);
+        
+        $query = $this->db->get();
+        $data = $query->result();
+        
+        foreach($data as $row)
+        {
+            $class_data = unserialize(gzuncompress(base64_decode($row->data)));
+            
+            if(!is_array($this->data))
+                $this->data = $class_data;
+            else
+                $this->data = array_merge_recursive_distinct($this->data, $class_data);
+        }
+    }
+    
+    private function reset_and_next_arr(&$arr)
+    {
+        reset($arr);
+        return $this->next_arr($arr);
+    }
+    
+    private function next_arr(&$arr)
+    {
+        do {
+            list($key, $value) = each(&$arr);
+        } while ($key == self::META);
+        
+        return $key;
+        
+    }
+    
+    public function reset_iterator()
+    {
+        $this->school_id = $this->reset_and_next_arr($this->data);
+        $this->parallel_id = $this->reset_and_next_arr($this->data[$this->school_id]);
+        $this->class_id = $this->reset_and_next_arr($this->data[$this->school_id][$this->parallel_id]);
+        $this->user_id = $this->reset_and_next_arr($this->data[$this->school_id][$this->parallel_id][$this->class_id][self::STUDENTS]);
+    }
+    
+    public function get_next_class()
+    {
+        if($this->class_id == null)
+            $this->parallel_id = $this->next_arr($this->data[$this->school_id]);
+        if($this->parallel_id == null)
+            $this->school_id = $this->next_arr($this->data);
+        if($this->school_id == null)
+            return null;
+        
+        $class = array(
+            'id' => $this->class_id,
+            'class' => $this->data[$this->school_id][$this->parallel_id][$this->class_id][self::META][self::CLASS_INFO],
+            'parallel' => $this->data[$this->school_id][$this->parallel_id][self::META][self::PARALLEL_INFO],
+            'school' => $this->data[$this->school_id][self::META][self::SCHOOL_INFO]
+        );
+        
+        $this->class_id = $this->next_arr($this->data[$this->school_id][$this->parallel_id]);
+        
+        return $class;
+    }
+    
+    public function get_next_user($class_id)
+    {
+        $class_id = $this->class_id;
+        $parallel_id = $this->parallel_id;
+        $school_id = $this->school_id;
+        $user_id = $this->user_id;
+        
+        if($this->user_id == null)
+            return null;
+            
+        $user = array(
+            'id' => $user_id,
+            'user' => $this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$user_id][self::META],
+            'subjects' => $this->get_user_subjects($user_id)
+        );
+        
+        $this->user_id = $this->next_arr($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS]);
+        
+        return $user;
+        //$this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student->id][self::META]
+    }
+    
+    private function get_user_subjects($user_id, $sort_on_config = true)
+    {
+        $class_id = $this->class_id;
+        $parallel_id = $this->parallel_id;
+        $school_id = $this->school_id;
+        
+        $subjects = array();
+        foreach($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$user_id] as $subject_id => $val)
+        {
+            $subjects[] = $this->get_subject_from_id($subject_id);
+        }
+        
+        if($sort_on_config)
+        {
+            $this->config->load('statistics');
+            $ci->load->helper('common_helper');
+            $sortOn = array_keys($this->config->item('required_subjects'));
+            $subjects = sortArrayByArray($subjects, $sortOn);
+        }
+        
+        return $subjects;
+    }
+    
+    public function get_user_grades($student_id, $subject)
+    {
+        $class_id = $this->class_id;
+        $parallel_id = $this->parallel_id;
+        $school_id = $this->school_id;
+        $subject_id = $this->get_subject_id($subject, false);
+        
+        $grades = array();
+        foreach($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::GRADES] as $date_id => $grade)
+        {
+            $grades[$this->get_date_from_id($date_id)] = $grade;
+        }
+        
+        return $grades;
+    }
+    
+    public function get_user_attendance($student_id, $subject)
+    {
+        $class_id = $this->class_id;
+        $parallel_id = $this->parallel_id;
+        $school_id = $this->school_id;
+        $subject_id = $this->get_subject_id($subject, false);
+        
+        $n = $this->ifset($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::ATTENDANCE][self::N]);
+        $p = $this->ifset($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::ATTENDANCE][self::P]);
+        $b = $this->ifset($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::ATTENDANCE][self::B]);
+        return array(
+            'N' => $n,
+            'B' => $p,
+            'P' => $b
+        );
+    }
+    
+    public function get_user_average($student_id, $subject)
+    {
+        $class_id = $this->class_id;
+        $parallel_id = $this->parallel_id;
+        $school_id = $this->school_id;
+        $subject_id = $this->get_subject_id($subject, false);
+        
+        return $this->ifset($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::USERS_SUMS], 0)
+                  /
+               $this->ifset($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::USERS_NUMS], 1);
+    }
+    
+    public function get_class_average($class_id, $subject)
+    {
+        $class_id = $this->class_id;
+        $parallel_id = $this->parallel_id;
+        $school_id = $this->school_id;
+        $subject_id = $this->get_subject_id($subject, false);
+        
+        return $this->ifset($this->data[$school_id][$parallel_id][$class_id][self::META][self::CLASS_SUMS][$subject_id], 0)
+                 /
+               $this->ifset($this->data[$school_id][$parallel_id][$class_id][self::META][self::CLASS_NUMS][$subject_id], 1);
+    }
+    
+    public function get_parallel_average($parallel_id, $subject)
+    {
+        $parallel_id = $this->parallel_id;
+        $school_id = $this->school_id;
+        $subject_id = $this->get_subject_id($subject, false);
+        
+        return $this->ifset($this->data[$school_id][$parallel_id][self::META][self::PARALLEL_SUMS][$subject_id], 0)
+                 /
+               $this->ifset($this->data[$school_id][$parallel_id][self::META][self::PARALLEL_NUMS][$subject_id], 1);
+    }
+    
+    public function remove_class_from_queue($class_id)
+    {
+        $this->typical_delete($this->table_name, $class_id, 'class_id');
     }
 }
