@@ -222,8 +222,17 @@ class statistics_model extends MY_Model {
         //$d1 = $this->data;
         //$this->export_data();
         //$this->data = null;
-        $this->import_data(2);
-        
+        //$this->import_data(1);//@BUGSSSS
+        //print_r($this->data);
+        //while($class = $this->get_next_class())
+        //{
+        //    var_dump($class);
+        //    while($user = $this->get_next_user($class['id']))
+        //    {
+        //        foreach($user['subjects'] as $subject)
+        //            echo $this->get_user_average($user['id'], $subject);
+        //    }
+        //}
         //$d2 = $this->data;
         /*echo strlen(base64_encode(gzcompress(serialize($this->data))));echo "\n";
         echo strlen(base64_encode(serialize($this->data)));echo "\n";
@@ -232,7 +241,46 @@ class statistics_model extends MY_Model {
     
     public function unserialize_data()
     {
-        
+        $this->import_data(2);
+        //print_r($this->data);
+        while($class = $this->get_next_class())
+        {
+            var_dump($class);
+            while($user = $this->get_next_user($class['id']))
+            {
+                echo "<b>{$user['user']->name}</b><br/>";
+                
+                /*foreach($user['subjects'] as $subject)
+                {
+                    extract($this->get_user_attendance($user['id'], $subject));
+                    $T = $N + $B + $P;
+                    $N = round(100 * $N / $T);
+                    $B = round(100 * $B / $T);
+                    $P = round(100 * $P / $T);
+                    echo "$subject: $N \ $B  \ $P <br/>"; 
+                }*/
+                
+                ///*
+                foreach($user['subjects'] as $subject)
+                {
+                    echo "$subject: <br/>"; 
+                    foreach($this->get_user_grades($user['id'], $subject) as $date => $grade)
+                            echo "$date: $grade<br/>";
+                }
+                 //*/
+                
+                /*
+                foreach($user['subjects'] as $subject)
+                {
+                    echo "$subject: " .
+                            round($this->get_user_average($user['id'], $subject), 1) . ' / ' .
+                            round($this->get_class_average($class['id'], $subject), 1) . ' / ' . 
+                            round($this->get_parallel_average($class['parallel'], $subject), 1) . " <br/>";
+                }
+                */
+                
+            }
+        }
     }
     
     public function export_data()
@@ -296,18 +344,13 @@ class statistics_model extends MY_Model {
             else
                 $this->data = array_merge_recursive_distinct($this->data, $class_data);
         }
-    }
-    
-    private function reset_and_next_arr(&$arr)
-    {
-        reset($arr);
-        return $this->next_arr($arr);
+        $this->reset_iterator();
     }
     
     private function next_arr(&$arr)
     {
         do {
-            list($key, $value) = each(&$arr);
+            list($key, $value) = each($arr);
         } while ($key == self::META);
         
         return $key;
@@ -316,20 +359,48 @@ class statistics_model extends MY_Model {
     
     public function reset_iterator()
     {
-        $this->school_id = $this->reset_and_next_arr($this->data);
+        reset($this->data);
+        $this->get_next_school();
+        $this->get_next_parallel();
+        /*$this->school_id = $this->reset_and_next_arr($this->data);
         $this->parallel_id = $this->reset_and_next_arr($this->data[$this->school_id]);
         $this->class_id = $this->reset_and_next_arr($this->data[$this->school_id][$this->parallel_id]);
-        $this->user_id = $this->reset_and_next_arr($this->data[$this->school_id][$this->parallel_id][$this->class_id][self::STUDENTS]);
+        $this->user_id = $this->reset_and_next_arr($this->data[$this->school_id][$this->parallel_id][$this->class_id][self::STUDENTS]);*/
+    }
+    
+    private function get_next_school()
+    {
+        $this->school_id = $this->next_arr($this->data);
+        if($this->school_id != null)
+            reset($this->data[$this->school_id]);
+        return $this->school_id;
+    }
+    
+    private function get_next_parallel()
+    {
+        $this->parallel_id = $this->next_arr($this->data[$this->school_id]);
+        if($this->parallel_id != null)
+            reset($this->data[$this->school_id][$this->parallel_id]);
+        return $this->parallel_id;
     }
     
     public function get_next_class()
     {
-        if($this->class_id == null)
-            $this->parallel_id = $this->next_arr($this->data[$this->school_id]);
-        if($this->parallel_id == null)
-            $this->school_id = $this->next_arr($this->data);
-        if($this->school_id == null)
-            return null;
+        $this->class_id = $this->next_arr($this->data[$this->school_id][$this->parallel_id]);
+        
+        if($this->class_id == null) {
+            $this->get_next_parallel();
+            
+            if($this->parallel_id == null) {
+                $this->get_next_school();
+                
+                if($this->school_id == null) {
+                    return null;
+                }
+            }
+            
+            $this->class_id = $this->next_arr($this->data[$this->school_id][$this->parallel_id]);
+        }
         
         $class = array(
             'id' => $this->class_id,
@@ -337,8 +408,6 @@ class statistics_model extends MY_Model {
             'parallel' => $this->data[$this->school_id][$this->parallel_id][self::META][self::PARALLEL_INFO],
             'school' => $this->data[$this->school_id][self::META][self::SCHOOL_INFO]
         );
-        
-        $this->class_id = $this->next_arr($this->data[$this->school_id][$this->parallel_id]);
         
         return $class;
     }
@@ -348,9 +417,9 @@ class statistics_model extends MY_Model {
         $class_id = $this->class_id;
         $parallel_id = $this->parallel_id;
         $school_id = $this->school_id;
-        $user_id = $this->user_id;
+        $user_id = $this->user_id = $this->next_arr($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS]);
         
-        if($this->user_id == null)
+        if($user_id == null)
             return null;
             
         $user = array(
@@ -359,10 +428,7 @@ class statistics_model extends MY_Model {
             'subjects' => $this->get_user_subjects($user_id)
         );
         
-        $this->user_id = $this->next_arr($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS]);
-        
         return $user;
-        //$this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student->id][self::META]
     }
     
     private function get_user_subjects($user_id, $sort_on_config = true)
@@ -374,12 +440,15 @@ class statistics_model extends MY_Model {
         $subjects = array();
         foreach($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$user_id] as $subject_id => $val)
         {
+            if($subject_id == self::META)
+                continue;
             $subjects[] = $this->get_subject_from_id($subject_id);
         }
         
         if($sort_on_config)
         {
             $this->config->load('statistics');
+            $ci = &get_instance();
             $ci->load->helper('common_helper');
             $sortOn = array_keys($this->config->item('required_subjects'));
             $subjects = sortArrayByArray($subjects, $sortOn);
@@ -416,8 +485,8 @@ class statistics_model extends MY_Model {
         $b = $this->ifset($this->data[$school_id][$parallel_id][$class_id][self::STUDENTS][$student_id][$subject_id][self::ATTENDANCE][self::B]);
         return array(
             'N' => $n,
-            'B' => $p,
-            'P' => $b
+            'B' => $b,
+            'P' => $p
         );
     }
     

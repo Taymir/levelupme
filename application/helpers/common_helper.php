@@ -50,12 +50,25 @@ function &array_merge_recursive_distinct(array &$array1, &$array2 = null)
 }
 
 function sortArrayByArray($array,$orderArray) {
-    $ordered = array();
-    foreach($orderArray as $key) {
-        if(array_key_exists($key,$array)) {
-                $ordered[$key] = $array[$key];
-                unset($array[$key]);
+    $ordered = array();// БАГ - не то что надо
+    foreach($orderArray as $val) {
+        if(in_array($val, $array)) {
+                $ordered[] = $val;
+                array_remove_value($array, $val);
         }
     }
     return $ordered + $array;
+}
+
+# remove by key:
+function array_remove_key ()
+{
+  $args  = func_get_args();
+  return array_diff_key($args[0],array_flip(array_slice($args,1)));
+}
+# remove by value:
+function array_remove_value ()
+{
+  $args = func_get_args();
+  return array_diff($args[0],array_slice($args,1));
 }

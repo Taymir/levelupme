@@ -123,6 +123,14 @@ class cron extends CI_Controller {
          return FALSE;
     }
     
+    public function render_statistics($classes_num = 1)
+    {
+        set_time_limit(0); //@DEBUG
+        
+        $this->load->model('statistics_model');
+        $this->statistics_model->unserialize_data();
+    }
+    
     public function generate_statistics($schools = '*', $last_days = 14)//@DEBUG /* '*' */
     {
         set_time_limit(0); //@DEBUG
