@@ -216,6 +216,7 @@ class statistics_model extends MY_Model {
         return $this->school_id;
     }
     
+    // МЕТОД ДОЛЖЕН БЫТЬ УДАЛЕН
     public function serialize_data()
     {
         //echo memory_get_peak_usage(true); echo "\n";
@@ -239,6 +240,7 @@ class statistics_model extends MY_Model {
         print_r($this->data);*/
     }
     
+    // МЕТОД ДОЛЖЕН БЫТЬ УДАЛЕН
     public function unserialize_data()
     {
         $this->import_data(2);
