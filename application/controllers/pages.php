@@ -32,6 +32,10 @@ class pages extends MY_Controller {
         
         return $this->load_view('pages/display_view', $data->title, array('page' => $data, 'page_name' => $url));
     }
+    
+    public function registration()
+    {
+        
+        return $this->load_view('pages/registration_view', "Подключение");
+    }
 }
-
-?>
