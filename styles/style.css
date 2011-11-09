@@ -430,6 +430,62 @@ body#home #sidebar { padding-top: 65px; }
             
             /* end: operator_journal/grades */
             
+            /* registration form */
+            #registrationForm {
+                background-color: white;
+                padding: 30px;
+                font-family: "Times New Roman", times, serif;
+                font-size:14pt;
+                color: black;
+            }
+            
+            #registrationForm fieldset {
+                font-size: 16pt;
+                /*padding-bottom: 10px;*/
+                /*color: #68a231;*/
+                /*border: 1px black solid;*/
+            }
+            
+            #registrationForm fieldset legend{
+                font-size: 120%;
+                padding-top: 20px;
+                padding-bottom: 10px;
+                font-family: Arial;
+                /*color: #68a231;*/
+                /*border: 1px black solid;*/
+            }
+            
+            #registrationForm label {
+                font-weight: bold;
+                color: #68a231;
+            }
+            
+            #registrationForm .tariff {
+                float:left;
+                width: 130px;
+                font-size: 60%;
+            }
+            #registrationForm .tariff input{
+                width: 20px;
+            }
+            #registrationForm .tariff strong{
+                /*color: #68a231;*/
+                font-size: 160%;
+            }
+            
+            #registrationForm input {
+                width: 100px;
+            }
+            
+            #registrationForm img {
+                margin-bottom: -10px;
+            }
+            
+            #registrationForm .btn {
+                width: auto;
+            }
+            /* end: registration form */
+            
             #gradesBlock {
                 overflow:auto;
             }
