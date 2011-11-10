@@ -2,6 +2,65 @@
 $ci =& get_instance();
 
 $config = array(
+    /* REGISTRATION */
+    'registration' => array(
+        array(
+            'field' => 'name',
+            'label' => 'Имя',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'school',
+            'label' => 'Школа',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'class',
+            'label' => 'Класс',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'pname',
+            'label' => 'Имя',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'mail',
+            'label' => 'EMail',
+            'rules' => 'trim|valid_email'
+        ),
+        array(
+            'field' => 'phone',
+            'label' => 'Телефон',
+            'rules' => 'trim|callback_valid_phone'
+        ),
+        array(
+            'field' => 'username',
+            'label' => 'Логин',
+            'rules' => 'alpha_numeric|callback_username_available'
+        ),
+        array(
+            'field' => 'password',
+            'label' => 'пароль',
+            'rules' => 'callback_password_required|alpha_numeric'
+        ),
+        array(
+            'field' => 'confirm',
+            'label' => 'подтверждение пароля',
+            'rules' => 'callback_password_required|matches[password]'
+        ),
+        array(
+            'field' => 'tariff',
+            'label' => 'Тариффный план',
+            'rules' => 'callback_tariff_required'
+        ),
+        array(
+            'field' => 'agreement',
+            'label' => 'Договор',
+            'rules' => 'callback_agreement_required'
+        ),
+    ),
+    
     /* ADMIN_PAGES */
     'admin_pages/edit' => array(
         array(

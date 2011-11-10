@@ -1,54 +1,80 @@
 <?php $this->load->helper('form'); ?>
 <?= form_open('', 'id="registrationForm" class="niceForm"'); ?>
 <?= form_fieldset('Информация об ученике'); ?>
-<p>
-<label>
-<img src="<?= base_url() ?>styles/images/name_symb.png" />Ф. 
-<?= form_input('f_name'); ?> 
-</label>
-<?= form_label('И.', 'i_name'); ?> 
-<?= form_input('i_name'); ?> 
-<?= form_label('О.', 'o_name'); ?> 
-<?= form_input('o_name'); ?> 
-</p>
+<div class="clearfix">
+<?= form_label("ФИО", 'name'); ?>
+    <div class="input">
+    <?= form_input('name'); ?>
+    <?= form_error('name'); ?>
+    </div>
+</div>
 
-<p>
+<div class="clearfix">
 <?= form_label('Школа', 'school'); ?> 
-<?= form_input('school'); ?> 
-
+    <div class="input">
+    <?= form_input('school'); ?> 
+    <?= form_error('school'); ?>
+    </div>
+</div>
+<div class="clearfix">
 <?= form_label('Класс', 'class'); ?> 
-<?= form_input('class'); ?> 
-</p>
+    <div class="input">
+    <?= form_input('class'); ?> 
+    <?= form_error('class'); ?>
+    </div>
+</div>
 <?= form_fieldset_close(); ?>
 
 <?= form_fieldset('Информация о родителе'); ?> 
-<p>
-<label>
-<img src="<?= base_url() ?>styles/images/name_symb.png" />Ф. 
-<?= form_input('f_pname'); ?> 
-</label>
-<?= form_label('И.', 'i_pname'); ?> 
-<?= form_input('i_pname'); ?> 
-<?= form_label('О.', 'o_pname'); ?> 
-<?= form_input('o_pname'); ?> 
-</p>
+<div class="clearfix">
+<?= form_label("ФИО", 'pname'); ?>
+    <div class="input">
+    <?= form_input('pname'); ?>
+    <?= form_error('pname'); ?>
+    </div>
+</div>
 
-<p>
-<label>
-<img src="<?= base_url() ?>styles/images/phone_symb.png" />
-+7 <?= form_input('phone'); ?> 
-</label>
-    
-<label>
-<img src="<?= base_url() ?>styles/images/mail_symb.png" />
-<?= form_input('mail_base'); ?> 
-</label>
-<?= form_label('@', 'mail_domain'); ?> 
-<?= form_input('mail_domain', '', 'style="width:50px"'); ?> 
-<?= form_label('.', 'mail_zone'); ?> 
-<?= form_input('mail_zone', '', 'style="width:30px"'); ?> 
-</p>
-<p>
+<div class="clearfix">
+<?= form_label("E-Mail", 'mail'); ?>
+    <div class="input">
+    <?= form_input('mail'); ?>
+    <?= form_error('mail'); ?>
+    </div>
+</div>
+
+<div class="clearfix">
+<?= form_label("Телефон", 'phone'); ?>
+    <div class="input">
+    <?= form_input('phone'); ?>
+    <?= form_error('phone'); ?>
+    </div>
+</div>
+
+<div class="clearfix">
+<?= form_label("Логин", 'username'); ?>
+    <div class="input">
+    <?= form_input('username'); ?> 
+    <?= form_error('username'); ?>
+    </div>
+</div>
+
+<div class="clearfix">
+<?= form_label("Пароль", 'password'); ?>
+    <div class="input">
+    <?= form_password('password'); ?> 
+    <?= form_error('password'); ?>
+    </div>
+</div>
+
+<div class="clearfix">
+<?= form_label("Пароль (повторите)", 'confirm'); ?>
+    <div class="input">
+    <?= form_password('confirm'); ?> 
+    <?= form_error('confirm'); ?>
+    </div>
+</div>
+
+<div class="clearfix">
 <div class="tariff">
 <label>
 <img src="<?= base_url() ?>styles/images/tariff_100.png" />
@@ -77,9 +103,19 @@
 и соревнованиях + граф-аналитический отчет
 </label>
 </div>
-</p>
+</div>
+
+<?= form_error('tariff'); ?>
 <?= form_fieldset_close(); ?>
 
-<label>Я ознакомился и принимаю условия <a href="#" target="_blank">договора</a>: <?= form_checkbox('agreement', 'true', false) ?></label>
-<?= form_submit('submit', 'Зарегистрироваться', 'class="btn success"'); ?>
+<div class="clearfix">
+Я ознакомился и принимаю условия <a href="/agreement" target="_blank">договора</a>: <?= form_checkbox('agreement', 'true', false) ?>
+<br/><?= form_error('agreement'); ?>
+</div>
+
+<div class="clearfix">
+    <div class="input">
+    <?= form_submit('submit', 'Отправить заявку', 'class="btn success"'); ?>
+    </div>
+</div>
 <?= form_close(); ?>

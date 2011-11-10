@@ -450,9 +450,8 @@ body#home #sidebar { padding-top: 65px; }
                 font-size: 120%;
                 padding-top: 20px;
                 padding-bottom: 10px;
-                font-family: Arial;
+                font-family: Arial, sans-serif;
                 /*color: #68a231;*/
-                /*border: 1px black solid;*/
             }
             
             #registrationForm label {
@@ -461,6 +460,7 @@ body#home #sidebar { padding-top: 65px; }
             }
             
             #registrationForm .tariff {
+                /*font-family: Arial, sans-serif;*/
                 float:left;
                 width: 130px;
                 font-size: 60%;
@@ -477,6 +477,34 @@ body#home #sidebar { padding-top: 65px; }
                 width: 100px;
             }
             
+            #registrationForm .clearfix {
+                margin-bottom: 18px;
+                zoom: 1;
+            }
+            #registrationForm .clearfix:before, form .clearfix:after {
+			  display: table;
+			  content: "";
+			  zoom: 1;
+			  *display: inline;
+			}
+            #registrationForm .clearfix:after {
+			  clear: both;
+			}
+            #registrationForm .clearfix label {
+			  padding-top: 6px;
+			  /*font-size: 13px;
+			  line-height: 18px;*/
+			  float: left;
+			  width: 130px;
+			  text-align: right;
+			  /*color: #404040;*/
+			}
+            
+            
+            #registrationForm .input {
+                margin-left: 150px;
+            } 
+            
             #registrationForm img {
                 margin-bottom: -10px;
             }
@@ -484,6 +512,16 @@ body#home #sidebar { padding-top: 65px; }
             #registrationForm .btn {
                 width: auto;
             }
+            
+            #registrationForm a {
+                color: black;
+                text-decoration: underline;
+            }
+            #registrationForm a:hover {
+                text-decoration: none;
+            }
+            
+            
             /* end: registration form */
             
             #gradesBlock {
@@ -539,7 +577,7 @@ body#home #sidebar { padding-top: 65px; }
 			  margin-bottom: 18px;
 			  zoom: 1;
 			}
-			.niceform .clearfix:before, form .clearfix:after {
+			.niceform .clearfix:before, .niceform .clearfix:after {
 			  display: table;
 			  content: "";
 			  zoom: 1;
