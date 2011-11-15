@@ -101,7 +101,7 @@ class Admin_pages extends MY_Controller {
     {
         $id = $this->input->post('id');
         $reserved_names = array('admin_operators', 'admin_schools', 'admin_users', 'ajax', 'auth', 'cron', 'operator_journal',
-            'operator_messages', 'pages', 'tests', 'welcome', 'styles', 'scripts');
+            'operator_messages', 'pages', 'tests', 'welcome', 'styles', 'scripts', 'join');
         if (in_array($link, $reserved_names)) {
             $this->form_validation->set_message('link_check', 'Поле %s не может содержать зарезервированные ссылки: ' . implode(", ", $reserved_names));
             return false;

@@ -40,6 +40,7 @@
 
 $route['default_controller'] = "pages";
 $route['404_override'] = '';
+$route['join'] = 'pages/join';
 
 include_once APPPATH . "cache/routes.php";
 

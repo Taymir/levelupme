@@ -33,19 +33,56 @@ class pages extends MY_Controller {
         return $this->load_view('pages/display_view', $data->title, array('page' => $data, 'page_name' => $url));
     }
     
-    public function registration()
+    public function join()
     {
         $this->load->library('form_validation');
         
         if($this->form_validation->run('registration'))
         {
-            //@TODO: Составление письма
-            //@TODO: Отправка письма
+            $data = $this->get_post_params('name', 'school', 'class', 'pname', 'mail',
+                    'phone', 'username', 'password', 'tariff');
+            $this->sendMailToAdmin($data);            
             
             return $this->show_message("Ваша заявка отправлена на рассмотрение.");
         }
         
         return $this->load_view('pages/registration_view', "Подключение");
+    }
+    
+    private function sendMailToAdmin($data)
+    {
+        $this->load->library('email');
+        
+        $this->email->from($this->config->item('registration_mail'), 'LevelUP Registration');
+        $this->email->to($this->config->item('registration_mail'));
+        $this->email->subject('Регистрация: ' . $data['name']);
+        
+        //@TODO: перенести во view
+        $text = "<h1>Регистрация пользователя через веб-панель</h1>";
+        
+        $text .= "<p><strong>Информация об ученике</strong><ul>";
+        $text .= "<li>ФИО: {$data['name']}</li>";
+        $text .= "<li>Школа: {$data['school']}</li>";
+        $text .= "<li>Класс: {$data['class']}</li>";
+        $text .= "</p></ul>";
+        
+        $text .= "<p><strong>Информация о родителе</strong><ul>";
+        $text .= "<li>ФИО: {$data['pname']}</li>";
+        $text .= "<li>Email: <a href=\"mailto:{$data['mail']}\">{$data['mail']}</a></li>";
+        $text .= "<li>Телефон: {$data['phone']}</li>";
+        $text .= "<li>Логин: {$data['username']}</li>";
+        $text .= "<li>Пароль: {$data['password']}</li>";
+        $text .= "<li>Тариф: {$data['tariff']}</li>";
+        $text .= "<li>Пользователь принял условия договора</li>";
+        $text .= "</p></ul>";
+        
+        $text .= "<p>Для продолжения регистрации пользователя, добавьте его (или
+            измените данные существующего ученика) в <a href=\"" . base_url() . "admin_users\">разделе пользователи</a>.</p>";
+        
+        
+        $this->email->message($text);
+        
+        return $this->email->send();
     }
     
     public function password_required($password)
