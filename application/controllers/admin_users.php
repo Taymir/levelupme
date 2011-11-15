@@ -62,7 +62,7 @@ class admin_users extends MY_Controller {
                         <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
                         были изменены.<br>
                         <b>Логин:</b> {$data['username']}<br>
-                        <b>Пароль:</b> {$data['password']}<br>",
+                        <b>Пароль:</b> {$data['password']}<br>",//@BUG: НЕ ОТОБРАЖАЕТСЯ ЛОГИН
                     'sms_text' => "Levelupme.ru Ваш логин: {$data['username']}. Пароль: {$data['password']}"
                 );
                 $this->mailings_model->add_single_mailing($mailing);
@@ -99,7 +99,7 @@ class admin_users extends MY_Controller {
                 // Зарегистрировать пользователя
                 $data['username'] = $this->input->post('new_username');
                 $data['password'] = $this->input->post('new_password');
-                
+                //@BUG: НЕ ОТСЫЛАЕТСЯ ИНФА О ПАРОЛЕ-ЛОГИНЕ!
             } elseif ($this->input->post('change_password') == '1') {
                 // Сменить пароль пользователя
                 $data['password'] = $this->input->post('new_password');
@@ -113,7 +113,7 @@ class admin_users extends MY_Controller {
                         <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
                         были изменены.<br>
                         <b>Логин:</b> {$data['username']}<br>
-                        <b>Пароль:</b> {$data['password']}<br>",
+                        <b>Пароль:</b> {$data['password']}<br>",//@BUG НЕ РАБОТАЕТ
                     'sms_text' => "Levelupme.ru Ваш логин: {$data['username']}. Пароль: {$data['password']}"
                 );
                 $this->mailings_model->add_single_mailing($mailing);
@@ -121,7 +121,7 @@ class admin_users extends MY_Controller {
             
             $this->user_profile_model->save_user_profile($profile_id, $data);
 
-            return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь обновлен");
+            //return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь обновлен");
         }
         
         $this->load->model('classes_model');

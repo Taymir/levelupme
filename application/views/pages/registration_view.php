@@ -119,3 +119,5 @@
     </div>
 </div>
 <?= form_close(); ?>
+
+<p><strong>Ваша школа ещё не подключена к системе LevelUP? <a href="mailto:<?= $this->config->item('registration_mail'); ?>">Напишите нам</a>.</strong></p>
