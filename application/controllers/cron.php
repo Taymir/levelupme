@@ -126,7 +126,7 @@ class cron extends CI_Controller {
     public function render_statistics($classes_num = 1)
     {
         set_time_limit(0); //@DEBUG
-        define('PCHART_DIRECTORY', 'application/third_party/pchart/');
+        define('PCHART_DIRECTORY', './application/third_party/pchart/');
         include(PCHART_DIRECTORY . 'class/pData.class.php');
         include(PCHART_DIRECTORY . 'class/pDraw.class.php');
         include(PCHART_DIRECTORY . 'class/pPie.class.php');
@@ -135,6 +135,7 @@ class cron extends CI_Controller {
         $this->load->model('statistics_model');
         $this->load->helper('common_helper');
         
+        $current_date = date('dmy');
         $this->statistics_model->import_data($classes_num);
         //print_r($this->data);
         while($class = $this->statistics_model->get_next_class())
@@ -142,7 +143,7 @@ class cron extends CI_Controller {
             var_dump($class);//@TMP
             while($user = $this->statistics_model->get_next_user($class['id']))
             {
-                echo "<b>{$user['user']->name}</b><br/>";//@TMP
+                echo "<b>{$user['user']->name} ({$user['id']})</b><br/>";//@TMP
                 
                 foreach($user['subjects'] as $subject)
                 {
@@ -167,12 +168,12 @@ class cron extends CI_Controller {
                     
                      $myPicture = new pImage(700,700,$MyData,TRUE);
                      $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-                     $myPicture->setFontProperties(array("FontName"=>"C:/Windows/Fonts/arial.ttf","FontSize"=>16));
+                     $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
                      $PieChart = new pPie($myPicture,$MyData);
                      $PieChart->draw3DPie(320,300,array("WriteValues"=>TRUE,"DataGapAngle"=>20,
  "DataGapRadius"=>12,"Border"=>TRUE, 'Radius'=> 200, 'SkewFactor' => 0.7, 'SecondPass' => true, 'SliceHeight' => 30
  ));
-                      $myPicture->setFontProperties(array("FontName"=>"C:/Windows/Fonts/arial.ttf","FontSize"=>12));
+                      $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
                       $PieChart->drawPieLegend(300,500,array("Style"=>LEGEND_ROUND ,"Mode"=>LEGEND_VERTICAL , 'R'=> 240, 'G' => 247, 'B' => 241, 'Margin' => 10, 'BorderR' => 224, 'BorderG' => 235, 'BorderB' => 241
  ));
                       
@@ -185,45 +186,62 @@ class cron extends CI_Controller {
                       /* 2. GRADES */
                       //foreach($this->statistics_model->get_user_grades($user['id'], $subject) as $date => $grade)
                       //      echo "$date: $grade<br/>";
+                      $grades = $this->statistics_model->get_user_grades($user['id'], $subject);
+                      
                       $MyData = new pData();
                       $MyData->setAxisName(0,"Оценки");
-                      $MyData->setAxisName(1,"Даты");  
-                      foreach($this->statistics_model->get_user_grades($user['id'], $subject) as $date => $grade)
+                      $MyData->setAxisName(1,"Даты");
+
+                      $grades_num = 0;
+                      foreach($grades as $date => $grade)
                       {
                           $day = (int)date('j', strtotime($date));
                           $grade = round($grade, 1);
                           if($grade == null)
                           {
-                              $MyData->addPoints(VOID, "grades");
-                              $MyData->addPoints($day, "dates");
+                              //$MyData->addPoints(VOID, "grades");
+                              //$MyData->addPoints($day, "dates");
+                              //$grades_num++;
                           } else {
                               $MyData->addPoints($grade, "grades");
                               $MyData->addPoints($day, "dates");
+                              $grades_num++;
                           }
                       }
-                      $MyData->setSerieDescription("dates","Дни месяца....");
-                      $MyData->setAbscissa("dates");
-                      $MyData->loadPalette("palettes/green.color", TRUE);
-                      $MyData->setAbscissa("Дата");
-                      $myPicture = new pImage(700,700,$MyData,TRUE);
-                      $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-                      $myPicture->setFontProperties(array("FontName"=>"C:/Windows/Fonts/arial.ttf","FontSize"=>12));
-                      $myPicture->setGraphArea(70,150,600,450); 
-                      $myPicture->drawText(350,120,"Оценки за октябрь",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
-                      $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
-                      $ScaleSettings = array("XMargin"=>5,"YMargin"=>5,"Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries,"DrawSubTicks"=>FALSE,"AxisR"=>99,"AxisG"=>99,"AxisB"=>99,"CycleBackground"=> TRUE, "DrawArrows" => TRUE, "MinDivHeight" => 40, "LabelSkip" => 0);
-                      $myPicture->drawScale($ScaleSettings); 
-                      $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
-                      $myPicture->drawBarChart(array('DisplayValues' => TRUE, 'DisplayOffset' => -25, 'DisplayShadow' => TRUE, 'Rounded' => TRUE));
-                      //$myPicture->drawFilledSplineChart(array("DisplayValues"=>TRUE, 'DisplayOffset' => -25));
-                      //$myPicture->drawSplineChart(array( 'BreakVoid' => FALSE));
-                      $myPicture->setShadow(FALSE);
-                      $myPicture->setFontProperties(array("FontName"=>"C:/Windows/Fonts/arial.ttf","FontSize"=>16));
-                      
-                      $path = "charts/gra/{$class['school']->id}/{$class['id']}/$subject_path/";
-                      if(!is_dir($path))
-                          mkdir ($path, 0777, true);
-                      $myPicture->Render("$path{$user['id']}.png");
+                      $use_spline = false;
+                      if($grades_num > $this->config->item('histogramm_grades'))
+                          $use_spline = true;
+                      if($grades_num > 0) {
+                          $day = (++$day > 31) ? 1: $day;
+                          $MyData->addPoints($day, "dates");
+                          $MyData->setSerieDescription("dates","Дни месяца....");
+                          $MyData->setAbscissa("dates");
+                          $MyData->loadPalette("palettes/green.color", TRUE);
+                          $MyData->setAbscissa("Дата");
+                          $myPicture = new pImage(700,700,$MyData,TRUE);
+                          $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
+                          $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
+                          $myPicture->setGraphArea(70,150,600,450); 
+                          $myPicture->drawText(350,120,"Оценки за период",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
+                          $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
+                          $ScaleSettings = array("XMargin"=>5,"YMargin"=>5,"Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries,"DrawSubTicks"=>FALSE,"AxisR"=>99,"AxisG"=>99,"AxisB"=>99,"CycleBackground"=> TRUE, "DrawArrows" => TRUE, "MinDivHeight" => 40, "LabelSkip" => round($grades_num / 7));
+                          $myPicture->drawScale($ScaleSettings); 
+                          $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
+                          if($use_spline) {
+                            $myPicture->drawFilledSplineChart(array("DisplayValues"=>TRUE, 'DisplayOffset' => -25));
+                            $myPicture->drawSplineChart(array( 'BreakVoid' => FALSE));
+                          } else {
+                            $myPicture->drawBarChart(array('DisplayValues' => TRUE, 'DisplayOffset' => -25, 'DisplayShadow' => TRUE, 'Rounded' => TRUE));                          
+                          }
+                          $myPicture->setShadow(FALSE);
+                          $myPicture->setFontProperties(array("FontName" => PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
+
+                          $path = "charts/gra/{$class['school']->id}/{$class['id']}/$subject_path/";
+                          if(!is_dir($path))
+                              mkdir ($path, 0777, true);
+
+                          $myPicture->Render("$path{$user['id']}.png");
+                      }
                       /* 3. AVERAGES */
                       //echo 
                       //      round($this->statistics_model->get_user_average($user['id'], $subject), 1) . ' / ' .
@@ -235,13 +253,13 @@ class cron extends CI_Controller {
                       
                       $MyData = new pData();   
                       $MyData->addPoints(array($u_avg, $c_avg, $p_avg), "avg");
-                      $MyData->addPoints(array("Средний бал","Средний бал класса","Средний бал паралели"),"par"); 
+                      $MyData->addPoints(array("Средний бал","Средний бал класса","Средний бал параллели"),"par"); 
                       $MyData->setAbscissa("par");
                       $MyData->loadPalette("palettes/green.color", TRUE);
                       $MyData->setAbscissa("Дата");
                       $myPicture = new pImage(700,700,$MyData,TRUE);
                       $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-                      $myPicture->setFontProperties(array("FontName"=>"C:/Windows/Fonts/arial.ttf","FontSize"=>12));
+                      $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
                       $myPicture->setGraphArea(200,200,650,450); 
                       $myPicture->drawText(350,120,"Средний бал",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
                       $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));

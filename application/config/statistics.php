@@ -11,3 +11,4 @@ $config['required_subjects'] = array(
     //'история'
 );
 $config['max_subjects'] = 5;
+$config['histogramm_grades'] = 7; // Максимальное количество оценок при котором используется гистограмма
