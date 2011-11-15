@@ -49,7 +49,25 @@ class admin_users extends MY_Controller {
             $data['phone'] = $this->clean_phone_number($data['phone']);
             $data['class_id'] = (int)$data['class_id'];
             
-            $this->user_profile_model->add_user_profile($data);
+            $result = $this->user_profile_model->add_user_profile($data);
+            if($result && !empty($data['password']))
+            {
+                // Информирование пользователя о смене пароля
+                $this->load->model('mailings_model');
+                $profile_id = $result;
+                $mailing = array(
+                    'user_profile_id' => $profile_id,
+                    'email_title' => "LevelUP: Ваш пароль",
+                    'email_text' => "<h1>Новый пароля</h1>
+                        <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
+                        были изменены.<br>
+                        <b>Логин:</b> {$data['username']}<br>
+                        <b>Пароль:</b> {$data['password']}<br>",
+                    'sms_text' => "Levelupme.ru Ваш логин: {$data['username']}. Пароль: {$data['password']}"
+                );
+                $this->mailings_model->add_single_mailing($mailing);
+            }
+            
             return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь добавлен");//@TODO: заменить на /admin_users/class_id
         }
         $this->load->model('classes_model');
@@ -85,6 +103,20 @@ class admin_users extends MY_Controller {
             } elseif ($this->input->post('change_password') == '1') {
                 // Сменить пароль пользователя
                 $data['password'] = $this->input->post('new_password');
+                
+                // Информирование пользователя о смене пароля
+                $this->load->model('mailings_model');
+                $mailing = array(
+                    'user_profile_id' => $profile_id,
+                    'email_title' => "LevelUP: Ваш пароль",
+                    'email_text' => "<h1>Новый пароль</h1>
+                        <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
+                        были изменены.<br>
+                        <b>Логин:</b> {$data['username']}<br>
+                        <b>Пароль:</b> {$data['password']}<br>",
+                    'sms_text' => "Levelupme.ru Ваш логин: {$data['username']}. Пароль: {$data['password']}"
+                );
+                $this->mailings_model->add_single_mailing($mailing);
             }
             
             $this->user_profile_model->save_user_profile($profile_id, $data);

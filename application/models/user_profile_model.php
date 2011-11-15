@@ -272,11 +272,15 @@ class user_profile_model extends MY_Model {
             $result = $ci->tank_auth->create_user($username, $email, $password, false);
             if($result)
             {
-                return $this->typical_update($this->table_name, $profile_data, $result['user_id'], 'user_id');
+                $profile_id = $this->db->insert_id();
+                $this->typical_update($this->table_name, $profile_data, $profile_id);//@TOTEST;
+                return $profile_id;
             }
         } else {
             $profile_data['user_id'] = NULL;
-            return $this->typical_insert($this->table_name, $profile_data);
+            $this->typical_insert($this->table_name, $profile_data);
+            $profile_id = $this->db->insert_id();
+            return $profile_id;
         }
         
         return FALSE;

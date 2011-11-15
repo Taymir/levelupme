@@ -66,7 +66,7 @@ class pages extends MY_Controller {
         $text .= "<li>Класс: {$data['class']}</li>";
         $text .= "</p></ul>";
         
-        $text .= "<p><strong>Информация о родителе</strong><ul>";
+        $text .= "<p><b>Информация о родителе</b><ul>";
         $text .= "<li>ФИО: {$data['pname']}</li>";
         $text .= "<li>Email: <a href=\"mailto:{$data['mail']}\">{$data['mail']}</a></li>";
         $text .= "<li>Телефон: {$data['phone']}</li>";
