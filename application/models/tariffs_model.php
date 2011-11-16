@@ -99,6 +99,25 @@ class tariffs_model {
         return false;
     }
     
+    public function rule_send_text_analytics_to_sms($tariff)
+    {
+        if($tariff >= 3)
+            return true;
+        return false;
+    }
+    
+    public function rule_send_graph_analytics_to_email($tariff)
+    {
+        if($tariff >= 4)
+            return true;
+        return false;
+    }
+    
+    public function get_min_analytics_tariff()
+    {
+        return 3;
+    }
+    
     public function is_valid_tariff_shortname($shortname)
     {
         return in_array($this->clean_tariff_shortname($shortname), $this->tariff_shortnames);

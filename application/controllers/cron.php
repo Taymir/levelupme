@@ -133,6 +133,7 @@ class cron extends CI_Controller {
         include(PCHART_DIRECTORY . 'class/pImage.class.php');
         
         $this->load->model('statistics_model');
+        $this->load->model('tariffs_model');
         $this->load->helper('common_helper');
         
         $current_date = date('dmy');
@@ -275,6 +276,26 @@ class cron extends CI_Controller {
                       if(!is_dir($path))
                           mkdir ($path, 0777, true);
                       $myPicture->Render("$path{$user['id']}.png");*/
+                      
+                      /* 4. GENERATING EMAILS */
+                      $mail_sent = false;
+                      //@TODO: рендерить графики только если есть необходимость отправлять их на почту!
+                      //@TODO: Добавить в пути оценок дату
+                      //@TODO: Добавить проверку на существование графиков ATTENDANCES, AVERAGES
+                      //if($this->tariffs_model->rule_send_text_analytics_to_email($user['user']->tariff))
+                      //{
+                        // Формуируем мэил
+                        // Отправляем мэил
+                        // $mail_sent = true;
+                      //}
+                        
+                      /* 5. GENERATING SMSS */
+                      //if($this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff))
+                      //{
+                        // Формуируем смс
+                        // if($mail_sent)
+                            // Добавляем инфу об отправке граф-аналитического отчета
+                      //}
                 }
                 
             }
@@ -291,6 +312,7 @@ class cron extends CI_Controller {
         $this->load->model('classes_model');
         $this->load->model('grades_model');
         $this->load->model('statistics_model');
+        $this->load->model('tariffs_model');
         $this->config->load('statistics');
         
         $max_subjects =      $this->config->item('max_subjects');
@@ -310,7 +332,7 @@ class cron extends CI_Controller {
                 $class    = $school->classes[$class_key];
                 $class_id = $class->id;
                 
-                $users = $this->user_profile_model->get_users_by_class_without_school($class_id);//@TODO: min-tariff!!
+                $users = $this->user_profile_model->get_users_by_class_without_school($class_id, $this->tariffs_model->get_min_analytics_tariff());
                 if(sizeof($users) < 1)
                     continue; // Пропускаем пустые классы
                 
