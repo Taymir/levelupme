@@ -147,7 +147,7 @@ class admin_users extends MY_Controller {
     
     public function password_required($password)
     {
-        if(($this->input->post('change_password') == '1' || $this->input->post('username') != '') && $password == '')
+        if(($this->input->post('change_password') == '1' || $this->input->post('new_username') != '') && $password == '')
         {
             $this->form_validation->set_message('password_required', "Введите новый пароль");
             return false;
