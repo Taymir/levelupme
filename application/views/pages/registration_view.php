@@ -1,6 +1,6 @@
 <?php $this->load->helper('form'); ?>
 <?= form_open('', 'id="registrationForm" class="niceForm"'); ?>
-<?= form_fieldset('Информация об ученике'); ?>
+<?= form_fieldset('Ученик:'); ?>
 <div class="clearfix">
 <?= form_label("ФИО", 'name'); ?>
     <div class="input">
@@ -25,7 +25,7 @@
 </div>
 <?= form_fieldset_close(); ?>
 
-<?= form_fieldset('Информация о родителе'); ?> 
+<?= form_fieldset('Родитель:'); ?> 
 <div class="clearfix">
 <?= form_label("ФИО", 'pname'); ?>
     <div class="input">
@@ -78,28 +78,28 @@
 <div class="tariff">
 <label>
 <img src="<?= base_url() ?>styles/images/tariff_100.png" />
-<strong><?= form_radio('tariff', '100', false) ?>Оценки</strong><br/>
+<strong><nobr><?= form_radio('tariff', '100', false) ?>Оценки</nobr></strong><br/>
 </label>
 </div>
 
 <div class="tariff">
 <label>
 <img src="<?= base_url() ?>styles/images/tariff_150.png" />
-<strong><?= form_radio('tariff', '150', false) ?>Оценки +</strong><br/> необходимая организационная информация
+<strong><nobr><?= form_radio('tariff', '150', false) ?>Оценки +</nobr></strong><br/> необходимая организационная информация
 </label>
 </div>
 
 <div class="tariff">
 <label>
 <img src="<?= base_url() ?>styles/images/tariff_200.png" />
-<strong><?= form_radio('tariff', '200', false) ?>Оценки +</strong><br/> организационная и общешкольная информация + аналитический отчет
+<strong><nobr><?= form_radio('tariff', '200', false) ?>Оценки +</nobr></strong><br/> организационная и общешкольная информация + аналитический отчет
 </label>
 </div>
 
 <div class="tariff">
 <label>
 <img src="<?= base_url() ?>styles/images/tariff_250.png" />
-<strong><?= form_radio('tariff', '250', false) ?>Оценки +</strong><br/> организационная и общешкольная информация + сводка об олимпиадах 
+<strong><nobr><?= form_radio('tariff', '250', false) ?>Оценки +</nobr></strong><br/> организационная и общешкольная информация + сводка об олимпиадах 
 и соревнованиях + граф-аналитический отчет
 </label>
 </div>

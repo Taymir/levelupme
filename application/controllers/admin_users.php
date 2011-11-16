@@ -83,6 +83,14 @@ class admin_users extends MY_Controller {
         return $this->load_view('admin_users/add_user_view', "Добавление пользователя");
     }
     
+    private function password_changed_notify($data)
+    {
+        // $data should contain:
+        // user_profile_id (to get tariff, email, phone)
+        // username
+        // password
+    }
+    
     public function edit_user($profile_id = null)
     {
         $this->load->library('form_validation');

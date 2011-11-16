@@ -432,7 +432,7 @@ body#home #sidebar { padding-top: 65px; }
             
             /* registration form */
             #registrationForm {
-                background-color: white;
+                /*background-color: white;*/
                 padding: 30px;
                 font-family: "Times New Roman", times, serif;
                 font-size:14pt;
