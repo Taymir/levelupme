@@ -56,7 +56,7 @@ echo form_error('class_id');
 <?= form_label("Логин" , 'new_username') ?>
     <div class="input">
     <?php if(isset($user)): ?>
-    <strong><?= $user->username ?></strong><br/>
+        <strong><?= $user->username ?><?= form_hidden('old_username', $user->username) ?></strong><br/>
     <?php else: ?>
     <?= form_input('new_username', set_value('new_username'), 'autocomplete="off"') ?>
     <?= form_error('new_username') ?>

@@ -53,19 +53,7 @@ class admin_users extends MY_Controller {
             if($result && !empty($data['password']))
             {
                 // Информирование пользователя о смене пароля
-                /*$this->load->model('mailings_model');
-                $profile_id = $result;
-                $mailing = array(
-                    'user_profile_id' => $profile_id,
-                    'email_title' => "LevelUP: Ваш пароль",
-                    'email_text' => "<h1>Новый пароля</h1>
-                        <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
-                        были изменены.<br>
-                        <b>Логин:</b> {$data['username']}<br>
-                        <b>Пароль:</b> {$data['password']}<br>",//@BUG: НЕ ОТОБРАЖАЕТСЯ ЛОГИН
-                    'sms_text' => "Levelupme.ru Ваш логин: {$data['username']}. Пароль: {$data['password']}"
-                );
-                $this->mailings_model->add_single_mailing($mailing);*/
+                $this->password_changed_notify($result, $data['username'], $data['password']);
             }
             
             //return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь добавлен");//@TODO: заменить на /admin_users/class_id
@@ -83,12 +71,28 @@ class admin_users extends MY_Controller {
         return $this->load_view('admin_users/add_user_view', "Добавление пользователя");
     }
     
-    private function password_changed_notify($data)
+    private function password_changed_notify($profile_id, $username, $password)
     {
         // $data should contain:
         // user_profile_id (to get tariff, email, phone)
         // username
         // password
+        
+        $this->load->model('mailings_model');
+        $this->load->helper('common_helper');
+        
+        $password = protect_password($password);
+        $mailing = array(
+            'user_profile_id' => $profile_id,
+            'email_title' => "LevelUP: Ваш пароль",
+            'email_text' => "<h1>Новый пароля</h1>
+                <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
+                были изменены.<br>
+                <b>Логин:</b> $username<br>
+                <b>Пароль:</b> $password<br>",
+            'sms_text' => "Levelupme.ru Ваш логин: $username. Пароль: $password"
+        );
+        $this->mailings_model->add_multi_mailing('password', array($mailing));
     }
     
     public function edit_user($profile_id = null)
@@ -107,24 +111,15 @@ class admin_users extends MY_Controller {
                 // Зарегистрировать пользователя
                 $data['username'] = $this->input->post('new_username');
                 $data['password'] = $this->input->post('new_password');
-                //@BUG: НЕ ОТСЫЛАЕТСЯ ИНФА О ПАРОЛЕ-ЛОГИНЕ!
+                
+                // Информирование пользователя о смене пароля
+                $this->password_changed_notify($profile_id, $data['username'], $data['password']);
             } elseif ($this->input->post('change_password') == '1') {
                 // Сменить пароль пользователя
                 $data['password'] = $this->input->post('new_password');
                 
                 // Информирование пользователя о смене пароля
-                /*$this->load->model('mailings_model');
-                $mailing = array(
-                    'user_profile_id' => $profile_id,
-                    'email_title' => "LevelUP: Ваш пароль",
-                    'email_text' => "<h1>Новый пароль</h1>
-                        <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
-                        были изменены.<br>
-                        <b>Логин:</b> {$data['username']}<br>
-                        <b>Пароль:</b> {$data['password']}<br>",//@BUG НЕ РАБОТАЕТ
-                    'sms_text' => "Levelupme.ru Ваш логин: {$data['username']}. Пароль: {$data['password']}"
-                );
-                $this->mailings_model->add_single_mailing($mailing);*/
+                $this->password_changed_notify($profile_id, $this->input->post('old_username'), $data['password']);
             }
             
             $this->user_profile_model->save_user_profile($profile_id, $data);
