@@ -53,7 +53,7 @@ class admin_users extends MY_Controller {
             if($result && !empty($data['password']))
             {
                 // Информирование пользователя о смене пароля
-                $this->load->model('mailings_model');
+                /*$this->load->model('mailings_model');
                 $profile_id = $result;
                 $mailing = array(
                     'user_profile_id' => $profile_id,
@@ -65,10 +65,10 @@ class admin_users extends MY_Controller {
                         <b>Пароль:</b> {$data['password']}<br>",//@BUG: НЕ ОТОБРАЖАЕТСЯ ЛОГИН
                     'sms_text' => "Levelupme.ru Ваш логин: {$data['username']}. Пароль: {$data['password']}"
                 );
-                $this->mailings_model->add_single_mailing($mailing);
+                $this->mailings_model->add_single_mailing($mailing);*/
             }
             
-            return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь добавлен");//@TODO: заменить на /admin_users/class_id
+            //return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь добавлен");//@TODO: заменить на /admin_users/class_id
         }
         $this->load->model('classes_model');
         $this->load->model('tariffs_model');
@@ -105,7 +105,7 @@ class admin_users extends MY_Controller {
                 $data['password'] = $this->input->post('new_password');
                 
                 // Информирование пользователя о смене пароля
-                $this->load->model('mailings_model');
+                /*$this->load->model('mailings_model');
                 $mailing = array(
                     'user_profile_id' => $profile_id,
                     'email_title' => "LevelUP: Ваш пароль",
@@ -116,7 +116,7 @@ class admin_users extends MY_Controller {
                         <b>Пароль:</b> {$data['password']}<br>",//@BUG НЕ РАБОТАЕТ
                     'sms_text' => "Levelupme.ru Ваш логин: {$data['username']}. Пароль: {$data['password']}"
                 );
-                $this->mailings_model->add_single_mailing($mailing);
+                $this->mailings_model->add_single_mailing($mailing);*/
             }
             
             $this->user_profile_model->save_user_profile($profile_id, $data);
