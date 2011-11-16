@@ -45,6 +45,15 @@ class pages extends MY_Controller {
             
             return $this->show_message("Ваша заявка отправлена на рассмотрение.");
         }
+        if($this->config->item('registration_schoolist'))
+        {
+            $this->load->model('schools_model');
+            $schools = $this->schools_model->get_schools();
+            $schoolslist = array();
+            foreach($schools as $school)
+                $schoolslist[$school->school] = $school->school;
+            $this->load_var('schoolslist', $schoolslist);
+        }
         
         return $this->load_view('pages/registration_view', "Подключение");
     }

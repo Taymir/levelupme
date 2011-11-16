@@ -2,9 +2,9 @@
 <?= form_open('', 'id="registrationForm" class="niceForm"'); ?>
 <?= form_fieldset('Ученик:'); ?>
 <div class="clearfix">
-<?= form_label("ФИО", 'name'); ?>
+<?= form_label('ФИО <img src="' . base_url() . 'styles/images/name_symb.png" />', 'name'); ?>
     <div class="input">
-    <?= form_input('name'); ?>
+    <span style="margin-left: -23px; width:23px;">Ф </span><?= form_input('name'); ?> И <?= form_input('name'); ?> О <?= form_input('name'); ?>
     <?= form_error('name'); ?>
     </div>
 </div>
@@ -12,7 +12,11 @@
 <div class="clearfix">
 <?= form_label('Школа', 'school'); ?> 
     <div class="input">
+    <?php if(isset($schoolslist)): ?>
+    <?= form_dropdown('school', $schoolslist) ?>
+    <?php else: ?>
     <?= form_input('school'); ?> 
+    <?php endif; ?>
     <?= form_error('school'); ?>
     </div>
 </div>
@@ -27,15 +31,15 @@
 
 <?= form_fieldset('Родитель:'); ?> 
 <div class="clearfix">
-<?= form_label("ФИО", 'pname'); ?>
+<?= form_label('ФИО <img src="' . base_url() . 'styles/images/name_symb.png" />', 'pname'); ?>
     <div class="input">
-    <?= form_input('pname'); ?>
+    <span style="margin-left: -23px; width:23px;">Ф </span><?= form_input('pname'); ?> И <?= form_input('pname'); ?> О <?= form_input('pname'); ?>
     <?= form_error('pname'); ?>
     </div>
 </div>
 
 <div class="clearfix">
-<?= form_label("E-Mail", 'mail'); ?>
+<?= form_label('E-Mail  <img src="' . base_url() . 'styles/images/mail_symb.png" />', 'mail'); ?>
     <div class="input">
     <?= form_input('mail'); ?>
     <?= form_error('mail'); ?>
@@ -43,18 +47,10 @@
 </div>
 
 <div class="clearfix">
-<?= form_label("Телефон", 'phone'); ?>
+<?= form_label('Телефон <img src="' . base_url() . 'styles/images/phone_symb.png" />', 'phone'); ?>
     <div class="input">
-    <?= form_input('phone'); ?>
+    <span style="margin-left: -28px; width:28px;">+7 </span><?= form_input('phone'); ?>
     <?= form_error('phone'); ?>
-    </div>
-</div>
-
-<div class="clearfix">
-<?= form_label("Логин", 'username'); ?>
-    <div class="input">
-    <?= form_input('username'); ?> 
-    <?= form_error('username'); ?>
     </div>
 </div>
 
