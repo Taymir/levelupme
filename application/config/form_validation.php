@@ -5,8 +5,18 @@ $config = array(
     /* REGISTRATION */
     'registration' => array(
         array(
-            'field' => 'name',
+            'field' => 'name_f',
+            'label' => 'Фамилия',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'name_i',
             'label' => 'Имя',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'name_o',
+            'label' => 'Отчество',
             'rules' => 'trim|required'
         ),
         array(
@@ -20,8 +30,18 @@ $config = array(
             'rules' => 'trim|required'
         ),
         array(
-            'field' => 'pname',
+            'field' => 'pname_f',
+            'label' => 'Фамилия',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'pname_i',
             'label' => 'Имя',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'pname_o',
+            'label' => 'Отчество',
             'rules' => 'trim|required'
         ),
         array(
@@ -32,22 +52,17 @@ $config = array(
         array(
             'field' => 'phone',
             'label' => 'Телефон',
-            'rules' => 'trim|callback_valid_phone'
-        ),
-        array(
-            'field' => 'username',
-            'label' => 'Логин',
-            'rules' => 'alpha_numeric|callback_username_available'
+            'rules' => 'required|trim|callback_valid_phone'
         ),
         array(
             'field' => 'password',
             'label' => 'пароль',
-            'rules' => 'callback_password_required|alpha_numeric'
+            'rules' => 'alpha_numeric'
         ),
         array(
             'field' => 'confirm',
             'label' => 'подтверждение пароля',
-            'rules' => 'callback_password_required|matches[password]'
+            'rules' => 'matches[password]'
         ),
         array(
             'field' => 'tariff',

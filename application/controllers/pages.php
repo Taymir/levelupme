@@ -39,8 +39,12 @@ class pages extends MY_Controller {
         
         if($this->form_validation->run('registration'))
         {
-            $data = $this->get_post_params('name', 'school', 'class', 'pname', 'mail',
-                    'phone', 'username', 'password', 'tariff');
+            $data = $this->get_post_params('school', 'class', 'mail',
+                    'phone', 'password', 'tariff');
+            $data['name'] = implode(' ', $this->get_post_params('name_f', 'name_i', 'name_o'));
+            $data['pname'] = implode(' ', $this->get_post_params('pname_f', 'pname_i', 'pname_o'));
+            $data['phone'] = $this->clean_phone_number($data['phone']);
+            $data['username'] = $data['phone'];
             $this->sendMailToAdmin($data);            
             
             return $this->show_message("Ваша заявка отправлена на рассмотрение.");
@@ -92,16 +96,6 @@ class pages extends MY_Controller {
         $this->email->message($text);
         
         return $this->email->send();
-    }
-    
-    public function password_required($password)
-    {
-        if($this->input->post('username') != '' && $password == '')
-        {
-            $this->form_validation->set_message('password_required', "Введите пароль");
-            return false;
-        }
-        return true;
     }
     
     public function tariff_required($var)
