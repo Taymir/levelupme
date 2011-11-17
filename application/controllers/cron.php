@@ -152,156 +152,186 @@ class cron extends CI_Controller {
                     $subject_path = sanitize(rus2translit($subject), true, true);
                     
                     /* 1. ATTENDANCE */
-                    //echo " $N \ $B  \ $P <br/>";
-                    /*extract($this->statistics_model->get_user_attendance($user['id'], $subject));
-                    $T = $N + $B + $P;
-                    $N = round(100 * $N / $T);
-                    $B = round(100 * $B / $T);
-                    $P = round(100 * $P / $T);
+                    $this->render_attendance($user, $subject, $subject_path, $current_date);
+                      
+                    /* 2. GRADES */
+                    $this->render_grades($user, $subject, $subject_path, $current_date);
                     
-                    $MyData = new pData();   
-                    $MyData->addPoints(array($P, $N, $B),"ScoreA");  
-                    $MyData->setSerieDescription("ScoreA","Application A");
-                    $MyData->loadPalette("palettes/green.color", TRUE);
-                    
-                    $MyData->addPoints(array("Присутствовал","Отсутствовал","Болел"),"Labels");
-                    $MyData->setAbscissa("Labels");
-                    
-                     $myPicture = new pImage(700,700,$MyData,TRUE);
-                     $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-                     $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
-                     $PieChart = new pPie($myPicture,$MyData);
-                     $PieChart->draw3DPie(320,300,array("WriteValues"=>TRUE,"DataGapAngle"=>20,
- "DataGapRadius"=>12,"Border"=>TRUE, 'Radius'=> 200, 'SkewFactor' => 0.7, 'SecondPass' => true, 'SliceHeight' => 30
- ));
-                      $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
-                      $PieChart->drawPieLegend(300,500,array("Style"=>LEGEND_ROUND ,"Mode"=>LEGEND_VERTICAL , 'R'=> 240, 'G' => 247, 'B' => 241, 'Margin' => 10, 'BorderR' => 224, 'BorderG' => 235, 'BorderB' => 241
- ));
+                    /* 3. AVERAGES */
+                    $this->render_averages($user, $subject, $subject_path, $current_date);
                       
-                      
-                      $path = "charts/att/{$class['school']->id}/{$class['id']}/$subject_path/";
-                      if(!is_dir($path))
-                          mkdir ($path, 0777, true);
-                      $myPicture->Render("$path{$user['id']}.png");*/
-                      
-                      /* 2. GRADES */
-                      //foreach($this->statistics_model->get_user_grades($user['id'], $subject) as $date => $grade)
-                      //      echo "$date: $grade<br/>";
-                      $grades = $this->statistics_model->get_user_grades($user['id'], $subject);
-                      
-                      $MyData = new pData();
-                      $MyData->setAxisName(0,"Оценки");
-                      $MyData->setAxisName(1,"Даты");
-
-                      $grades_num = 0;
-                      foreach($grades as $date => $grade)
-                      {
-                          $day = (int)date('j', strtotime($date));
-                          $grade = round($grade, 1);
-                          if($grade == null)
-                          {
-                              //$MyData->addPoints(VOID, "grades");
-                              //$MyData->addPoints($day, "dates");
-                              //$grades_num++;
-                          } else {
-                              $MyData->addPoints($grade, "grades");
-                              $MyData->addPoints($day, "dates");
-                              $grades_num++;
-                          }
-                      }
-                      $use_spline = false;
-                      if($grades_num > $this->config->item('histogramm_grades'))
-                          $use_spline = true;
-                      if($grades_num > 0) {
-                          $day = (++$day > 31) ? 1: $day;
-                          $MyData->addPoints($day, "dates");
-                          $MyData->setSerieDescription("dates","Дни месяца....");
-                          $MyData->setAbscissa("dates");
-                          $MyData->loadPalette("palettes/green.color", TRUE);
-                          $MyData->setAbscissa("Дата");
-                          $myPicture = new pImage(700,700,$MyData,TRUE);
-                          $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-                          $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
-                          $myPicture->setGraphArea(70,150,600,450); 
-                          $myPicture->drawText(350,120,"Оценки за период",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
-                          $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
-                          $ScaleSettings = array("XMargin"=>5,"YMargin"=>5,"Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries,"DrawSubTicks"=>FALSE,"AxisR"=>99,"AxisG"=>99,"AxisB"=>99,"CycleBackground"=> TRUE, "DrawArrows" => TRUE, "MinDivHeight" => 40, "LabelSkip" => round($grades_num / 7));
-                          $myPicture->drawScale($ScaleSettings); 
-                          $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
-                          if($use_spline) {
-                            $myPicture->drawFilledSplineChart(array("DisplayValues"=>TRUE, 'DisplayOffset' => -25));
-                            $myPicture->drawSplineChart(array( 'BreakVoid' => FALSE));
-                          } else {
-                            $myPicture->drawBarChart(array('DisplayValues' => TRUE, 'DisplayOffset' => -25, 'DisplayShadow' => TRUE, 'Rounded' => TRUE));                          
-                          }
-                          $myPicture->setShadow(FALSE);
-                          $myPicture->setFontProperties(array("FontName" => PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
-
-                          $path = "charts/gra/{$class['school']->id}/{$class['id']}/$subject_path/";
-                          if(!is_dir($path))
-                              mkdir ($path, 0777, true);
-
-                          $myPicture->Render("$path{$user['id']}.png");
-                      }
-                      /* 3. AVERAGES */
-                      //echo 
-                      //      round($this->statistics_model->get_user_average($user['id'], $subject), 1) . ' / ' .
-                      //      round($this->statistics_model->get_class_average($class['id'], $subject), 1) . ' / ' . 
-                      //      round($this->statistics_model->get_parallel_average($class['parallel'], $subject), 1) . " <br/>";
-                      /*$u_avg = round($this->statistics_model->get_user_average($user['id'], $subject), 1);
-                      $c_avg = round($this->statistics_model->get_class_average($class['id'], $subject), 1);
-                      $p_avg = round($this->statistics_model->get_parallel_average($class['parallel'], $subject), 1);
-                      
-                      $MyData = new pData();   
-                      $MyData->addPoints(array($u_avg, $c_avg, $p_avg), "avg");
-                      $MyData->addPoints(array("Средний бал","Средний бал класса","Средний бал параллели"),"par"); 
-                      $MyData->setAbscissa("par");
-                      $MyData->loadPalette("palettes/green.color", TRUE);
-                      $MyData->setAbscissa("Дата");
-                      $myPicture = new pImage(700,700,$MyData,TRUE);
-                      $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-                      $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
-                      $myPicture->setGraphArea(200,200,650,450); 
-                      $myPicture->drawText(350,120,"Средний бал",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
-                      $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
-                      $myPicture->drawScale(array("CycleBackground"=>TRUE,"DrawSubTicks"=>TRUE,"GridR"=>0,"GridG"=>0,"GridB"=>0,"GridAlpha"=>10,"Pos"=>SCALE_POS_TOPBOTTOM, 'MinDivHeight' => 50, "Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries)); 
-                      $Palette = array("0"=>array("R"=>146,"G"=>200,"B"=>0,"Alpha"=>100),
-                         "1"=>array("R"=>200,"G"=>50,"B"=>0,"Alpha"=>100),
-                         "2"=>array("R"=>0,"G"=>75,"B"=>153,"Alpha"=>100),
-                         "3"=>array("R"=>235,"G"=>171,"B"=>0,"Alpha"=>100),
-                         "4"=>array("R"=>188,"G"=>0,"B"=>107,"Alpha"=>100));
-                      $myPicture->drawBarChart(array("DisplayPos"=>LABEL_POS_INSIDE, "DisplayValues"=>TRUE, "DisplayR"=>255, "DisplayG"=>255, "DisplayB"=>255, "Rounded"=>TRUE,"Surrounding"=>30,"OverrideColors"=>$Palette)); 
-                      
-                      $path = "charts/avg/{$class['school']->id}/{$class['id']}/$subject_path/";
-                      if(!is_dir($path))
-                          mkdir ($path, 0777, true);
-                      $myPicture->Render("$path{$user['id']}.png");*/
-                      
-                      /* 4. GENERATING EMAILS */
-                      $mail_sent = false;
-                      //@TODO: рендерить графики только если есть необходимость отправлять их на почту!
-                      //@TODO: Добавить в пути оценок дату
-                      //@TODO: Добавить проверку на существование графиков ATTENDANCES, AVERAGES
-                      //if($this->tariffs_model->rule_send_text_analytics_to_email($user['user']->tariff))
-                      //{
-                        // Формуируем мэил
-                        // Отправляем мэил
-                        // $mail_sent = true;
-                      //}
+                    /* 4. GENERATING EMAILS */
+                    $mail_sent = false;
+                    //@TODO: рендерить графики только если есть необходимость отправлять их на почту!
+                    //@TODO: Добавить в пути оценок дату+
+                    //@TODO: Добавить проверку на существование графиков ATTENDANCES, AVERAGES+
+                    //@TODO: cron memory, cron time, cron empty if empty+
+                    //@TODO: генерировать текстовые данные для смс
+                    //if($this->tariffs_model->rule_send_text_analytics_to_email($user['user']->tariff))
+                    //{
+                      // Формуируем мэил
+                      // Отправляем мэил
+                      // $mail_sent = true;
+                    //}
                         
-                      /* 5. GENERATING SMSS */
-                      //if($this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff))
-                      //{
-                        // Формуируем смс
-                        // if($mail_sent)
-                            // Добавляем инфу об отправке граф-аналитического отчета
-                      //}
+                    /* 5. GENERATING SMSS */
+                    //if($this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff))
+                    //{
+                      // Формуируем смс
+                      // if($mail_sent)
+                          // Добавляем инфу об отправке граф-аналитического отчета
+                    //}
                 }
                 
             }
         }
         echo 'Память: ' . memory_get_peak_usage(true);
         
+    }
+    
+    private function render_attendance($user, $subject, $subject_path, $current_date)
+    {
+        //echo " $N \ $B  \ $P <br/>";
+        extract($this->statistics_model->get_user_attendance($user['id'], $subject));
+        $T = $N + $B + $P;
+        $N = round(100 * $N / $T);
+        $B = round(100 * $B / $T);
+        $P = round(100 * $P / $T);
+
+        $path = "charts/att/";
+        if(!is_dir($path))
+            mkdir ($path, 0777, true);
+        $filename = "$path$N-$B-$P.png";
+        if(!file_exists($filename)) {
+            $MyData = new pData();   
+            $MyData->addPoints(array($P, $N, $B),"ScoreA");  
+            $MyData->setSerieDescription("ScoreA","Application A");
+            $MyData->loadPalette("palettes/green.color", TRUE);
+
+            $MyData->addPoints(array("Присутствовал","Отсутствовал","Болел"),"Labels");
+            $MyData->setAbscissa("Labels");
+
+            $myPicture = new pImage(700,700,$MyData,TRUE);
+            $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
+            $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
+            $PieChart = new pPie($myPicture,$MyData);
+            $PieChart->draw3DPie(320,300,array("WriteValues"=>TRUE,"DataGapAngle"=>20,
+               "DataGapRadius"=>12,"Border"=>TRUE, 'Radius'=> 200, 'SkewFactor' => 0.7, 'SecondPass' => true, 'SliceHeight' => 30
+            ));
+            $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
+            $PieChart->drawPieLegend(300,500,array("Style"=>LEGEND_ROUND ,"Mode"=>LEGEND_VERTICAL , 'R'=> 240, 'G' => 247, 'B' => 241, 'Margin' => 10, 'BorderR' => 224, 'BorderG' => 235, 'BorderB' => 241
+            ));
+
+            $myPicture->Render($filename);
+        }
+        return $filename;
+    }
+    
+    private function render_grades($user, $subject, $subject_path, $current_date)
+    {
+        //foreach($this->statistics_model->get_user_grades($user['id'], $subject) as $date => $grade)
+        //      echo "$date: $grade<br/>";
+        $grades = $this->statistics_model->get_user_grades($user['id'], $subject);
+
+        $path = "charts/gra/{$class['school']->id}/{$class['id']}/$subject_path/$current_date/";
+        if(!is_dir($path))
+          mkdir ($path, 0777, true);
+        $filename = "$path{$user['id']}.png";//@TODO: if file_exists
+
+        $MyData = new pData();
+        $MyData->setAxisName(0,"Оценки");
+        $MyData->setAxisName(1,"Даты");
+
+        $grades_num = 0;
+        foreach($grades as $date => $grade)
+        {
+          $day = (int)date('j', strtotime($date));
+          $grade = round($grade, 1);
+          if($grade == null)
+          {
+              // Не рендерим пустые оценки
+              //$MyData->addPoints(VOID, "grades");
+              //$MyData->addPoints($day, "dates");
+              //$grades_num++;
+          } else {
+              $MyData->addPoints($grade, "grades");
+              $MyData->addPoints($day, "dates");
+              $grades_num++;
+          }
+        }
+        $use_spline = false;
+        if($grades_num > $this->config->item('histogramm_grades'))
+          $use_spline = true;
+        if($grades_num > 0) {
+          $day = (++$day > 31) ? 1: $day;
+          $MyData->addPoints($day, "dates");
+          $MyData->setSerieDescription("dates","Дни месяца....");
+          $MyData->setAbscissa("dates");
+          $MyData->loadPalette("palettes/green.color", TRUE);
+          $MyData->setAbscissa("Дата");
+          $myPicture = new pImage(700,700,$MyData,TRUE);
+          $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
+          $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
+          $myPicture->setGraphArea(70,150,600,450); 
+          $myPicture->drawText(350,120,"Оценки за период",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
+          $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
+          $ScaleSettings = array("XMargin"=>5,"YMargin"=>5,"Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries,"DrawSubTicks"=>FALSE,"AxisR"=>99,"AxisG"=>99,"AxisB"=>99,"CycleBackground"=> TRUE, "DrawArrows" => TRUE, "MinDivHeight" => 40, "LabelSkip" => round($grades_num / 7));
+          $myPicture->drawScale($ScaleSettings); 
+          $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
+          if($use_spline) {
+            $myPicture->drawFilledSplineChart(array("DisplayValues"=>TRUE, 'DisplayOffset' => -25));
+            $myPicture->drawSplineChart(array( 'BreakVoid' => FALSE));
+          } else {
+            $myPicture->drawBarChart(array('DisplayValues' => TRUE, 'DisplayOffset' => -25, 'DisplayShadow' => TRUE, 'Rounded' => TRUE));                          
+          }
+          $myPicture->setShadow(FALSE);
+          $myPicture->setFontProperties(array("FontName" => PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
+
+          $myPicture->Render($filename);
+        }
+        
+        return $filename;
+    }
+    
+    private function render_averages($user, $subject, $subject_path, $current_date)
+    {
+        //echo 
+        //      round($this->statistics_model->get_user_average($user['id'], $subject), 1) . ' / ' .
+        //      round($this->statistics_model->get_class_average($class['id'], $subject), 1) . ' / ' . 
+        //      round($this->statistics_model->get_parallel_average($class['parallel'], $subject), 1) . " <br/>";                      
+        $u_avg = round($this->statistics_model->get_user_average($user['id'], $subject), 1);
+        $c_avg = round($this->statistics_model->get_class_average($class['id'], $subject), 1);
+        $p_avg = round($this->statistics_model->get_parallel_average($class['parallel'], $subject), 1);
+
+        $path = "charts/avg/";
+        if(!is_dir($path))
+          mkdir ($path, 0777, true);
+        $filename = "$path$u_avg-$c_avg-$p_avg.png";
+
+        if(!file_exists($filename)) {
+            $MyData = new pData();   
+            $MyData->addPoints(array($u_avg, $c_avg, $p_avg), "avg");
+            $MyData->addPoints(array("Средний бал","Средний бал класса","Средний бал параллели"),"par"); 
+            $MyData->setAbscissa("par");
+            $MyData->loadPalette("palettes/green.color", TRUE);
+            $MyData->setAbscissa("Дата");
+            $myPicture = new pImage(700,700,$MyData,TRUE);
+            $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
+            $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
+            $myPicture->setGraphArea(200,200,650,450); 
+            $myPicture->drawText(350,120,"Средний бал",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
+            $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
+            $myPicture->drawScale(array("CycleBackground"=>TRUE,"DrawSubTicks"=>TRUE,"GridR"=>0,"GridG"=>0,"GridB"=>0,"GridAlpha"=>10,"Pos"=>SCALE_POS_TOPBOTTOM, 'MinDivHeight' => 50, "Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries)); 
+            $Palette = array("0"=>array("R"=>146,"G"=>200,"B"=>0,"Alpha"=>100),
+             "1"=>array("R"=>200,"G"=>50,"B"=>0,"Alpha"=>100),
+             "2"=>array("R"=>0,"G"=>75,"B"=>153,"Alpha"=>100),
+             "3"=>array("R"=>235,"G"=>171,"B"=>0,"Alpha"=>100),
+             "4"=>array("R"=>188,"G"=>0,"B"=>107,"Alpha"=>100));
+            $myPicture->drawBarChart(array("DisplayPos"=>LABEL_POS_INSIDE, "DisplayValues"=>TRUE, "DisplayR"=>255, "DisplayG"=>255, "DisplayB"=>255, "Rounded"=>TRUE,"Surrounding"=>30,"OverrideColors"=>$Palette)); 
+
+            $myPicture->Render($filename);
+        }
+        return $filename;
     }
     
     public function generate_statistics($schools = '*', $last_days = 14)//@DEBUG /* '*' */

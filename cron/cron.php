@@ -44,6 +44,21 @@
 |    "electromute" (http://codeigniter.com/forums/member/71433/) -- Idea for [--server] commandline option (12/25/2008)
 |
 */
+/**
+ * get execution time in seconds at current point of call in seconds
+ * @return float Execution time at this point of call
+ */
+    function get_execution_time()
+    {
+        static $microtime_start = null;
+        if($microtime_start === null)
+        {
+            $microtime_start = microtime(true);
+            return 0.0; 
+        }    
+        return microtime(true) - $microtime_start; 
+    }
+    get_execution_time();
 
     define('CRON_CI_INDEX', realpath('./../index.php'));   // Your CodeIgniter main index.php file
     define('CRON', TRUE);   // Test for this in your controllers if you only want them accessible via cron
@@ -117,9 +132,12 @@
 
 
 # Log the results of this run
-    error_log("### ".date('Y-m-d H:i:s')." cron.php $cmdline\n", 3, CRON_LOG);
-    error_log($output, 3, CRON_LOG);
-    error_log("\n### \n\n", 3, CRON_LOG);
-
+    if(trim($output) != '') {
+        error_log("### ".date('Y-m-d H:i:s')." cron.php $cmdline\n", 3, CRON_LOG);
+        error_log($output, 3, CRON_LOG);
+        erroe_log('Memory peak: ' . memory_get_peak_usage(true) / 1024 . ' KB');
+        erroe_log('Time working: ' . get_execution_time() . ' s');
+        error_log("\n### \n\n", 3, CRON_LOG);
+    }
 
 echo "\n\n";
