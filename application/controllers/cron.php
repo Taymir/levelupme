@@ -134,69 +134,114 @@ class cron extends CI_Controller {
         
         $this->load->model('statistics_model');
         $this->load->model('tariffs_model');
+        $this->load->model('mailings_model');
         $this->load->helper('common_helper');
         
         $current_date = date('dmy');
         $this->statistics_model->import_data($classes_num);
+        $mailed = 0;
         //print_r($this->data);
         while($class = $this->statistics_model->get_next_class())
         {
             var_dump($class);//@TMP
+            $mailing_data = array();
+            
             while($user = $this->statistics_model->get_next_user($class['id']))
             {
                 echo "<b>{$user['user']->name} ({$user['id']})</b><br/>";//@TMP
-                
+                $graphics = array();
+                $sms_text = '';
+                    
                 foreach($user['subjects'] as $subject)
                 {
                     echo "$subject: <br/>"; //@TMP
                     $subject_path = sanitize(rus2translit($subject), true, true);
                     
-                    if($this->tariffs_model->rule_send_graph_analytics_to_email($user['user']->tariff))
+                    if($this->is_accepting_email($user))
                     {
                         /* 1. ATTENDANCE */
-                        $this->render_attendance($user, $class, $subject, $subject_path, $current_date);
+                        $graphics[$subject]['ATTENDANCE'] = $this->render_attendance($user, $class, $subject, $subject_path, $current_date);
 
                         /* 2. GRADES */
-                        $this->render_grades($user, $class, $subject, $subject_path, $current_date);
+                        $graphics[$subject]['GRADES'] = $this->render_grades($user, $class, $subject, $subject_path, $current_date);
 
                         /* 3. AVERAGES */
-                        $this->render_averages($user, $class, $subject, $subject_path, $current_date);
+                        $sms_text .= $graphics[$subject]['AVERAGES'] = $this->render_averages($user, $class, $subject, $subject_path, $current_date);
                     }
-                    if($this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff))
+                    if($this->is_accepting_sms($user))
                     {
                         $this->text_averages($user, $class, $subject, $subject_path, $current_date);
                     }
                       
-                    /* GENERATING EMAILS */
-                    $mail_sent = false;
+
                     //@TODO: Добавить в пути оценок дату+
                     //@TODO: Добавить проверку на существование графиков ATTENDANCES, AVERAGES++
                     //@TODO: cron memory, cron time, cron empty if empty+++
                     //@TODO: генерировать текстовые данные для смс+
-                    //@BUG: генерация мэила должна быть не в этом цикле+
-                    //@TODO: рендерить графики только если есть необходимость отправлять их на почту!
-                    //@TODO: сохранять список имен сгенерированных графиков, текст сообщений
+                    //@BUG:  генерация мэила должна быть не в этом цикле+
+                    //@TODO: рендерить графики только если есть необходимость отправлять их на почту!+
+                    //@TODO: сохранять список имен сгенерированных графиков, текст сообщений+
+                    //@TODO: составление письма+
+                    //@TODO: отправка пакета писем+
                 }
                 
-                //if($this->tariffs_model->rule_send_graph_analytics_to_email($user['user']->tariff))
-                //{
+                /* GENERATING EMAILS */
+                $mail_sent = false;
+                $email_text = '';
+                $email_title = '';
+                if($this->is_accepting_email($user))
+                {
                   // Формуируем мэил
-                  // Отправляем мэил
-                  // $mail_sent = true;
-                //}
+                  $email_text .= "<h2>{$user['user']->name}</h2>";
+                  $email_text .= "<i>Граф-аналитический отчет за последние две недели</i>";
+                  foreach($graphics as $subject => $graphic_types)
+                  {
+                      $email_text .= "<h3>$subject</h3>";
+                      $email_text .= '<img src="' . base_url() .  $graphic_types['ATTENDANCE'] . '"><br>';
+                      $email_text .= '<img src="' . base_url() .  $graphic_types['GRADES'] . '"><br>';
+                      $email_text .= '<img src="' . base_url() .  $graphic_types['AVERAGES'] . '"><br>';
+                  }
+                  $email_title = 'LevelUP: граф-аналитический отчет';
+                  $mail_sent = true;
+                }
 
                 /* GENERATING SMSS */
-                //if($this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff))
-                //{
-                  // Формуируем смс
-                  // if($mail_sent)
-                      // Добавляем инфу об отправке граф-аналитического отчета
-                //}
-                
+                if($this->is_accepting_sms($user))
+                {
+                    // Формуируем смс
+                    $sms_text = $user['user']->name . 
+                           "\r\nпредмет-средний балл ученика/класса/параллели\r\n". 
+                            $sms_text;
+                    if($mail_sent)
+                        //Добавляем инфу об отправке граф-аналитического отчета
+                        $sms_text .= "\r\nГраф-аналитический отчет отправлен на email.";
+                }
+                /* ADD MAILING */
+                $mailing_data[] = array(
+                    'email_title' => $email_title,
+                    'email_text'  => $email_text,
+                    'sms_text'    => $sms_text,
+                    'user_profile_id' => $user['id']
+                );
+                $mailed++;
             }
+            
+            // Добавляем список  писем//@TOTEST
+            $this->mailings_model->add_multi_mailing('analytic', $mailing_data, $class['class']->class);
         }
-        echo 'Память: ' . memory_get_peak_usage(true);
+        echo "Количество созданных писем для отправки статистики: $mailed";
+        echo 'Память: ' . memory_get_peak_usage(true);//@TMP
         
+    }
+    
+    private function is_accepting_sms($user)//@TOTEST
+    {
+        return !empty($user['user']->phone) && $this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff);
+    }
+    
+    private function is_accepting_email($user)//@TOTEST
+    {
+        return !empty($user['user']->email) && $this->tariffs_model->rule_send_graph_analytics_to_email($user['user']->tariff);
     }
     
     private function render_attendance($user, $class, $subject, $subject_path, $current_date)
@@ -350,8 +395,7 @@ class cron extends CI_Controller {
         $c_avg = round($this->statistics_model->get_class_average($class['id'], $subject), 1);
         $p_avg = round($this->statistics_model->get_parallel_average($class['parallel'], $subject), 1);
         
-        $text = "";
-        $text .= "$subject - $u_avg/$c_avg/$p_avg\n";
+        $text = "$subject - $u_avg/$c_avg/$p_avg\r\n";
         
         return $text;
     }
