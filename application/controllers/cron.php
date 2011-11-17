@@ -151,37 +151,47 @@ class cron extends CI_Controller {
                     echo "$subject: <br/>"; //@TMP
                     $subject_path = sanitize(rus2translit($subject), true, true);
                     
-                    /* 1. ATTENDANCE */
-                    $this->render_attendance($user, $subject, $subject_path, $current_date);
+                    if($this->tariffs_model->rule_send_graph_analytics_to_email($user['user']->tariff))
+                    {
+                        /* 1. ATTENDANCE */
+                        $this->render_attendance($user, $class, $subject, $subject_path, $current_date);
+
+                        /* 2. GRADES */
+                        $this->render_grades($user, $class, $subject, $subject_path, $current_date);
+
+                        /* 3. AVERAGES */
+                        $this->render_averages($user, $class, $subject, $subject_path, $current_date);
+                    }
+                    if($this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff))
+                    {
+                        $this->text_averages($user, $class, $subject, $subject_path, $current_date);
+                    }
                       
-                    /* 2. GRADES */
-                    $this->render_grades($user, $subject, $subject_path, $current_date);
-                    
-                    /* 3. AVERAGES */
-                    $this->render_averages($user, $subject, $subject_path, $current_date);
-                      
-                    /* 4. GENERATING EMAILS */
+                    /* GENERATING EMAILS */
                     $mail_sent = false;
-                    //@TODO: рендерить графики только если есть необходимость отправлять их на почту!
                     //@TODO: Добавить в пути оценок дату+
-                    //@TODO: Добавить проверку на существование графиков ATTENDANCES, AVERAGES+
-                    //@TODO: cron memory, cron time, cron empty if empty+
-                    //@TODO: генерировать текстовые данные для смс
-                    //if($this->tariffs_model->rule_send_text_analytics_to_email($user['user']->tariff))
-                    //{
-                      // Формуируем мэил
-                      // Отправляем мэил
-                      // $mail_sent = true;
-                    //}
-                        
-                    /* 5. GENERATING SMSS */
-                    //if($this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff))
-                    //{
-                      // Формуируем смс
-                      // if($mail_sent)
-                          // Добавляем инфу об отправке граф-аналитического отчета
-                    //}
+                    //@TODO: Добавить проверку на существование графиков ATTENDANCES, AVERAGES++
+                    //@TODO: cron memory, cron time, cron empty if empty+++
+                    //@TODO: генерировать текстовые данные для смс+
+                    //@BUG: генерация мэила должна быть не в этом цикле+
+                    //@TODO: рендерить графики только если есть необходимость отправлять их на почту!
+                    //@TODO: сохранять список имен сгенерированных графиков, текст сообщений
                 }
+                
+                //if($this->tariffs_model->rule_send_graph_analytics_to_email($user['user']->tariff))
+                //{
+                  // Формуируем мэил
+                  // Отправляем мэил
+                  // $mail_sent = true;
+                //}
+
+                /* GENERATING SMSS */
+                //if($this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff))
+                //{
+                  // Формуируем смс
+                  // if($mail_sent)
+                      // Добавляем инфу об отправке граф-аналитического отчета
+                //}
                 
             }
         }
@@ -189,7 +199,7 @@ class cron extends CI_Controller {
         
     }
     
-    private function render_attendance($user, $subject, $subject_path, $current_date)
+    private function render_attendance($user, $class, $subject, $subject_path, $current_date)
     {
         //echo " $N \ $B  \ $P <br/>";
         extract($this->statistics_model->get_user_attendance($user['id'], $subject));
@@ -227,7 +237,7 @@ class cron extends CI_Controller {
         return $filename;
     }
     
-    private function render_grades($user, $subject, $subject_path, $current_date)
+    private function render_grades($user, $class, $subject, $subject_path, $current_date)
     {
         //foreach($this->statistics_model->get_user_grades($user['id'], $subject) as $date => $grade)
         //      echo "$date: $grade<br/>";
@@ -293,7 +303,7 @@ class cron extends CI_Controller {
         return $filename;
     }
     
-    private function render_averages($user, $subject, $subject_path, $current_date)
+    private function render_averages($user, $class, $subject, $subject_path, $current_date)
     {
         //echo 
         //      round($this->statistics_model->get_user_average($user['id'], $subject), 1) . ' / ' .
@@ -332,6 +342,18 @@ class cron extends CI_Controller {
             $myPicture->Render($filename);
         }
         return $filename;
+    }
+    
+    private function text_averages($user, $class, $subject, $subject_path, $current_date)
+    {
+        $u_avg = round($this->statistics_model->get_user_average($user['id'], $subject), 1);
+        $c_avg = round($this->statistics_model->get_class_average($class['id'], $subject), 1);
+        $p_avg = round($this->statistics_model->get_parallel_average($class['parallel'], $subject), 1);
+        
+        $text = "";
+        $text .= "$subject - $u_avg/$c_avg/$p_avg\n";
+        
+        return $text;
     }
     
     public function generate_statistics($schools = '*', $last_days = 14)//@DEBUG /* '*' */
