@@ -135,8 +135,8 @@
     if(trim($output) != '') {
         error_log("### ".date('Y-m-d H:i:s')." cron.php $cmdline\n", 3, CRON_LOG);
         error_log($output, 3, CRON_LOG);
-        erroe_log('Memory peak: ' . memory_get_peak_usage(true) / 1024 . ' KB');
-        erroe_log('Time working: ' . get_execution_time() . ' s');
+        error_log('Memory peak: ' . memory_get_peak_usage(true) / 1024 . " KB\n", 3, CRON_LOG);
+        error_log('Time working: ' . round(get_execution_time(), 3) . " s\n", 3, CRON_LOG);
         error_log("\n### \n\n", 3, CRON_LOG);
     }
 

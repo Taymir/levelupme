@@ -72,7 +72,7 @@ class Sms {
         
         if($this->debug_mode) {
             $result[0]['status'] = 2;
-            $result[0]['server_id'] = -1;
+            $result[0]['id'] = -1;
         } else {
             $result = $this->smsPilot->send($this->_to, $this->_text);
 

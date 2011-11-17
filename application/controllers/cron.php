@@ -14,7 +14,7 @@ class cron extends CI_Controller {
     public function __construct() {
         parent::__construct();
         
-        $this->output->enable_profiler(TRUE);//@TMP
+        $this->output->enable_profiler(FALSE);//@TMP
     }
     
     public function send_mailings()
@@ -44,7 +44,7 @@ class cron extends CI_Controller {
                     $this->email->to($recipient->email);
                     $this->email->subject($mailing->email_title);
                     $this->email->message($this->load->view('email/mailing-html', array('title' => $mailing->email_title, 'text' => $mailing->email_text), TRUE));
-                    $this->email->set_alt_message($this->load->view('email/mailing-txt', array('title' => $mailing->email_title, 'text' => $mailing->email_text), TRUE));
+                    $this->email->set_alt_message($this->load->view('email/mailing-txt', array('title' => $mailing->email_title, 'text' => strip_tags($mailing->email_text)), TRUE));
                     // Попытаться отправить
                     if($this->email->send())
                     {
@@ -154,7 +154,8 @@ class cron extends CI_Controller {
                     
                 foreach($user['subjects'] as $subject)
                 {
-                    echo "$subject: <br/>"; //@TMP
+                    $subject_uc = mb_convert_case($subject, MB_CASE_TITLE, "UTF-8");
+                    echo "$subject_uc: <br/>"; //@TMP
                     $subject_path = sanitize(rus2translit($subject), true, true);
                     
                     if($this->is_accepting_email($user))
@@ -170,19 +171,8 @@ class cron extends CI_Controller {
                     }
                     if($this->is_accepting_sms($user))
                     {
-                        $this->text_averages($user, $class, $subject, $subject_path, $current_date);
+                        $this->text_averages($user, $class, $subject, $subject_uc, $current_date);
                     }
-                      
-
-                    //@TODO: Добавить в пути оценок дату+
-                    //@TODO: Добавить проверку на существование графиков ATTENDANCES, AVERAGES++
-                    //@TODO: cron memory, cron time, cron empty if empty+++
-                    //@TODO: генерировать текстовые данные для смс+
-                    //@BUG:  генерация мэила должна быть не в этом цикле+
-                    //@TODO: рендерить графики только если есть необходимость отправлять их на почту!+
-                    //@TODO: сохранять список имен сгенерированных графиков, текст сообщений+
-                    //@TODO: составление письма+
-                    //@TODO: отправка пакета писем+
                 }
                 
                 /* GENERATING EMAILS */
@@ -196,12 +186,16 @@ class cron extends CI_Controller {
                   $email_text .= "<i>Граф-аналитический отчет за последние две недели</i>";
                   foreach($graphics as $subject => $graphic_types)
                   {
-                      $email_text .= "<h3>$subject</h3>";
+                      $subject_uc = mb_convert_case($subject, MB_CASE_TITLE, "UTF-8");
+                      $email_text .= "<h3>$subject_uc</h3>";
                       $email_text .= '<img src="' . base_url() .  $graphic_types['ATTENDANCE'] . '"><br>';
-                      $email_text .= '<img src="' . base_url() .  $graphic_types['GRADES'] . '"><br>';
+                      if(!isset($graphic_types['GRADES']))
+                        $email_text .= '<b>Оценок нет</b><br>';
+                      else
+                        $email_text .= '<img src="' . base_url() .  $graphic_types['GRADES'] . '"><br>';
                       $email_text .= '<img src="' . base_url() .  $graphic_types['AVERAGES'] . '"><br>';
                   }
-                  $email_title = 'LevelUP: граф-аналитический отчет';
+                  $email_title = 'Граф-аналитический отчет';
                   $mail_sent = true;
                 }
 
@@ -217,17 +211,21 @@ class cron extends CI_Controller {
                         $sms_text .= "\r\nГраф-аналитический отчет отправлен на email.";
                 }
                 /* ADD MAILING */
-                $mailing_data[] = array(
-                    'email_title' => $email_title,
-                    'email_text'  => $email_text,
-                    'sms_text'    => $sms_text,
-                    'user_profile_id' => $user['id']
-                );
-                $mailed++;
+                if(!empty($email_text) || !empty($sms_text))
+                {
+                    $mailing_data[] = array(
+                        'email_title' => $email_title,
+                        'email_text'  => $email_text,
+                        'sms_text'    => $sms_text,
+                        'user_profile_id' => $user['id']
+                    );
+                    $mailed++;
+                }
             }
             
             // Добавляем список  писем//@TOTEST
-            $this->mailings_model->add_multi_mailing('analytic', $mailing_data, $class['class']->class);
+            if($mailed > 0)
+                $this->mailings_model->add_multi_mailing('analytic', $mailing_data, $class['class']->class);
         }
         echo "Количество созданных писем для отправки статистики: $mailed";
         echo 'Память: ' . memory_get_peak_usage(true);//@TMP
@@ -291,7 +289,7 @@ class cron extends CI_Controller {
         $path = "charts/gra/{$class['school']->id}/{$class['id']}/$subject_path/$current_date/";
         if(!is_dir($path))
           mkdir ($path, 0777, true);
-        $filename = "$path{$user['id']}.png";//@TODO: if file_exists
+        $filename = "$path{$user['id']}.png";
 
         $MyData = new pData();
         $MyData->setAxisName(0,"Оценки");
@@ -343,9 +341,10 @@ class cron extends CI_Controller {
           $myPicture->setFontProperties(array("FontName" => PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
 
           $myPicture->Render($filename);
+          return $filename;
         }
         
-        return $filename;
+        return NULL;
     }
     
     private function render_averages($user, $class, $subject, $subject_path, $current_date)
@@ -389,13 +388,13 @@ class cron extends CI_Controller {
         return $filename;
     }
     
-    private function text_averages($user, $class, $subject, $subject_path, $current_date)
+    private function text_averages($user, $class, $subject, $subject_uc, $current_date)
     {
         $u_avg = round($this->statistics_model->get_user_average($user['id'], $subject), 1);
         $c_avg = round($this->statistics_model->get_class_average($class['id'], $subject), 1);
         $p_avg = round($this->statistics_model->get_parallel_average($class['parallel'], $subject), 1);
         
-        $text = "$subject - $u_avg/$c_avg/$p_avg\r\n";
+        $text = "$subject_uc - $u_avg/$c_avg/$p_avg\r\n";
         
         return $text;
     }
