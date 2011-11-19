@@ -129,6 +129,7 @@ class cron extends CI_Controller {
     {
         //set_time_limit(0); //@DEBUG
         define('PCHART_DIRECTORY', './application/third_party/pchart/');
+        define('FONT_DIRECTORY', realpath(PCHART_DIRECTORY . 'fonts') . DIRECTORY_SEPARATOR);
         include(PCHART_DIRECTORY . 'class/pData.class.php');
         include(PCHART_DIRECTORY . 'class/pDraw.class.php');
         include(PCHART_DIRECTORY . 'class/pPie.class.php');
@@ -273,12 +274,12 @@ class cron extends CI_Controller {
 
             $myPicture = new pImage(700,700,$MyData,TRUE);
             $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-            $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
+            $myPicture->setFontProperties(array("FontName"=> FONT_DIRECTORY . "arial.ttf","FontSize"=>16));
             $PieChart = new pPie($myPicture,$MyData);
             $PieChart->draw3DPie(320,300,array("WriteValues"=>TRUE,"DataGapAngle"=>20,
                "DataGapRadius"=>12,"Border"=>TRUE, 'Radius'=> 200, 'SkewFactor' => 0.7, 'SecondPass' => true, 'SliceHeight' => 30
             ));
-            $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
+            $myPicture->setFontProperties(array("FontName"=> FONT_DIRECTORY . "arial.ttf","FontSize"=>12));
             $PieChart->drawPieLegend(300,500,array("Style"=>LEGEND_ROUND ,"Mode"=>LEGEND_VERTICAL , 'R'=> 240, 'G' => 247, 'B' => 241, 'Margin' => 10, 'BorderR' => 224, 'BorderG' => 235, 'BorderB' => 241
             ));
 
@@ -331,7 +332,7 @@ class cron extends CI_Controller {
               $MyData->setAbscissa("Дата");
               $myPicture = new pImage(700,700,$MyData,TRUE);
               $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-              $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
+              $myPicture->setFontProperties(array("FontName"=> FONT_DIRECTORY . "arial.ttf","FontSize"=>12));
               $myPicture->setGraphArea(70,150,600,450); 
               $myPicture->drawText(350,120,"Оценки за период",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
               $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
@@ -345,7 +346,7 @@ class cron extends CI_Controller {
                 $myPicture->drawBarChart(array('DisplayValues' => TRUE, 'DisplayOffset' => -25, 'DisplayShadow' => TRUE, 'Rounded' => TRUE));                          
               }
               $myPicture->setShadow(FALSE);
-              $myPicture->setFontProperties(array("FontName" => PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
+              $myPicture->setFontProperties(array("FontName" => FONT_DIRECTORY . "arial.ttf","FontSize"=>16));
 
               $myPicture->Render($filename);
 
@@ -381,7 +382,7 @@ class cron extends CI_Controller {
             $MyData->setAbscissa("Дата");
             $myPicture = new pImage(700,700,$MyData,TRUE);
             $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-            $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
+            $myPicture->setFontProperties(array("FontName"=> FONT_DIRECTORY . "arial.ttf","FontSize"=>12));
             $myPicture->setGraphArea(200,200,650,450); 
             $myPicture->drawText(350,120,"Средний бал",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
             $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
