@@ -112,11 +112,6 @@
     }
 
 
-
-# Set run time limit
-    set_time_limit(CRON_TIME_LIMIT);
-
-
 # Run CI and capture the output
     ob_start();
 
@@ -124,6 +119,9 @@
     require(CRON_CI_INDEX);           // Main CI index.php file
     $output = ob_get_contents();
     
+# Set run time limit
+    set_time_limit(CRON_TIME_LIMIT);
+	
     if(defined('CRON_FLUSH_BUFFERS')) {
         echo ob_get_flush();
     } else {
@@ -135,7 +133,7 @@
     if(trim($output) != '') {
         error_log("### ".date('Y-m-d H:i:s')." cron.php $cmdline\n", 3, CRON_LOG);
         error_log($output, 3, CRON_LOG);
-        error_log('Memory peak: ' . memory_get_peak_usage(true) / 1024 . " KB\n", 3, CRON_LOG);
+        error_log("\nMemory peak: " . memory_get_peak_usage(true) / 1024 . " KB\n", 3, CRON_LOG);
         error_log('Time working: ' . round(get_execution_time(), 3) . " s\n", 3, CRON_LOG);
         error_log("\n### \n\n", 3, CRON_LOG);
     }

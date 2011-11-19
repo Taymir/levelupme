@@ -254,6 +254,7 @@ class statistics_model extends MY_Model {
         }
         
         $this->db->insert_batch($this->table_name, $batch_data);
+        return sizeof($batch_data);
     }
     
     public function import_data($limit = 1)
@@ -282,6 +283,8 @@ class statistics_model extends MY_Model {
     
     private function next_arr(&$arr)
     {
+        if(!is_array($arr))
+            return NULL;
         do {
             list($key, $value) = each($arr);
         } while ($key == self::META);
@@ -292,6 +295,8 @@ class statistics_model extends MY_Model {
     
     public function reset_iterator()
     {
+        if(!isset($this->data))
+            return;
         reset($this->data);
         $this->get_next_school();
         $this->get_next_parallel();

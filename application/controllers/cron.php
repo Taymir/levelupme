@@ -14,7 +14,8 @@ class cron extends CI_Controller {
     public function __construct() {
         parent::__construct();
         
-        $this->output->enable_profiler(FALSE);//@TMP
+        $this->output->enable_profiler(FALSE);
+        set_time_limit(0);
     }
     
     public function send_mailings()
@@ -41,7 +42,7 @@ class cron extends CI_Controller {
                     $this->email->set_wordwrap(false);
                     $this->email->from($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('website_name', 'tank_auth'));
                     $this->email->reply_to($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('website_name', 'tank_auth'));
-                    //$this->email->to('unknown@rdm.ru');
+                    //$this->email->to('unknown@rdm.ru');//@TMP
                     $this->email->to($recipient->email);
                     $this->email->subject($mailing->email_title);
                     $this->email->message($this->load->view('email/mailing-html', array('title' => $mailing->email_title, 'text' => $mailing->email_text), TRUE));
@@ -168,11 +169,11 @@ class cron extends CI_Controller {
                         $graphics[$subject]['GRADES'] = $this->render_grades($user, $class, $subject, $subject_path, $current_date);
 
                         /* 3. AVERAGES */
-                        $sms_text .= $graphics[$subject]['AVERAGES'] = $this->render_averages($user, $class, $subject, $subject_path, $current_date);
+                        $graphics[$subject]['AVERAGES'] = $this->render_averages($user, $class, $subject, $subject_path, $current_date);
                     }
                     if($this->is_accepting_sms($user))
                     {
-                        $this->text_averages($user, $class, $subject, $subject_uc, $current_date);
+                        $sms_text .= $this->text_averages($user, $class, $subject, $subject_uc, $current_date);
                     }
                 }
                 
@@ -184,7 +185,7 @@ class cron extends CI_Controller {
                 {
                   // Формуируем мэил
                   $email_text .= "<h2>{$user['user']->name}</h2>";
-                  $email_text .= "<i>Граф-аналитический отчет за последние две недели</i>";
+                  $email_text .= "<i>Граф-аналитический отчет</i>";
                   foreach($graphics as $subject => $graphic_types)
                   {
                       $subject_uc = mb_convert_case($subject, MB_CASE_TITLE, "UTF-8");
@@ -233,7 +234,8 @@ class cron extends CI_Controller {
         }
         
         //echo 'Память: ' . memory_get_peak_usage(true);//@TMP
-        echo "Количество созданных писем для отправки статистики: $mailed";
+        if($mailed)
+            echo "Количество созданных писем для отправки статистики: $mailed";
         
     }
     
@@ -295,61 +297,64 @@ class cron extends CI_Controller {
         if(!is_dir($path))
           mkdir ($path, 0777, true);
         $filename = "$path{$user['id']}.png";
+        if(!file_exists($filename)) {
+            $MyData = new pData();
+            $MyData->setAxisName(0,"Оценки");
+            $MyData->setAxisName(1,"Даты");
 
-        $MyData = new pData();
-        $MyData->setAxisName(0,"Оценки");
-        $MyData->setAxisName(1,"Даты");
-
-        $grades_num = 0;
-        foreach($grades as $date => $grade)
-        {
-          $day = (int)date('j', strtotime($date));
-          $grade = round($grade, 1);
-          if($grade == null)
-          {
-              // Не рендерим пустые оценки
-              //$MyData->addPoints(VOID, "grades");
-              //$MyData->addPoints($day, "dates");
-              //$grades_num++;
-          } else {
-              $MyData->addPoints($grade, "grades");
+            $grades_num = 0;
+            foreach($grades as $date => $grade)
+            {
+              $day = (int)date('j', strtotime($date));
+              $grade = round($grade, 1);
+              if($grade == null)
+              {
+                  // Не рендерим пустые оценки
+                  //$MyData->addPoints(VOID, "grades");
+                  //$MyData->addPoints($day, "dates");
+                  //$grades_num++;
+              } else {
+                  $MyData->addPoints($grade, "grades");
+                  $MyData->addPoints($day, "dates");
+                  $grades_num++;
+              }
+            }
+            $use_spline = false;
+            if($grades_num > $this->config->item('histogramm_grades'))
+              $use_spline = true;
+            if($grades_num > 0) {
+              $day = (++$day > 31) ? 1: $day;
               $MyData->addPoints($day, "dates");
-              $grades_num++;
-          }
-        }
-        $use_spline = false;
-        if($grades_num > $this->config->item('histogramm_grades'))
-          $use_spline = true;
-        if($grades_num > 0) {
-          $day = (++$day > 31) ? 1: $day;
-          $MyData->addPoints($day, "dates");
-          $MyData->setSerieDescription("dates","Дни месяца....");
-          $MyData->setAbscissa("dates");
-          $MyData->loadPalette("palettes/green.color", TRUE);
-          $MyData->setAbscissa("Дата");
-          $myPicture = new pImage(700,700,$MyData,TRUE);
-          $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
-          $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
-          $myPicture->setGraphArea(70,150,600,450); 
-          $myPicture->drawText(350,120,"Оценки за период",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
-          $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
-          $ScaleSettings = array("XMargin"=>5,"YMargin"=>5,"Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries,"DrawSubTicks"=>FALSE,"AxisR"=>99,"AxisG"=>99,"AxisB"=>99,"CycleBackground"=> TRUE, "DrawArrows" => TRUE, "MinDivHeight" => 40, "LabelSkip" => round($grades_num / 7));
-          $myPicture->drawScale($ScaleSettings); 
-          $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
-          if($use_spline) {
-            $myPicture->drawFilledSplineChart(array("DisplayValues"=>TRUE, 'DisplayOffset' => -25));
-            $myPicture->drawSplineChart(array( 'BreakVoid' => FALSE));
-          } else {
-            $myPicture->drawBarChart(array('DisplayValues' => TRUE, 'DisplayOffset' => -25, 'DisplayShadow' => TRUE, 'Rounded' => TRUE));                          
-          }
-          $myPicture->setShadow(FALSE);
-          $myPicture->setFontProperties(array("FontName" => PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
+              $MyData->setSerieDescription("dates","Дни месяца....");
+              $MyData->setAbscissa("dates");
+              $MyData->loadPalette("palettes/green.color", TRUE);
+              $MyData->setAbscissa("Дата");
+              $myPicture = new pImage(700,700,$MyData,TRUE);
+              $myPicture->DrawFromPNG(0,0, PCHART_DIRECTORY . 'back.png');
+              $myPicture->setFontProperties(array("FontName"=> PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>12));
+              $myPicture->setGraphArea(70,150,600,450); 
+              $myPicture->drawText(350,120,"Оценки за период",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
+              $AxisBoundaries = array(0=>array("Min"=>1,"Max"=>5));
+              $ScaleSettings = array("XMargin"=>5,"YMargin"=>5,"Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries,"DrawSubTicks"=>FALSE,"AxisR"=>99,"AxisG"=>99,"AxisB"=>99,"CycleBackground"=> TRUE, "DrawArrows" => TRUE, "MinDivHeight" => 40, "LabelSkip" => floor($grades_num / 7));
+              $myPicture->drawScale($ScaleSettings); 
+              $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
+              if($use_spline) {
+                $myPicture->drawFilledSplineChart(array("DisplayValues"=>TRUE, 'DisplayOffset' => -25));
+                $myPicture->drawSplineChart(array( 'BreakVoid' => FALSE));
+              } else {
+                $myPicture->drawBarChart(array('DisplayValues' => TRUE, 'DisplayOffset' => -25, 'DisplayShadow' => TRUE, 'Rounded' => TRUE));                          
+              }
+              $myPicture->setShadow(FALSE);
+              $myPicture->setFontProperties(array("FontName" => PCHART_DIRECTORY . "Fonts/arial.ttf","FontSize"=>16));
 
-          $myPicture->Render($filename);
-          return $filename;
+              $myPicture->Render($filename);
+
+              return $filename;
+            }
+
+            return NULL;
         }
-        
-        return NULL;
+        return $filename;
     }
     
     private function render_averages($user, $class, $subject, $subject_path, $current_date)
@@ -404,7 +409,7 @@ class cron extends CI_Controller {
         return $text;
     }
     
-    public function generate_statistics($schools = '*', $last_days = 14)//@DEBUG /* '*' */
+    public function generate_statistics($schools = '*', $last_days = 14)
     {
         //set_time_limit(0); //@DEBUG
         
@@ -530,8 +535,10 @@ class cron extends CI_Controller {
         } // Конец: Для каждой школы
         
         // Сохранение статистики в очередь
-        $this->statistics_model->export_data();
-
+        $classes_count = $this->statistics_model->export_data();
+        
+        if($classes_count)
+            echo "Обработано: $classes_count классов";
     }
 }
 
