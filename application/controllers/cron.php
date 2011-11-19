@@ -41,6 +41,7 @@ class cron extends CI_Controller {
                     $this->email->set_wordwrap(false);
                     $this->email->from($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('website_name', 'tank_auth'));
                     $this->email->reply_to($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('website_name', 'tank_auth'));
+                    //$this->email->to('unknown@rdm.ru');
                     $this->email->to($recipient->email);
                     $this->email->subject($mailing->email_title);
                     $this->email->message($this->load->view('email/mailing-html', array('title' => $mailing->email_title, 'text' => $mailing->email_text), TRUE));
@@ -123,9 +124,9 @@ class cron extends CI_Controller {
          return FALSE;
     }
     
-    public function render_statistics($classes_num = 1)
+    public function render_statistics($classes_num = 2)
     {
-        set_time_limit(0); //@DEBUG
+        //set_time_limit(0); //@DEBUG
         define('PCHART_DIRECTORY', './application/third_party/pchart/');
         include(PCHART_DIRECTORY . 'class/pData.class.php');
         include(PCHART_DIRECTORY . 'class/pDraw.class.php');
@@ -140,23 +141,23 @@ class cron extends CI_Controller {
         $current_date = date('dmy');
         $this->statistics_model->import_data($classes_num);
         $mailed = 0;
-        //print_r($this->data);
+
         while($class = $this->statistics_model->get_next_class())
         {
-            var_dump($class);//@TMP
+            //var_dump($class);//@TMP
             $mailing_data = array();
             
             while($user = $this->statistics_model->get_next_user($class['id']))
             {
-                echo "<b>{$user['user']->name} ({$user['id']})</b><br/>";//@TMP
+                //echo "<b>{$user['user']->name} ({$user['id']})</b><br/>";//@TMP
                 $graphics = array();
                 $sms_text = '';
                     
                 foreach($user['subjects'] as $subject)
                 {
                     $subject_uc = mb_convert_case($subject, MB_CASE_TITLE, "UTF-8");
-                    echo "$subject_uc: <br/>"; //@TMP
                     $subject_path = sanitize(rus2translit($subject), true, true);
+                    //echo "$subject_uc: <br/>"; //@TMP
                     
                     if($this->is_accepting_email($user))
                     {
@@ -223,12 +224,16 @@ class cron extends CI_Controller {
                 }
             }
             
-            // Добавляем список  писем//@TOTEST
+            // Добавляем список  писем
             if($mailed > 0)
                 $this->mailings_model->add_multi_mailing('analytic', $mailing_data, $class['class']->class);
+            
+            // Удаляем класс из очереди
+            $this->statistics_model->remove_class_from_queue($class['id']);
         }
+        
+        //echo 'Память: ' . memory_get_peak_usage(true);//@TMP
         echo "Количество созданных писем для отправки статистики: $mailed";
-        echo 'Память: ' . memory_get_peak_usage(true);//@TMP
         
     }
     
@@ -401,7 +406,7 @@ class cron extends CI_Controller {
     
     public function generate_statistics($schools = '*', $last_days = 14)//@DEBUG /* '*' */
     {
-        set_time_limit(0); //@DEBUG
+        //set_time_limit(0); //@DEBUG
         
         $this->load->model('user_profile_model');
         $this->load->model('classes_model');
@@ -415,6 +420,14 @@ class cron extends CI_Controller {
         $date_end   = date('Y-m-d', time());
         $date_start = date('Y-m-d', time() - 60*60*24*$last_days);
         
+        // Распарсить список школ в массив
+        if(is_string($schools) && $schools != '*')
+        {
+            $schools = explode(',', $schools);
+            $schools = array_map('trim', $schools);
+        }
+        
+        // Загрузка списка школ
         $schools_classes = $this->classes_model->get_schools_and_classes($schools, true);
         
         foreach($schools_classes as $school)
@@ -516,8 +529,8 @@ class cron extends CI_Controller {
             } //Конец: Для каждого класса
         } // Конец: Для каждой школы
         
-        /////////////////////////////////////////////////
-        $this->statistics_model->serialize_data();
+        // Сохранение статистики в очередь
+        $this->statistics_model->export_data();
 
     }
 }
