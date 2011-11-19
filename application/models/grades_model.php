@@ -143,7 +143,7 @@ class grades_model extends MY_Model {
     }
     
     public function get_grades($date_from, $date_to, $user_profile_ids)
-    {//@TODO: добавить название предмета
+    {
         $this->db->select('grade, subject, num, date, user_profile_id');
         $this->db->from($this->table_name);
         $this->db->where('date >=', $date_from);

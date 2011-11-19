@@ -50,7 +50,7 @@ function &array_merge_recursive_distinct(array &$array1, &$array2 = null)
 }
 
 function sortArrayByArray($array,$orderArray) {
-    $ordered = array();// БАГ - не то что надо
+    $ordered = array();
     foreach($orderArray as $val) {
         if(in_array($val, $array)) {
                 $ordered[] = $val;
