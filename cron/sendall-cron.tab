@@ -1,1 +1,2 @@
 # 0 0,2,4,6,8,10,12,14,16,18,20,22 * * * php -f D:\U7\Documents\WebRoot\ednevnik\cron\cron.php -- --run=/cron/send_mailings
+# cd $HOME/levelupme.nichost.ru/docs/cron/ && /opt/php/bin/php -c $HOME/etc/php.ini $HOME/levelupme.nichost.ru/docs/cron/cron.php -- --run=/cron/send_mailings --show-output
