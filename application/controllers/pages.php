@@ -40,7 +40,7 @@ class pages extends MY_Controller {
         if($this->form_validation->run('registration'))
         {
             $data = $this->get_post_params('school', 'class', 'mail',
-                    'phone', 'password', 'tariff');
+                    'phone', 'password', 'tariff', 'comment');
             $data['name'] = implode(' ', $this->get_post_params('name_f', 'name_i', 'name_o'));
             $data['pname'] = implode(' ', $this->get_post_params('pname_f', 'pname_i', 'pname_o'));
             $data['phone'] = $this->clean_phone_number($data['phone']);
@@ -87,6 +87,7 @@ class pages extends MY_Controller {
         $text .= "<li>Пароль: {$data['password']}</li>";
         $text .= "<li>Тариф: {$data['tariff']}</li>";
         $text .= "<li>Пользователь принял условия договора</li>";
+        $text .= "<li>Примечание: {$data['comment']}</li>";
         $text .= "</p></ul>";
         
         $text .= "<p>Для продолжения регистрации пользователя, добавьте его (или

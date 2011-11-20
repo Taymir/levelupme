@@ -449,17 +449,16 @@ body#home #sidebar { padding-top: 65px; }
             }
             
             #registrationForm fieldset legend{
-                font-size: 120%;
+                font-size: 18pt;
+                font-style: italic;
+                font-weight: bold;
+                text-align: center;
                 padding-top: 20px;
                 padding-bottom: 10px;
-                font-family: Arial, sans-serif;
+                /*font-family: Arial, sans-serif;*/
                 color: black;
             }
             
-            #registrationForm label {
-                font-weight: bold;
-                color: #68a231;
-            }
             
             #registrationForm .tariff {
                 /*font-family: Arial, sans-serif;*/
@@ -476,11 +475,15 @@ body#home #sidebar { padding-top: 65px; }
             }
             
             #registrationForm input {
-                width: 90px;
+                width: 110px;
+            }
+            
+            #registrationForm input.fio {
+                width: 100px;
             }
             
             #registrationForm select {
-                width: 90px;
+                width: 110px;
             }
             
             #registrationForm .clearfix {
@@ -502,17 +505,25 @@ body#home #sidebar { padding-top: 65px; }
 			  line-height: 18px;*/
 			  float: left;
 			  width: 130px;
-			  text-align: right;
+			  text-align: left;
 			  /*color: #404040;*/
+              font-weight: bold;
+              color: #68a231;
 			}
             
             
             #registrationForm .input {
-                margin-left: 160px;
+                margin-left: 140px;
             } 
             
+            #registrationForm textarea {
+                width:100%;
+                height: 50px;
+            }
+            
             #registrationForm img {
-                margin-bottom: -10px;
+                margin-top: -15px;
+                margin-bottom: -15px;
             }
             
             #registrationForm .btn {
@@ -525,6 +536,9 @@ body#home #sidebar { padding-top: 65px; }
             }
             #registrationForm a:hover {
                 text-decoration: none;
+            }
+            #registrationForm span {
+                color: #68a231;
             }
             
             
