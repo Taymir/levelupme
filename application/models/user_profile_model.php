@@ -277,6 +277,7 @@ class user_profile_model extends MY_Model {
                 return $profile_id;
             }
         } else {
+            //$profile_data['role'] = 'guest';
             $profile_data['user_id'] = NULL;
             $this->typical_insert($this->table_name, $profile_data);
             $profile_id = $this->db->insert_id();
@@ -302,6 +303,7 @@ class user_profile_model extends MY_Model {
                 $username = $data['username'];
                 $result = $ci->tank_auth->create_user($username, $data['email'], $password, false, false);
                 $data['user_id'] = $result['user_id'];
+                $data['role'] = 'parent';
             } else {
                 $profile = $this->typical_find($this->table_name, $profile_id);
                 if($profile->user_id)
