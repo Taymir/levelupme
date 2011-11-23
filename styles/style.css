@@ -339,7 +339,7 @@ body#home #sidebar { padding-top: 65px; }
 				*top: -5px;
 				/* IE6-7 */
 			}
-                        
+            
             .timetable-form th {
                 text-align: center;
             }
@@ -355,6 +355,32 @@ body#home #sidebar { padding-top: 65px; }
                 width: 580px;
                 height: 100px;
             }
+            
+            .usersTimetable th {
+                text-align: center;
+                width: 20px;
+            }
+            
+            .usersTimetable th.holiday {
+                color:#990000;
+            }
+            
+            .usersTimetable td {
+                border:none;
+                padding: 1px;
+                width: 75px;
+                color:black;
+                text-align: center;
+            }
+            
+            .usersTimetable tr.first  {
+                border-bottom:black solid 1px;
+            }
+            
+            .usersTimetable table {
+                border-bottom:black solid 1px;
+            }
+            
             
             textarea.mass-add {
                 font-family: 'Courier New',Courier,monospace;
