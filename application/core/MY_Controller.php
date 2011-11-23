@@ -49,7 +49,7 @@ class MY_Controller extends CI_Controller {
                 $data['login_by_email'] = $this->config->item('login_by_email', 'tank_auth');
                 $data['use_recaptcha'] = $this->config->item('use_recaptcha', 'tank_auth');
                 $data['show_captcha'] = FALSE;
-                if ($this->tank_auth->is_max_login_attempts_exceeded('')) {//@BUGFIX: Выводим капчу не по логину, а по айпи
+                if ($this->tank_auth->is_max_login_attempts_exceeded($data['username'])) {//@BUG ?
                         $data['show_captcha'] = TRUE;
                         if ($data['use_recaptcha']) {
                                 $data['recaptcha_html'] = $this->_create_recaptcha();
@@ -75,9 +75,9 @@ class MY_Controller extends CI_Controller {
             $this->load->helper('captcha');
 
             $cap = create_captcha(array(
-                    'img_path'		=> './'.$this->config->item('captcha_path', 'tank_auth'),
+                    'img_path'		=> $this->config->item('captcha_path', 'tank_auth'),
                     'img_url'		=> base_url().$this->config->item('captcha_path', 'tank_auth'),
-                    'font_path'		=> './'.$this->config->item('captcha_fonts_path', 'tank_auth'),
+                    'font_path'		=> $this->config->item('captcha_fonts_path', 'tank_auth'),
                     'font_size'		=> $this->config->item('captcha_font_size', 'tank_auth'),
                     'img_width'		=> $this->config->item('captcha_width', 'tank_auth'),
                     'img_height'	=> $this->config->item('captcha_height', 'tank_auth'),
@@ -93,6 +93,24 @@ class MY_Controller extends CI_Controller {
 
             return $cap['image'];
     }
+    
+	/**
+	 * Create reCAPTCHA JS and non-JS HTML to verify user as a human
+	 *
+	 * @return	string
+	 */
+	function _create_recaptcha()
+	{
+		$this->load->helper('recaptcha');
+
+		// Add custom theme so we can get only image
+		$options = "<script>var RecaptchaOptions = {theme: 'custom', custom_theme_widget: 'recaptcha_widget'};</script>\n";
+
+		// Get reCAPTCHA JS and non-JS HTML
+		$html = recaptcha_get_html($this->config->item('recaptcha_public_key', 'tank_auth'));
+
+		return $options.$html;
+	}
     
     protected function allowAccessFor($roles = null)
     {
