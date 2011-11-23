@@ -56,7 +56,7 @@ class admin_users extends MY_Controller {
                 $this->password_changed_notify($result, $data['username'], $data['password']);
             }
             
-            //return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь добавлен");//@TODO: заменить на /admin_users/class_id
+            return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь добавлен");//@TODO: заменить на /admin_users/class_id
         }
         $this->load->model('classes_model');
         $this->load->model('tariffs_model');
@@ -124,7 +124,7 @@ class admin_users extends MY_Controller {
             
             $this->user_profile_model->save_user_profile($profile_id, $data);
 
-            //return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь обновлен");
+            return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь обновлен");
         }
         
         $this->load->model('classes_model');

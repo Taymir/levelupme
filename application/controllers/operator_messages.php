@@ -181,7 +181,8 @@ class operator_messages extends MY_Controller {
         $this->load->model('classes_model');
         $this->load->helper('common_helper');
         
-        $mailings_type = array('analytic', 'grades', 'class', 'school', 'user');
+        $mailings_type = array('analytic', 'grades', 'class', 'school', 'user', 'password');
+        
         if($this->input->post('filters'))
         {
             $mailings_type = $this->input->post('filters');
