@@ -19,11 +19,20 @@ class users_timetable extends MY_Controller {
     }
     
     public function index()
-    {//@TODO: Class info!
+    {
         $class_id = $this->user_profile_model->getProperty('class_id');
-        $data = $this->timetables_model->get_timetable_by_class($class_id);
-        $this->load_var('timetable', $data);
+        $class = $this->classes_model->get_class_info($class_id);
         
-        return $this->load_view('users_timetable/index_view', "Расписание"); 
+        if(isset($class))
+        {
+            $data = $this->timetables_model->get_timetable_by_class($class->id);
+            $this->load_var('class', $class);
+            $this->load_var('timetable', $data);
+
+            return $this->load_view('users_timetable/index_view', "Расписание"); 
+        } else
+        {
+            show_error("Произошла ошибка. Не определен класс ученика.");
+        }
     }
 }

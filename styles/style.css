@@ -377,10 +377,19 @@ body#home #sidebar { padding-top: 65px; }
                 border-bottom:black solid 1px;
             }
             
+            .usersTimetable tr:hover {
+                background-color: #f0f6f7;
+            }
+            
             .usersTimetable table {
                 border-bottom:black solid 1px;
             }
             
+            .classinfo {
+                border: black 1px solid;
+                padding: 10px;
+                margin-bottom: 20px;
+            }
             
             textarea.mass-add {
                 font-family: 'Courier New',Courier,monospace;

@@ -1,7 +1,12 @@
 <h2>Расписание</h2>
 
 <div class="usersTimetable">
-<!-- //@TODO: классинфо -->
+<!-- Информация о классе -->
+<?php if(!empty($class->description)): ?>
+<div class="classinfo">
+<?= $class->description; ?>
+</div>
+<?php endif; ?>
 
 <!-- Расписание -->
 
