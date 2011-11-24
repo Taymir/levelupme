@@ -49,7 +49,13 @@ class admin_users extends MY_Controller {
             $data['phone'] = $this->clean_phone_number($data['phone']);
             $data['class_id'] = (int)$data['class_id'];
             
-            $this->user_profile_model->add_user_profile($data);
+            $result = $this->user_profile_model->add_user_profile($data);
+            if($result && !empty($data['password']))
+            {
+                // Информирование пользователя о смене пароля
+                $this->password_changed_notify($result, $data['username'], $data['password']);
+            }
+            
             return $this->redirect_message('/admin_users?class=' . $data['class_id'], "Пользователь добавлен");//@TODO: заменить на /admin_users/class_id
         }
         $this->load->model('classes_model');
@@ -63,6 +69,30 @@ class admin_users extends MY_Controller {
         $this->load_var('default_class', $class_id);
         $this->load_var('tariffs', $tariffs);
         return $this->load_view('admin_users/add_user_view', "Добавление пользователя");
+    }
+    
+    private function password_changed_notify($profile_id, $username, $password)
+    {
+        // $data should contain:
+        // user_profile_id (to get tariff, email, phone)
+        // username
+        // password
+        
+        $this->load->model('mailings_model');
+        $this->load->helper('common_helper');
+        
+        $password = protect_password($password);
+        $mailing = array(
+            'user_profile_id' => $profile_id,
+            'email_title' => "LevelUP: Ваш пароль",
+            'email_text' => "<h1>Новый пароля</h1>
+                <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
+                были изменены.<br>
+                <b>Логин:</b> $username<br>
+                <b>Пароль:</b> $password<br>",
+            'sms_text' => "Levelupme.ru Ваш логин: $username. Пароль: $password"
+        );
+        $this->mailings_model->add_multi_mailing('password', array($mailing));
     }
     
     public function edit_user($profile_id = null)
@@ -82,9 +112,14 @@ class admin_users extends MY_Controller {
                 $data['username'] = $this->input->post('new_username');
                 $data['password'] = $this->input->post('new_password');
                 
+                // Информирование пользователя о смене пароля
+                $this->password_changed_notify($profile_id, $data['username'], $data['password']);
             } elseif ($this->input->post('change_password') == '1') {
                 // Сменить пароль пользователя
                 $data['password'] = $this->input->post('new_password');
+                
+                // Информирование пользователя о смене пароля
+                $this->password_changed_notify($profile_id, $this->input->post('old_username'), $data['password']);
             }
             
             $this->user_profile_model->save_user_profile($profile_id, $data);
@@ -115,7 +150,7 @@ class admin_users extends MY_Controller {
     
     public function password_required($password)
     {
-        if(($this->input->post('change_password') == '1' || $this->input->post('username') != '') && $password == '')
+        if(($this->input->post('change_password') == '1' || $this->input->post('new_username') != '') && $password == '')
         {
             $this->form_validation->set_message('password_required', "Введите новый пароль");
             return false;

@@ -2,7 +2,9 @@
 
 /* e-dnevnik configs */
 $config['max_lessons'] = 8; // Максимальное количество уроков в день
-
+$config['registration_mail'] = 'register@levelupme.ru'; // Информирование о регистрациях
+$config['passwords_crypt_key'] = 'SOME_RANDOM_STRING'; // Ключ для шифрования паролей, временно хранящихся в БД
+$config['registration_schoolist'] = true; // true - использовать форму выбора школ из списка, false - текстовое поле (в форме регистрации)
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

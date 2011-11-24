@@ -40,6 +40,8 @@
 
 $route['default_controller'] = "pages";
 $route['404_override'] = '';
+$route['join'] = 'pages/join';
+$route['schedule'] = 'users_timetable';
 
 include_once APPPATH . "cache/routes.php";
 

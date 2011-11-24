@@ -88,6 +88,7 @@
         <li><label><?= form_checkbox('filters[]', 'user', in_array('user', $filters)) ?> <span>Рассылки индвидульно родителям</span></label></li>
         <li><label><?= form_checkbox('filters[]', 'analytic', in_array('analytic', $filters)) ?> <span>Рассылки оценок</span></label></li>
         <li><label><?= form_checkbox('filters[]', 'grades', in_array('grades', $filters)) ?> <span>Рассылки аналитики</span></label></li>
+        <li><label><?= form_checkbox('filters[]', 'password', in_array('password', $filters)) ?> <span>Рассылки обновлений паролей</span></label></li>
     </ul>
     </div>
 <?= form_submit('submit', 'Обновить', 'class="btn primary"') ?><br />

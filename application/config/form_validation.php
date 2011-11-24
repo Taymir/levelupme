@@ -2,6 +2,80 @@
 $ci =& get_instance();
 
 $config = array(
+    /* REGISTRATION */
+    'registration' => array(
+        array(
+            'field' => 'name_f',
+            'label' => 'Фамилия',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'name_i',
+            'label' => 'Имя',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'name_o',
+            'label' => 'Отчество',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'school',
+            'label' => 'Школа',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'class',
+            'label' => 'Класс',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'pname_f',
+            'label' => 'Фамилия',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'pname_i',
+            'label' => 'Имя',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'pname_o',
+            'label' => 'Отчество',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'mail',
+            'label' => 'EMail',
+            'rules' => 'trim|valid_email'
+        ),
+        array(
+            'field' => 'phone',
+            'label' => 'Телефон',
+            'rules' => 'required|trim|callback_valid_phone'
+        ),
+        array(
+            'field' => 'password',
+            'label' => 'пароль',
+            'rules' => 'alpha_numeric'
+        ),
+        array(
+            'field' => 'confirm',
+            'label' => 'подтверждение пароля',
+            'rules' => 'matches[password]'
+        ),
+        array(
+            'field' => 'tariff',
+            'label' => 'Тариффный план',
+            'rules' => 'callback_tariff_required'
+        ),
+        array(
+            'field' => 'agreement',
+            'label' => 'Договор',
+            'rules' => 'callback_agreement_required'
+        ),
+    ),
+    
     /* ADMIN_PAGES */
     'admin_pages/edit' => array(
         array(

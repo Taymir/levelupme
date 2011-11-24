@@ -109,8 +109,8 @@ $config['forgot_password_expire'] = 60*15;
 | 'captcha_case_sensitive' = Captcha case sensitive or not.
 |--------------------------------------------------------------------------
 */
-$config['captcha_path'] = 'captcha/';
-$config['captcha_fonts_path'] = 'captcha/fonts/5.ttf';
+$config['captcha_path'] = './captcha/';
+$config['captcha_fonts_path'] = realpath('./captcha/fonts/5.ttf');
 $config['captcha_width'] = 180;
 $config['captcha_height'] = 50;
 $config['captcha_font_size'] = 14;

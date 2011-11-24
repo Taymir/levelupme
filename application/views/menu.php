@@ -26,12 +26,12 @@
     <!--<li><a href="/operator_settings">Настройки</a></li>-->
 </ul>
 <?php endif; ?>
-<?php if(false /*in_array($role, array('admin', 'operator'))*/): ?>
+<?php if($role == 'parent'): ?>
 <strong>Раздел родителя:</strong>
 <ul>
-    <li><a href="/recordbook">Дневник</a></li>
+    <!--<li><a href="/recordbook">Дневник</a></li>-->
     <li><a href="/schedule">Расписание</a></li>
-    <li><a href="/payment">Оплата</a></li>
+    <!--<li><a href="/payment">Оплата</a></li>-->
     <!--<li><a href="/settings">Настройки</a></li>-->
 </ul>
 <?php endif; ?>

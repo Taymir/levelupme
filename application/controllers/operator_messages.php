@@ -179,8 +179,10 @@ class operator_messages extends MY_Controller {
     {
         $this->load->library('pagination');
         $this->load->model('classes_model');
+        $this->load->helper('common_helper');
         
-        $mailings_type = array('analytic', 'grades', 'class', 'school', 'user');
+        $mailings_type = array('analytic', 'grades', 'class', 'school', 'user', 'password');
+        
         if($this->input->post('filters'))
         {
             $mailings_type = $this->input->post('filters');
@@ -199,7 +201,16 @@ class operator_messages extends MY_Controller {
         $schools_classes = $this->classes_model->get_schools_and_classes($this->operator_model->get_operators_school_list());
         if(isset($class)) {
             $mailings = $this->mailings_model->get_all_mailings($class->id, $mailings_type, $paginator['per_page'], $offset);
-
+            
+            // Прячем пароли
+            foreach($mailings as $key => $data)
+            {
+                if(is_password_protected($data->email_text))
+                    $mailings[$key]->email_text = hide_password($data->email_text);
+                if(is_password_protected($data->sms_text))
+                    $mailings[$key]->sms_text = hide_password($data->sms_text);
+            }
+            
             $paginator['total_rows'] = $this->mailings_model->total_mailings_found;
             $this->pagination->initialize($paginator);
 
@@ -214,7 +225,15 @@ class operator_messages extends MY_Controller {
     
     public function view($mailing_id)
     {
+        $this->load->helper('common_helper');
         $data = $this->mailings_model->get_mailing($mailing_id);
+        
+        // Прячем пароли
+        if(is_password_protected($data->email_text))
+            $data->email_text = hide_password($data->email_text);
+        if(is_password_protected($data->sms_text))
+            $data->sms_text = hide_password($data->sms_text);
+        
         if(!isset($data))
             show_404();
             

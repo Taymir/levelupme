@@ -40,9 +40,9 @@
 <div id="featured-wrap">
     <? if(!$SHORT_VIEW): ?>
 	<ul id="featured-control">
-		<li <?= @$page_name == 'home' ? 'class="active"' : '' ?>><a href="/">О системе Levelup</a></li>
-		<li <?= @$page_name == 'join' ? 'class="active"' : '' ?>><a href="/join">Подключение</a></li>
-		<li <?= @$page_name == 'help' ? 'class="active"' : '' ?>><a href="/help">Пользователям</a></li>
+		<li <?= isset($page_name) && $page_name == 'home' ? 'class="active"' : '' ?>><a href="/">О системе Levelup</a></li>
+		<li <?= isset($page_name) && $page_name == 'join' ? 'class="active"' : '' ?>><a href="/join">Подключение</a></li>
+		<li <?= isset($page_name) && $page_name == 'help' ? 'class="active"' : '' ?>><a href="/help">Пользователям</a></li>
 	</ul>
     <? endif; ?>
 	<div id="featured">

@@ -23,6 +23,7 @@ class cron extends CI_Controller {
         //@TODO: возможно добавить прекращение попыток отправки sms, если несколько сообщений подряд не отправляются?
         $this->load->model('mailings_model');
         $this->load->model('user_profile_model');
+        $this->load->helper('common_helper');
         
         $this->load->library('email');
 
@@ -39,14 +40,17 @@ class cron extends CI_Controller {
                 $recipient = $this->user_profile_model->get_user_profile($mailing->user_profile_id);
                 if(isset($recipient) && $recipient->email != '')
                 {
+                    $text = $mailing->email_text;
+                    if(is_password_protected($text))
+                        $text = unprotect_password($text);
                     $this->email->set_wordwrap(false);
                     $this->email->from($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('website_name', 'tank_auth'));
                     $this->email->reply_to($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('website_name', 'tank_auth'));
                     //$this->email->to('unknown@rdm.ru');//@TMP
                     $this->email->to($recipient->email);
                     $this->email->subject($mailing->email_title);
-                    $this->email->message($this->load->view('email/mailing-html', array('title' => $mailing->email_title, 'text' => $mailing->email_text), TRUE));
-                    $this->email->set_alt_message($this->load->view('email/mailing-txt', array('title' => $mailing->email_title, 'text' => strip_tags($mailing->email_text)), TRUE));
+                    $this->email->message($this->load->view('email/mailing-html', array('title' => $mailing->email_title, 'text' => $text), TRUE));
+                    $this->email->set_alt_message($this->load->view('email/mailing-txt', array('title' => $mailing->email_title, 'text' => strip_tags($text)), TRUE));
                     // Попытаться отправить
                     if($this->email->send())
                     {
@@ -80,8 +84,11 @@ class cron extends CI_Controller {
                     $recipient = $this->user_profile_model->get_user_profile($mailing->user_profile_id);
                     if(isset($recipient) && $recipient->phone != '')
                     {
+                        $text = $mailing->sms_text;
+                        if(is_password_protected($text))
+                            $text = unprotect_password($text);
                         $this->sms->to($recipient->phone);
-                        $this->sms->text($mailing->sms_text);
+                        $this->sms->text($text);
                         // Попытаться отправить
                         if($this->sms->send())
                         {
