@@ -273,7 +273,7 @@ class user_profile_model extends MY_Model {
             if($result)
             {
                 $profile_id = $this->db->insert_id();
-                $this->typical_update($this->table_name, $profile_data, $profile_id);//@TOTEST;
+                $this->typical_update($this->table_name, $profile_data, $profile_id);
                 return $profile_id;
             }
         } else {
