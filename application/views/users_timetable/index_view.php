@@ -4,7 +4,7 @@
 <!-- Информация о классе -->
 <?php if(!empty($class->description)): ?>
 <div class="classinfo">
-<?= $class->description; ?>
+<?= nl2br($class->description); ?>
 </div>
 <?php endif; ?>
 
@@ -50,6 +50,6 @@ $value = isset($timetable->timetable[$num][$day]) ? $timetable->timetable[$num][
 
 <!-- Доп. информация -->
 <? if(!empty($timetable->description)): ?>
-<p><?= $timetable->description ?></p>
+<p><?= nl2br($timetable->description) ?></p>
 <? endif; ?>
 </div>

@@ -32,7 +32,7 @@ class users_timetable extends MY_Controller {
             return $this->load_view('users_timetable/index_view', "Расписание"); 
         } else
         {
-            show_error("Произошла ошибка. Не определен класс ученика.");
+            $this->denyAccess();
         }
     }
 }
