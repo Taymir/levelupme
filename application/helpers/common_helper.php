@@ -124,6 +124,7 @@ function sanitize($string, $force_lowercase = true, $anal = false) {
             mb_strtolower($clean, 'UTF-8') :
             strtolower($clean) :
         $clean;
+}
 
 function encrypt($str){
   $ci = &get_instance();
@@ -139,7 +140,8 @@ function encrypt($str){
 }
 
 
-function decrypt($str){
+function decrypt($str)
+{
   $str = base64_decode(urldecode($str));
   $result = '';
   $ci = &get_instance();
