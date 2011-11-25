@@ -11,8 +11,11 @@
 <!-- Расписание -->
 
 <?php 
-function no_subjects_on_day($timetable, $day)
+function no_subjects_on_day(&$timetable, $day)
 {
+    if(!isset($timetable))
+        return true;
+    
     $ci = &get_instance();
     for($num = 1; $num - 1 < $ci->config->item('max_lessons'); $num++) {
         if(isset($timetable[$num][$day]))

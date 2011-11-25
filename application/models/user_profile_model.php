@@ -23,6 +23,11 @@ class user_profile_model extends MY_Model {
         return $this->getProperty('user_id');
     }
     
+    public function getProfileId()
+    {
+        return $this->getProperty('id');
+    }
+    
     public function getUsername()
     {
         return $this->loadUserData($this->getProperty('user_id'))->username;

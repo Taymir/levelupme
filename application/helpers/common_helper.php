@@ -204,3 +204,11 @@ function hide_password($text)
     
 	return $text;
 }
+
+function week2times($week, $year)
+{
+    $start = strtotime($year . 'W' . $week . '1');
+    $end   = strtotime($year . 'W' . $week . '7');
+    
+    return array($start, $end);
+}

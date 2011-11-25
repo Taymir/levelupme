@@ -155,6 +155,36 @@ class grades_model extends MY_Model {
         $query = $this->db->get();
         return $query->result();
     }
+    
+    public function get_grades_by_week($user_profile_id, $week, $year)
+    {
+        $this->load->helper('common_helper');
+        
+        list($start_time, $end_time) = week2times($week, $year);
+        $start_date = date('Y-m-d', $start_time);
+        $end_date   = date('Y-m-d', $end_time);
+        
+        $this->db->select('*');
+        $this->db->from($this->table_name);
+        $this->db->where('date >=', $start_date);
+        $this->db->where('date <=', $end_date);
+        $this->db->where('user_profile_id', $user_profile_id);
+        $this->db->order_by('date');
+        $this->db->order_by('num');
+        
+        $query = $this->db->get();
+        $unformated_grades = $query->result();
+        // Форматируем результат
+        $grades = array();
+        foreach($unformated_grades as $grade)
+        {
+            $grades[$grade->date][$grade->num] = array(
+                'subject' => $grade->subject,
+                'grade'   => $grade->grade,
+                'comment' => $grade->comment
+            );
+        }
+        
+        return $grades;
+    }
 }
-
-?>
