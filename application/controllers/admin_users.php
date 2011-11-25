@@ -85,7 +85,7 @@ class admin_users extends MY_Controller {
         $mailing = array(
             'user_profile_id' => $profile_id,
             'email_title' => "LevelUP: Ваш пароль",
-            'email_text' => "<h1>Новый пароля</h1>
+            'email_text' => "<h1>Новый пароль</h1>
                 <p>Ваши данные в системе <a href=\"" . base_url() . "\">LevelUP</a>
                 были изменены.<br>
                 <b>Логин:</b> $username<br>
