@@ -20,16 +20,42 @@ class users_dnevnik extends MY_Controller {
     
     public function index($week = null, $year = null)
     {
+        $add_empty_subjects = $this->config->item('dnevnik_empty_subjs_show');
         $class_id = $this->user_profile_model->getProperty('class_id');
         $class = $this->classes_model->get_class_info($class_id);
         
         if(isset($class))
         {
+            $cur_week = date('W');
+            $cur_year = date('Y');
             if(is_null($week))
-                $week = date('W');
+                $week = $cur_week;
             if(is_null($year))
-                $year = date('Y');
+                $year = $cur_year;
+                
             $data = $this->grades_model->get_grades_by_week($this->user_profile_model->getProfileId(), $week, $year);
+            
+            // Добавление пустых предметов
+            if($add_empty_subjects && $year == $cur_year && ($cur_week - $week) <= $this->config->item('dnevnik_empty_subjs_weeks'))
+            {
+                $this->load->model('timetables_model');
+                $this->load->helper('common_helper');
+                $timetable = $this->timetables_model->get_timetable_by_class($class->id);
+                foreach($data as $date => $val)
+                {
+                    for($num = 1; $num <= $this->config->item('max_lessons'); ++$num)
+                    {
+                        $day = date2day($date);
+                        if( !isset($data[$date][$num]) &&
+                             isset($timetable->timetable[$num][$day])
+                           )
+                            
+                            $data[$date][$num]['subject'] = $timetable->timetable[$num][$day];
+                    }
+                    ksort($data[$date]);
+                }
+            }
+            
             $this->load_var('class', $class);
             $this->load_var('grades', $data);
 

@@ -212,3 +212,15 @@ function week2times($week, $year)
     
     return array($start, $end);
 }
+
+function date2day($datestr)
+{
+    // Получение дня недели
+    $time = strtotime(str_replace(array(',-/'), '.', $datestr));
+    $day  = (int)date('w', $time);
+    // FIX for dates starting with saturday
+    if($day == 0)
+        $day = 7;
+    
+    return $day;
+}

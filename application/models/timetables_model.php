@@ -61,12 +61,8 @@ class timetables_model extends MY_Model {
     
     public function get_subjects_by_class_and_date($class_id, $date)
     {
-        // Получение дня недели
-        $time = strtotime(str_replace(array(',-/'), '.', $date));
-        $day  = (int)date('w', $time);
-        // FIX for dates starting with saturday
-        if($day == 0)
-            $day = 7;
+        $this->load->helper('common_helper');
+        $day = date2day($date);
         
         // Запрос списка предметов
         $this->db->select('num, subject');
