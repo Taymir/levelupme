@@ -3,7 +3,9 @@
 <?php $this->load->helper('form'); ?>
 <?= form_open('', 'class="niceform"'); ?>
 
-<?= form_fieldset('Контакты'); ?>
+<?php if($profile->role == 'parent'): ?>
+
+<?= form_fieldset('Тариф'); ?>
 <div class="clearfix">
     <?= form_label('Ваш тариф:'); ?>
     <div class="input">
@@ -11,6 +13,9 @@
     </div>
 </div>
 <?= form_fieldset_close(); ?>
+
+<?php endif; ?>
+
 <?= form_fieldset('Контакты'); ?>
 <div class="clearfix">
     <?= form_label("E-mail:", 'mail'); ?>
@@ -19,6 +24,8 @@
         <?= form_error('email') ?>
     </div>
 </div>
+
+<?php if($profile->role == 'parent'): ?>
 <div class="clearfix">
     <?= form_label("Телефон:<br/>(для sms)", 'phone'); ?>
     <div class="input">
@@ -27,6 +34,7 @@
     </div>
 </div>
 <?= form_fieldset_close(); ?>
+<?php endif; ?>
 
 <?= form_fieldset('Смена пароля'); ?>
 <div class="clearfix">

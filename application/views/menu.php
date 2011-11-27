@@ -23,7 +23,7 @@
             <li><a href="/operator_messages/add">Новая рассылка</a></li>
         </ul>
     </li>
-    <!--<li><a href="/operator_settings">Настройки</a></li>-->
+    <li><a href="/settings">Настройки</a></li>
 </ul>
 <?php endif; ?>
 <?php if($role == 'parent'): ?>
