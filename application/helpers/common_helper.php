@@ -224,3 +224,43 @@ function date2day($datestr)
     
     return $day;
 }
+
+function russian_date($datestr)
+{
+    $time = strtotime(str_replace(array(',-/'), '.', $datestr));
+    $format = 'l, j F';
+    
+    if(date('Y') != date('Y', $time))
+        $format .= ', Y г.';
+
+    // russify days
+    switch(date('l', $time)) {
+        case "Monday" : $day_replacement = "Понедельник"; break;
+        case "Tuesday" : $day_replacement = "Вторник"; break;
+        case "Wednesday" : $day_replacement = "Среда"; break;
+        case "Thursday" : $day_replacement = "Четверг"; break;
+        case "Friday" : $day_replacement = "Пятница"; break;
+        case "Saturday" : $day_replacement = "Суббота"; break;
+        case "Sunday" : $day_replacement = "Воскресенье"; break;                        
+    };
+    $format = str_replace('l', $day_replacement, $format);
+    
+    // russify months
+    switch(date('m', $time)) {
+        case 1: $month_replacement='января'; break;
+        case 2: $month_replacement='февраля'; break;
+        case 3: $month_replacement='марта'; break;
+        case 4: $month_replacement='апреля'; break;
+        case 5: $month_replacement='мая'; break;
+        case 6: $month_replacement='июня'; break;
+        case 7: $month_replacement='июля'; break;
+        case 8: $month_replacement='августа'; break;
+        case 9: $month_replacement='сентября'; break;
+        case 10: $month_replacement='октября'; break;
+        case 11: $month_replacement='ноября'; break;
+        case 12: $month_replacement='декабря'; break;
+    }
+    $format = str_replace('F', $month_replacement, $format);
+    
+    return date($format, $time);
+}

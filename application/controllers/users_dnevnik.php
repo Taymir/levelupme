@@ -20,6 +20,7 @@ class users_dnevnik extends MY_Controller {
     
     public function index($week = null, $year = null)
     {
+        $this->load->helper('common_helper');
         $add_empty_subjects = $this->config->item('dnevnik_empty_subjs_show');
         $class_id = $this->user_profile_model->getProperty('class_id');
         $class = $this->classes_model->get_class_info($class_id);
@@ -39,7 +40,6 @@ class users_dnevnik extends MY_Controller {
             if($add_empty_subjects && $year == $cur_year && ($cur_week - $week) <= $this->config->item('dnevnik_empty_subjs_weeks'))
             {
                 $this->load->model('timetables_model');
-                $this->load->helper('common_helper');
                 $timetable = $this->timetables_model->get_timetable_by_class($class->id);
                 foreach($data as $date => $val)
                 {

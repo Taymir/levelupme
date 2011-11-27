@@ -11,7 +11,7 @@
 <!-- Информация об оценках за неделю -->
 <?php foreach($grades as $date => $unwanted_val): ?>
 <div class="dayBlock">
-<h3><?= $date //@TODO: форматирование ?></h3>
+<h3><?= russian_date($date)  ?></h3>
 <table>
 <col class="subjCol"/>
 <col class="gradeCol"/>
