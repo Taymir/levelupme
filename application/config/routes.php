@@ -42,6 +42,8 @@ $route['default_controller'] = "pages";
 $route['404_override'] = '';
 $route['join'] = 'pages/join';
 $route['schedule'] = 'users_timetable';
+$route['dnevnik'] = 'users_dnevnik/index/';
+$route['dnevnik/(:any)'] = 'users_dnevnik/index/$1';
 
 include_once APPPATH . "cache/routes.php";
 

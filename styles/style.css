@@ -443,6 +443,13 @@ body#home #sidebar { padding-top: 65px; }
                 font-weight: bold;
             }
             
+            .usersDnevnik .pagintaion {
+                text-align: center;
+            }
+            .usersDnevnik .pagintaion a.btn {
+                 width:140px;
+            }
+            
             
             textarea.mass-add {
                 font-family: 'Courier New',Courier,monospace;

@@ -207,6 +207,8 @@ function hide_password($text)
 
 function week2times($week, $year)
 {
+    if((int)$week < 10) //@BUGFIX
+        $week = "0$week";
     $start = strtotime($year . 'W' . $week . '1');
     $end   = strtotime($year . 'W' . $week . '7');
     
@@ -225,10 +227,13 @@ function date2day($datestr)
     return $day;
 }
 
-function russian_date($datestr)
+function russian_date($datestr, $with_weekday = true)
 {
     $time = strtotime(str_replace(array(',-/'), '.', $datestr));
-    $format = 'l, j F';
+    $format = 'j F';
+    
+    if($with_weekday)
+        $format = 'l, ' . $format;
     
     if(date('Y') != date('Y', $time))
         $format .= ', Y г.';
@@ -274,4 +279,9 @@ function format_grade($gradestr)
     $gradestr = preg_replace('/((\d)[\+\-]?)/', '<span class="g$2">$1</span>', $gradestr);
     
     return $gradestr;
+}
+
+function max_weeks_in_year($year)
+{
+    return (int)date('W', mktime(0, 0, 0, 12, 28, $year));
 }

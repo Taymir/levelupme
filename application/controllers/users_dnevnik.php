@@ -29,12 +29,36 @@ class users_dnevnik extends MY_Controller {
         {
             $cur_week = date('W');
             $cur_year = date('Y');
-            if(is_null($week))
+            if(empty($week))
                 $week = $cur_week;
-            if(is_null($year))
+            if(empty($year))
                 $year = $cur_year;
-                
+
+            $next_week = $week + 1;
+            $next_year = $year;
+            if($next_week > max_weeks_in_year($year))
+            {
+                $next_year++;
+                $next_week = 1;
+            }
+            
+            $prev_week = $week - 1;
+            $prev_year = $year;
+            if($prev_week <= 0)
+            {
+                $prev_year--;
+                $prev_week = max_weeks_in_year($prev_year);
+            }
+            
             $data = $this->grades_model->get_grades_by_week($this->user_profile_model->getProfileId(), $week, $year);
+            $vars = array(
+                'start_date' => $data['start_date'], 'end_date' => $data['end_date'],
+                'week' => $week, 'year' => $year,
+                'next_week' => $next_week, 'next_year' => ($next_year == $cur_year) ? null : $next_year,
+                'prev_week' => $prev_week, 'prev_year' => ($prev_year == $cur_year) ? null : $prev_year
+                );
+            $this->load->vars($vars);
+            $data = $data['grades'];
             
             // Добавление пустых предметов
             if($add_empty_subjects && $year == $cur_year && ($cur_week - $week) <= $this->config->item('dnevnik_empty_subjs_weeks'))

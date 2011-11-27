@@ -38,4 +38,13 @@
 </div>
 <?php endforeach; ?>
 
+<div class="pagintaion">
+    <a href="<?=  site_url(array('dnevnik', $prev_week, $prev_year)) ?>" class="btn success" style="float:left;">&LeftArrow; Прошлая неделя</a>
+
+<?= russian_date($start_date, false) . ' &ndash; ' . russian_date($end_date, false) ?>
+
+    <a href="<?= site_url(array('dnevnik', $next_week, $next_year)) ?>" class="btn success" style="float:right;">Следующая неделя &rightarrow;</a>
+
+</div>
+
 </div>

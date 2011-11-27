@@ -185,6 +185,6 @@ class grades_model extends MY_Model {
             );
         }
         
-        return $grades;
+        return array('grades' => $grades, 'start_date' => $start_date, 'end_date' => $end_date);
     }
 }
