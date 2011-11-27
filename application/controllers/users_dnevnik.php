@@ -51,8 +51,10 @@ class users_dnevnik extends MY_Controller {
             }
             
             $data = $this->grades_model->get_grades_by_week($this->user_profile_model->getProfileId(), $week, $year);
+            $start_date = $data['start_date'];
+            $end_date   = $data['end_date'];
             $vars = array(
-                'start_date' => $data['start_date'], 'end_date' => $data['end_date'],
+                'start_date' => $start_date, 'end_date' => $end_date,
                 'week' => $week, 'year' => $year,
                 'next_week' => $next_week, 'next_year' => ($next_year == $cur_year) ? null : $next_year,
                 'prev_week' => $prev_week, 'prev_year' => ($prev_year == $cur_year) ? null : $prev_year
@@ -65,18 +67,21 @@ class users_dnevnik extends MY_Controller {
             {
                 $this->load->model('timetables_model');
                 $timetable = $this->timetables_model->get_timetable_by_class($class->id);
-                foreach($data as $date => $val)
+                $start_time = strtotime($start_date);
+                for($day = 1; $day <= 7; ++$day)
                 {
+                    $date = date('Y-m-d', $start_time + ($day - 1) * 24 * 60 * 60);
+                    
                     for($num = 1; $num <= $this->config->item('max_lessons'); ++$num)
                     {
-                        $day = date2day($date);
                         if( !isset($data[$date][$num]) &&
                              isset($timetable->timetable[$num][$day])
                            )
                             
                             $data[$date][$num]['subject'] = $timetable->timetable[$num][$day];
                     }
-                    ksort($data[$date]);
+                    if(isset($data[$date]))
+                        ksort($data[$date]);
                 }
             }
             
