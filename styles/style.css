@@ -391,9 +391,6 @@ body#home #sidebar { padding-top: 65px; }
                 margin-bottom: 20px;
             }
             
-            .usersDnevnik {
-            }
-            
             .usersDnevnik .dayBlock {
                 color:black;
                 border: black 1px solid;
@@ -417,7 +414,7 @@ body#home #sidebar { padding-top: 65px; }
             }
             
             .usersDnevnik .gradeCol {
-                width: 70px;
+                width: 120px;
             }
             
             .usersDnevnik .commentCol {
@@ -426,6 +423,26 @@ body#home #sidebar { padding-top: 65px; }
             .usersDnevnik .nogrades {
                 color: #7F7F7F;
             }
+            
+            .usersDnevnik .g1, .usersDnevnik .g2 {
+                color: #921506;
+                font-weight: bold;
+            }
+            
+            .usersDnevnik .g3 {
+                color: #f89406;
+                font-weight: bold;
+            }
+            
+            .usersDnevnik .g4 {
+                color:#7bc53b;
+                font-weight: bold;
+            }
+            .usersDnevnik .g5 {
+                color:green;
+                font-weight: bold;
+            }
+            
             
             textarea.mass-add {
                 font-family: 'Courier New',Courier,monospace;

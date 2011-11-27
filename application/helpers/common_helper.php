@@ -264,3 +264,14 @@ function russian_date($datestr)
     
     return date($format, $time);
 }
+
+function format_grade($gradestr)
+{
+    // Добавляем пробелы после запятых
+    $gradestr = preg_replace('/([\;\,])([^\s])/', '$1 $2', $gradestr);
+    
+    // Раскрашеваем оценки
+    $gradestr = preg_replace('/((\d)[\+\-]?)/', '<span class="g$2">$1</span>', $gradestr);
+    
+    return $gradestr;
+}

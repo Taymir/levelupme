@@ -22,7 +22,7 @@
 <?php if(isset($grades[$date][$num])): $val = $grades[$date][$num]; ?>
 <td <?= isset($val['grade']) ? '' : 'class="nogrades"' ?>><?= $num . '. ' . $val['subject'] ?></td>
     <?php if(isset($val['grade'])): ?>
-    <td><?= $val['grade'] ?></td>
+    <td><?= format_grade($val['grade']) ?></td>
     <td><?= $val['comment'] ?></td>
     <?php else: ?>
     <td></td><td></td>
