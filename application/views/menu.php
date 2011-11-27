@@ -31,7 +31,7 @@
 <ul>
     <li><a href="/dnevnik">Дневник</a></li>
     <li><a href="/schedule">Расписание</a></li>
-    <!--<li><a href="/payment">Оплата</a></li>-->
+    <li><a href="/payment">Оплата</a></li>
     <li><a href="/settings">Настройки</a></li>
 </ul>
 <?php endif; ?>
