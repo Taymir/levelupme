@@ -15,6 +15,7 @@ class pages extends MY_Controller {
         parent::__construct();
         
         $this->use_short_view(false);
+        $this->load_scripts('mootools-core', 'homeSlider');
         $this->load->model('pages_model');
     }
     
@@ -59,7 +60,7 @@ class pages extends MY_Controller {
             $this->load_var('schoolslist', $schoolslist);
         }
         
-        return $this->load_view('pages/registration_view', "Подключение");
+        return $this->load_view('pages/registration_view', "Подключение", array( 'page_name' => 'join'));
     }
     
     private function sendMailToAdmin($data)

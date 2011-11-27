@@ -7,7 +7,11 @@
 <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>styles/style.css" />
 <?= isset($styles) ? $styles : '' ?>
 <?= isset($scripts) ? $scripts : '' ?>
-
+<?php 
+$ci = & get_instance();
+$ci->load->library('user_agent');
+$ie6 = $ci->agent->is_browser('Internet Explorer') && (int)$ci->agent->version() == 6;
+?>
 <!--[if lt IE 7]>
 	<link rel="stylesheet" type="text/css" href="<?= base_url(); ?>styles/ie6style.css" />
 	<script type="text/javascript" src="<?= base_url(); ?>scripts/DD_belatedPNG_0.0.8a-min.js"></script>
@@ -24,9 +28,29 @@
 <a href="<?= base_url(); ?>"><img src="<?= base_url(); ?>styles/images/logo.png" alt="Logo" id="logo"/></a>
 <? if(!$SHORT_VIEW): ?>
 <div id="top-box">
-    <p>Высокая успеваемость <strong>ваших детей</strong><br/> &ndash; наша главная цель</p>
+	<div id="textslider">
+		<div style="">
+		<p>Высокая успеваемость <strong>ваших детей</strong><br/> &ndash; наша главная цель</p> </div>
+		<div style="display:none">
+		<p>Мы усердно работаем <strong>каждый день</strong>,<br/> чтобы сохранить ваше время</p> </div>
+		<div style="display:none">
+		<p>Мы делаем то, <strong>что мы умеем</strong>:<br/> сохраняем ваше время</p> </div>
+	</div>
     <a href="/join" class="featured-button"><span>Подключиться</span></a>
 </div> <!-- end #top-box -->
+
+<? if(!$ie6): ?>
+<div id="switcher">
+<div id="switcher-left"></div>
+<div id="switcher-content">
+<a href="#" class="active">1</a>
+<a href="#">2</a>
+<a href="#">3</a>
+</div> <!-- end #switcher-content -->
+<div id="switcher-right"></div>
+</div><!-- end #switcher -->
+<? endif; ?>
+
 <? endif; ?>
 </div> <!-- end .container -->
 </div> <!-- end #header -->
@@ -54,20 +78,13 @@
 </div> <!-- end #content-left -->
     
 <div id="sidebar">
-<?php
-if(!$SHORT_VIEW):
-   
-$ci = & get_instance();
-$ci->load->library('user_agent');
-$ie6 = $ci->agent->is_browser('Internet Explorer') && (int)$ci->agent->version() == 6;
-
-if(!$ie6):
-?>
-<img src="<?= base_url(); ?>styles/images/iphone.png" style="width: 202px; height: 450px; margin-top: -400px; margin-left: 20px; margin-bottom: -35px;" />
-<?php 
-endif;
-endif;
-?>
+<? if(!$SHORT_VIEW && !$ie6): ?>
+<div id="imageslider">
+<div style=""><img src="<?= base_url(); ?>styles/images/iphone.png" style="width: 202px; height: 430px; margin-top: -400px; margin-left: 20px; margin-bottom: -35px;" /></div>
+<div style="display:none"><img src="<?= base_url(); ?>styles/images/monitor.png" style="width: 413px; height: 349px; margin-top: -320px; margin-left: -85px; margin-bottom: -56px;" /></div>
+<div style="display:none"><img src="<?= base_url(); ?>styles/images/nokia.png" style="width: 189px; height: 396px; margin-top: -400px; margin-left: 30px; margin-bottom: -89px;" /></div>
+</div>
+<? endif; ?>
 
         <?php if($AUTH_FORM) $this->load->view('auth_form.php'); ?>
 

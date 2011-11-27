@@ -99,8 +99,7 @@ body#home #header .container { height: 384px; }
 	#top-box a.featured-button:hover { text-decoration: none; }
 		#top-box a.featured-button span { display: block; background: url(images/button_bg.png) no-repeat top left; padding-left: 27px; height: 53px; }
 	
-#image_slideshow { position: absolute; bottom: -77px; right: -18px; z-index: 3; }
-	#switcher { position: absolute; bottom:70px; left:35px; }
+	#switcher { position: absolute; bottom:0px; right:115px; z-index: 3;}
 		#switcher-left, #switcher-right, #switcher-content { height: 85px; float: left; }
 		#switcher-left { background: url(images/switcher-left.png) no-repeat; width: 37px;  }
 		#switcher-right { background: url(images/switcher-right.png) no-repeat; width: 39px;  }
