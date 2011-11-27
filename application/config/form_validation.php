@@ -1,7 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 $ci =& get_instance();
 
-$config = array(
+$config = array(    
     /* REGISTRATION */
     'registration' => array(
         array(
@@ -246,8 +246,36 @@ $config = array(
             'label' => 'школы',
             'rules' => 'required'
         )
+    ),
+    
+    /* SETTINGS */
+    'settings' => array(
+        array(
+            'field' => 'email',
+            'label' => 'e-mail',
+            'rules' => 'trim|valid_email'
+        ),
+        array(
+            'field' => 'phone',
+            'label' => 'телефон',
+            'rules' => 'trim|callback_valid_phone'
+        ),
+        array(
+            'field' => 'old_password',
+            'label' => 'старый пароль',
+            'rules' => ''
+        ),
+        array(
+            'field' => 'new_password',
+            'label' => 'новый пароль',
+            'rules' => 'callback_password_required|alpha_numeric'
+        ),
+        array(
+            'field' => 'confirm',
+            'label' => 'подтверждение пароля',
+            'rules' => 'callback_password_required|matches[new_password]'
+        )
     )
-
     
 
 );

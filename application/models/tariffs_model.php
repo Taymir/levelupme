@@ -29,6 +29,16 @@ class tariffs_model {
         4 => '250',
     );
     
+    public function get_tariff($id, $shortname = false)
+    {
+        if(!key_exists($id, $this->tariffs))
+            return null;
+        
+        if($shortname)
+            return $this->tariff_shortnames[$id];
+        return $this->tariffs[$id];
+    }
+    
     public function get_tariffs_for_widget()
     {
         $result = $this->get_tariffs_for_selector();

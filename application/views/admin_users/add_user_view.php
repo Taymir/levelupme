@@ -98,7 +98,7 @@ echo form_error('class_id');
 <?= form_fieldset_close(); ?>
 
 <div class="actions">
-<?= form_submit('submit', isset($profile)?"Сохранить" : "Добавить", 'class="btn primary"') ?></p>
+<?= form_submit('submit', isset($profile)?"Сохранить" : "Добавить", 'class="btn primary"') ?>
 </div>
 
 <?= form_close() ?>

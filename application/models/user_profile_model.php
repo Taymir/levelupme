@@ -294,7 +294,7 @@ class user_profile_model extends MY_Model {
     }
     
     public function save_user_profile($profile_id, $data)
-    {//@TODO Замена РОЛИ!!!
+    {
         $result = true;
         if(isset($data['password']))
         {
@@ -320,7 +320,16 @@ class user_profile_model extends MY_Model {
         unset($data['password']);
         
         if($result)
+        {
+            if(isset($data['email']))
+            {
+                // Обновляем email в users
+                if(!isset($profile))
+                    $profile = $this->typical_find($this->table_name, $profile_id);
+                $this->typical_update($this->users_table_name, array('email' => $data['email']), $profile->user_id);
+            }
             return $this->typical_update($this->table_name, $data, $profile_id);
+        }
         return $result;
     }
     

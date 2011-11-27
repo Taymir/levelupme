@@ -99,6 +99,7 @@ class operator_model extends user_profile_model {
         $profile_data = array(
             'name' => $data['name'],
             'role' => $data['role'],
+            'email' => $data['email'],
             'class_id' => -1
         );
         $username = $data['username'];

@@ -29,10 +29,10 @@
 <?php if($role == 'parent'): ?>
 <strong>Раздел родителя:</strong>
 <ul>
-    <!--<li><a href="/recordbook">Дневник</a></li>-->
+    <li><a href="/dnevnik">Дневник</a></li>
     <li><a href="/schedule">Расписание</a></li>
     <!--<li><a href="/payment">Оплата</a></li>-->
-    <!--<li><a href="/settings">Настройки</a></li>-->
+    <li><a href="/settings">Настройки</a></li>
 </ul>
 <?php endif; ?>
 <?php if(in_array($role, array('admin', 'operator', 'parent'))): ?>
