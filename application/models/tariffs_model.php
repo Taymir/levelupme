@@ -82,10 +82,8 @@ class tariffs_model {
     
     public function rule_send_grades_to_email($tariff)
     {
-        // На данный момент не отсылаем данные об оценках на e-mail!
-        //if($tariff >= 4)
-        //    return true;
-        return false;
+        // Отсылаем оценки на email по тому же правилу, что и оценки на смс
+        return $this->rule_send_grades_to_sms($tariff);
     }
     
     public function rule_send_grades_to_sms($tariff)
