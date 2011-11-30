@@ -166,6 +166,7 @@ body#home #header .container { height: 384px; }
 #featured { /*background: url(images/horizontal_sep.png) repeat-x bottom left;*/ }
 	#featured .slide { padding: 50px 33px 34px 40px; }
 	#featured-wrap { background: url(images/featured-right-bg.jpg) no-repeat right 2px; position: relative; }
+        #featured-wrap ol {list-style: decimal;}
 		ul#featured-control { position: absolute; top: -46px; left:10px; }
 			ul#featured-control li { float: left; background:url("images/featured-li.png") repeat scroll right bottom transparent; padding-right: 28px; margin-right:-6px;  }
 				ul#featured-control li a { background:url("images/featured-li.png") no-repeat; display:block; height:47px; line-height:57px; padding-left:21px; padding-right:1px; }
