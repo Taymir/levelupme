@@ -133,7 +133,7 @@ $config['subclass_prefix'] = 'MY_';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-zа-яё 0-9~%@.:_\-\?\=\#\&';
+$config['permitted_uri_chars'] = 'a-zа-яё 0-9~%@.:_\-\?\=\#\&,';
 
 
 /*

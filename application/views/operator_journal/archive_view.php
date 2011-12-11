@@ -93,7 +93,7 @@ var setNto = function(profile_id)
 <?= form_input(
         "grades[{$student->profile_id}][$num]",
         isset($grades[$student->profile_id][$num]) ? $grades[$student->profile_id][$num] : '',
-        'class="gradeField std' . $student->profile_id . '"'
+        'class="gradeField std' . $student->profile_id . '" autocomplete="off"'
 ) ?>
 </nobr></td>
 <?php endfor; ?>

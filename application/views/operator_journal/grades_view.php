@@ -204,15 +204,15 @@ foreach($students as $student): $student_num++;?>
 <td class="studentNum"><?= $student_num . '. ' ?></td>
 <td><?= colorify_name($student->name) ?></td>
 <td><?= form_input("g[$student->profile_id][$num][0]", 
-        isset($g[$student->profile_id][$num][0]) ? $g[$student->profile_id][$num][0] : '', "class=\"N gradeField g1-$num\"") ?></td>
+        isset($g[$student->profile_id][$num][0]) ? $g[$student->profile_id][$num][0] : '', "class=\"N gradeField g1-$num\" autocomplete=\"off\"") ?></td>
 <td><?= form_input("g[$student->profile_id][$num][1]", 
-        isset($g[$student->profile_id][$num][1]) ? $g[$student->profile_id][$num][1] : '', "class=\"gradeField g1-$num\"") ?></td>
+        isset($g[$student->profile_id][$num][1]) ? $g[$student->profile_id][$num][1] : '', "class=\"gradeField g1-$num\" autocomplete=\"off\"") ?></td>
 <td><?= form_input("g[$student->profile_id][$num][2]", 
-        isset($g[$student->profile_id][$num][2]) ? $g[$student->profile_id][$num][2] : '', "class=\"gradeField g2-$num\"") ?></td>
+        isset($g[$student->profile_id][$num][2]) ? $g[$student->profile_id][$num][2] : '', "class=\"gradeField g2-$num\" autocomplete=\"off\"") ?></td>
 <td><?= form_input("g[$student->profile_id][$num][3]", 
-        isset($g[$student->profile_id][$num][3]) ? $g[$student->profile_id][$num][3] : '', "class=\"gradeField g3-$num\"") ?></td>
+        isset($g[$student->profile_id][$num][3]) ? $g[$student->profile_id][$num][3] : '', "class=\"gradeField g3-$num\" autocomplete=\"off\"") ?></td>
 <td><?= form_input("g[$student->profile_id][$num][4]", 
-        isset($g[$student->profile_id][$num][4]) ? $g[$student->profile_id][$num][4] : '', "class=\"gradeField g4-$num\"") ?></td>
+        isset($g[$student->profile_id][$num][4]) ? $g[$student->profile_id][$num][4] : '', "class=\"gradeField g4-$num\" autocomplete=\"off\"") ?></td>
 <td><?= form_input("comments[{$student->profile_id}][$num]", 
         isset($comments[$student->profile_id][$num]) ? $comments[$student->profile_id][$num] : '',
         "class=\"commentField commentField$num\"") ?></td>
