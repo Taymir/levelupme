@@ -80,9 +80,9 @@ $ie6 = $ci->agent->is_browser('Internet Explorer') && (int)$ci->agent->version()
 <div id="sidebar">
 <? if(!$SHORT_VIEW && !$ie6): ?>
 <div id="imageslider">
-<div style=""><img src="<?= base_url(); ?>styles/images/iphone.png" style="width: 202px; height: 430px; margin-top: -400px; margin-left: 20px; margin-bottom: -35px;" /></div>
-<div style="display:none"><img src="<?= base_url(); ?>styles/images/monitor.png" style="width: 413px; height: 349px; margin-top: -320px; margin-left: -85px; margin-bottom: -56px;" /></div>
-<div style="display:none"><img src="<?= base_url(); ?>styles/images/nokia.png" style="width: 189px; height: 396px; margin-top: -400px; margin-left: 30px; margin-bottom: -89px;" /></div>
+<div style=""><img src="<?= base_url(); ?>styles/images/iphone.png" style="width: 202px; margin-top: -400px; margin-left: 20px; margin-bottom: 0px;" /></div>
+<div style="display:none"><img src="<?= base_url(); ?>styles/images/monitor.png" style="width: 413px; margin-top: -400px; margin-left: -85px; margin-bottom: 0px;" /></div>
+<div style="display:none"><img src="<?= base_url(); ?>styles/images/nokia.png" style="width: 189px; margin-top: -400px; margin-left: 30px; margin-bottom: 0px;" /></div>
 </div>
 <? endif; ?>
 
