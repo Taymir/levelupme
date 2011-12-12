@@ -8,7 +8,7 @@
 <center>
 <table width="750" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td align="center" bgcolor="#ffffff" height="53"><img src="<?= base_url() ?>styles/images/mail-logo.jpg" width="128" height="128" alt="Level UP" title="Level UP"></td>
+<td align="center" bgcolor="#ffffff" height="53"><img src="<?= base_url() ?>styles/images/mail-logo_ny.jpg" alt="Level UP" title="Level UP"></td>
 </tr>
 <tr>
 <td width="" bgcolor="#ffffff" height="">

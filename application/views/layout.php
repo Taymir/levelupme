@@ -25,7 +25,7 @@ $ie6 = $ci->agent->is_browser('Internet Explorer') && (int)$ci->agent->version()
 <div id="header-wrapper">
 <div id="header">
 <div class="container">
-<a href="<?= base_url(); ?>"><img src="<?= base_url(); ?>styles/images/logo.png" alt="Logo" id="logo"/></a>
+<a href="<?= base_url(); ?>"><img src="<?= base_url(); ?>styles/images/logo_ny.jpg" alt="Logo" id="logo"/></a>
 <? if(!$SHORT_VIEW): ?>
 <div id="top-box">
 	<div id="textslider">
