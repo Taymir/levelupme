@@ -1171,3 +1171,8 @@ body#home #sidebar { padding-top: 65px; }
             .pagination a:hover {
                 border-color: #356c10;
             }
+            
+            /* ETC */
+            #messages-view img {
+                float:right;
+            }

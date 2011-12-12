@@ -1,3 +1,4 @@
+<div id="messages-view">
 <h2>Просмотр рассылки</h2>
 <?php if(!empty($email_text)): ?>
 <h3>E-mail: <?= $email_title?></h3>
@@ -5,3 +6,4 @@
 <hr />
 <?php endif; ?>
 <pre><?= $sms_text ?></pre>
+</div>
