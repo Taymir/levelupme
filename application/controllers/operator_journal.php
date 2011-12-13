@@ -221,7 +221,9 @@ class operator_journal extends MY_Controller {
                         {
                             if($grade_txt != '')
                                $grade_txt .=  ' ';
-                            $grade_txt .= $grade . $data['g_type'][$num][$g_type_key];
+                            $grade_txt .= $grade;
+                            if(trim($data['g_type'][$num][$g_type_key]) != '')
+                                $grade_txt .=  ' ' . $data['g_type'][$num][$g_type_key];
                         }
                     }
                     $data['grades'][$user_profile_id][$num] = $grade_txt;

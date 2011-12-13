@@ -506,7 +506,8 @@ class cron extends CI_Controller {
                                     $grade = $grades[$date][$subject][$user_profile_id];
 
                                     // Распарсить grade на составляющие
-                                    str_replace(array(',',';',':'), ' ', $grade);
+                                    $grade = preg_replace('/(\d{1,2}\.\d{1,2}(\.\d{2,4})?)/', '', $grade);
+                                    $grade = str_replace(array(',',';',':','/'), ' ', $grade);
                                     $sub_grades = explode(' ', $grade);
 
                                     $sum_grades = 0.0;
@@ -523,7 +524,7 @@ class cron extends CI_Controller {
                                         {
                                             // Ученик болел
                                             $this->statistics_model->set_user_b($date, $subject, $user);
-                                        } elseif ((int)$sub_grade > 0) {
+                                        } elseif ((int)$sub_grade > 0 && (int)$sub_grade <= 5) {
                                             // Ученик получил оценку (оценки)
                                             $sum_grades += (int)$sub_grade;
                                             $num_grades ++;
