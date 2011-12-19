@@ -37,7 +37,6 @@ class admin_users extends MY_Controller {
     
     public function add_user($class_id = null)
     {
-        //@BUG: нет проверки существования email
         $this->load->library('form_validation');
         if($class_id == null)
             $class_id = $this->input->post('class_id');
@@ -98,7 +97,6 @@ class admin_users extends MY_Controller {
     
     public function edit_user($profile_id = null)
     {
-        //@BUG: нет проверки существования email
         $this->load->library('form_validation');
         if($profile_id == null)
             $profile_id = $this->input->post('profile_id');
