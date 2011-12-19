@@ -163,7 +163,7 @@ $config = array(
         array(
             'field' => 'email',
             'label' => 'email',
-            'rules' => 'trim|valid_email'
+            'rules' => 'trim|valid_email|callback_email_available'
         )
     ),
     'admin_users/edit_user' => array(
@@ -205,7 +205,7 @@ $config = array(
         array(
             'field' => 'email',
             'label' => 'email',
-            'rules' => 'trim|valid_email'
+            'rules' => 'trim|valid_email|callback_email_available'
         ),
         array(
             'field' => 'change_password',

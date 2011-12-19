@@ -37,6 +37,7 @@ class admin_users extends MY_Controller {
     
     public function add_user($class_id = null)
     {
+        //@BUG: нет проверки существования email
         $this->load->library('form_validation');
         if($class_id == null)
             $class_id = $this->input->post('class_id');
@@ -97,6 +98,7 @@ class admin_users extends MY_Controller {
     
     public function edit_user($profile_id = null)
     {
+        //@BUG: нет проверки существования email
         $this->load->library('form_validation');
         if($profile_id == null)
             $profile_id = $this->input->post('profile_id');
@@ -171,8 +173,22 @@ class admin_users extends MY_Controller {
         return true;
     }
     
+    public function email_available($email)
+    {
+        $this->load->model('tank_auth/users');
+        
+        if(!$this->users->is_email_available($email))
+        {
+            $this->form_validation->set_message('email_available', "Данный email уже используется");
+            return false;
+        }
+        
+        return true;
+    }
+    
     public function mass_add_user($class_id = null)
     {
+        //@BUG: нет никаких сообщений об ошибках!
         $this->load->library('form_validation');
         $this->load->model('tariffs_model');
         if($class_id == null)
