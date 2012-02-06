@@ -208,7 +208,7 @@ function hide_password($text)
 function week2times($week, $year)
 {
     if((int)$week < 10) //@BUGFIX
-        $week = "0$week";
+        $week = '0' . (int)$week;
     $start = strtotime($year . 'W' . $week . '1');
     $end   = strtotime($year . 'W' . $week . '7');
     
