@@ -38,7 +38,7 @@ class cron extends CI_Controller {
             {
                 // для каждого сообщения:
                 $recipient = $this->user_profile_model->get_user_profile($mailing->user_profile_id);
-                if(isset($recipient) && $recipient->email != '')
+                if(isset($recipient) && $recipient->email != '' && !$recipient->banned)
                 {
                     $text = $mailing->email_text;
                     if(is_password_protected($text))
@@ -82,7 +82,7 @@ class cron extends CI_Controller {
                 {
                     // для каждого сообщения:
                     $recipient = $this->user_profile_model->get_user_profile($mailing->user_profile_id);
-                    if(isset($recipient) && $recipient->phone != '')
+                    if(isset($recipient) && $recipient->phone != '' && !$recipient->banned)
                     {
                         $text = $mailing->sms_text;
                         if(is_password_protected($text))
@@ -249,12 +249,12 @@ class cron extends CI_Controller {
     
     private function is_accepting_sms($user)//@TOTEST
     {
-        return !empty($user['user']->phone) && $this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff);
+        return !empty($user['user']->phone) && !$user['user']->banned && $this->tariffs_model->rule_send_text_analytics_to_sms($user['user']->tariff);
     }
     
     private function is_accepting_email($user)//@TOTEST
     {
-        return !empty($user['user']->email) && $this->tariffs_model->rule_send_graph_analytics_to_email($user['user']->tariff);
+        return !empty($user['user']->email) && !$user['user']->banned && $this->tariffs_model->rule_send_graph_analytics_to_email($user['user']->tariff);
     }
     
     private function render_attendance($user, $class, $subject, $subject_path, $current_date)
